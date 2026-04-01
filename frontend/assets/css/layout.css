@@ -18,10 +18,14 @@
   top: 0;
   z-index: var(--z-sticky);
   background: rgba(11, 18, 32, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
   transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+[data-mode="arcade"] .site-header {
+  background: rgba(8, 8, 16, 0.85);
 }
 
 .site-header.is-scrolled {

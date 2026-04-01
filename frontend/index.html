@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Home — Kore Starter</title>
-  <meta name="description" content="Static-first websites with optional serverless features. Vanilla HTML/CSS/JS starter template.">
-  <link rel="canonical" href="https://example.com/">
+  <title>GCOAT — We Build Software That Ships</title>
+  <meta name="description" content="GCOAT (Greatest Coders of All Time) is a software development consultancy. We build landing pages, web apps, and MVPs — fast, accessible, production-ready.">
+  <link rel="canonical" href="https://amalikrigger.github.io/gcoat-web/">
 
   <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
 
-  <meta property="og:title" content="Home — Kore Starter">
-  <meta property="og:description" content="Static-first websites with optional serverless features.">
-  <meta property="og:image" content="https://example.com/assets/images/og-image.jpg">
+  <meta property="og:title" content="GCOAT — We Build Software That Ships">
+  <meta property="og:description" content="GCOAT is a software development consultancy. Landing pages, web apps, MVPs — production-ready.">
+  <meta property="og:image" content="https://amalikrigger.github.io/gcoat-web/assets/images/og-image.jpg">
   <!-- TODO: Replace with real OG image (1200x630px recommended) -->
-  <meta property="og:url" content="https://example.com/">
+  <meta property="og:url" content="https://amalikrigger.github.io/gcoat-web/">
   <meta property="og:type" content="website">
 
   <meta http-equiv="Content-Security-Policy"
@@ -29,9 +29,37 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
+  <!-- Mode Splash — first visit only (hidden via CSS when data-mode is set on <html>) -->
+  <div id="mode-splash" class="splash" role="dialog" aria-label="Choose site mode">
+    <div class="splash__inner">
+      <h2 class="splash__title">Welcome to <span class="splash__brand">GCOAT</span></h2>
+      <p class="splash__subtitle">Choose your experience</p>
+      <div class="splash__cards">
+        <button class="splash__card js-mode-card" data-mode-value="regular" type="button">
+          <svg class="splash__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 3h-8l-2 4h12z"></path>
+          </svg>
+          <span class="splash__card-title">Professional Mode</span>
+          <span class="splash__card-tagline">Clean. Bold. Business-ready.</span>
+        </button>
+        <button class="splash__card js-mode-card" data-mode-value="arcade" type="button">
+          <svg class="splash__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+            <path d="M6 12h4M8 10v4"></path>
+            <circle cx="15" cy="11" r="1"></circle>
+            <circle cx="18" cy="13" r="1"></circle>
+          </svg>
+          <span class="splash__card-title">Arcade Mode</span>
+          <span class="splash__card-tagline">Creative. Experimental. Coming soon.</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <header class="site-header" role="banner">
     <div class="container header__inner">
-      <a class="brand" href="./index.html">Kore Starter</a>
+      <a class="brand" href="./index.html">GCOAT</a>
       <nav class="nav" aria-label="Primary navigation">
         <button class="nav__toggle js-nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
           <span class="nav__toggle-bar"></span>
@@ -39,87 +67,98 @@
           <span class="nav__toggle-bar"></span>
         </button>
         <div class="nav__menu" id="nav-menu">
-          <a class="nav__link" href="#features">Features</a>
+          <a class="nav__link" href="#about">About</a>
+          <a class="nav__link" href="#services">Services</a>
+          <a class="nav__link" href="#portfolio">Portfolio</a>
+          <a class="nav__link" href="#process">Process</a>
           <a class="nav__link" href="#contact">Contact</a>
         </div>
+        <button class="mode-toggle js-mode-toggle" type="button" aria-label="Switch to Arcade mode">
+          <svg class="mode-toggle__icon mode-toggle__icon--regular" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+            <path d="M6 12h4M8 10v4"></path>
+            <circle cx="15" cy="11" r="1"></circle>
+            <circle cx="18" cy="13" r="1"></circle>
+          </svg>
+          <svg class="mode-toggle__icon mode-toggle__icon--arcade" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 3h-8l-2 4h12z"></path>
+          </svg>
+        </button>
       </nav>
     </div>
   </header>
 
-  <main id="main-content" class="site-main">
+  <main id="main-content" class="site-main regular-content">
     <section class="hero">
       <div class="container hero__inner">
-        <h1 class="hero__title">Static-first websites with optional serverless features.</h1>
-        <p class="hero__subtitle">Vanilla HTML/CSS/JS starter that plugs into Kore's API.</p>
+        <h1 class="hero__title">We Build Software That Ships</h1>
+        <p class="hero__subtitle">From landing pages to full-stack apps — GCOAT delivers production-ready code, fast.</p>
         <div class="hero__actions">
-          <a class="btn btn--primary" href="#contact">Contact</a>
-          <a class="btn btn--secondary" href="#features">See Features</a>
+          <a class="btn btn--primary" href="#intake">Start Your Project</a>
+          <a class="btn btn--secondary" href="#contact">Get in Touch</a>
         </div>
       </div>
     </section>
 
-    <section id="features" class="section">
+    <section id="about" class="section">
       <div class="container">
-        <h2 class="section__title">Features</h2>
-        <div class="grid">
-          <article class="card">
-            <h3 class="card__title">Fast</h3>
-            <p class="card__body">Static-first for performance and reliability.</p>
-          </article>
-          <article class="card">
-            <h3 class="card__title">Secure</h3>
-            <p class="card__body">Tier 1 baseline: throttling, CORS, admin token.</p>
-          </article>
-          <article class="card">
-            <h3 class="card__title">Extensible</h3>
-            <p class="card__body">Leads, content, and media upload APIs.</p>
-          </article>
-        </div>
+        <h2 class="section__title">About GCOAT</h2>
+        <p class="section__subtitle">Coming in Phase 3</p>
+      </div>
+    </section>
+
+    <section id="services" class="section section--alt">
+      <div class="container">
+        <h2 class="section__title">What We Build</h2>
+        <p class="section__subtitle">Coming in Phase 3</p>
+      </div>
+    </section>
+
+    <section id="portfolio" class="section">
+      <div class="container">
+        <h2 class="section__title">Our Work</h2>
+        <p class="section__subtitle">Coming in Phase 3</p>
+      </div>
+    </section>
+
+    <section id="process" class="section section--alt">
+      <div class="container">
+        <h2 class="section__title">How We Work</h2>
+        <p class="section__subtitle">Coming in Phase 3</p>
+      </div>
+    </section>
+
+    <section id="intake" class="section">
+      <div class="container">
+        <h2 class="section__title">Start Your Project</h2>
+        <p class="section__subtitle">Coming in Phase 3</p>
       </div>
     </section>
 
     <section id="contact" class="section section--alt">
       <div class="container">
-        <h2 class="section__title">Contact</h2>
-        <p class="section__subtitle">Submits to <code>POST /leads</code> if configured.</p>
-
-        <form id="contact-form" class="form" novalidate>
-          <div class="hp" aria-hidden="true">
-            <label for="website">Website</label>
-            <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
-          </div>
-
-          <div class="form-group">
-            <label class="label" for="name">Name</label>
-            <input class="input" id="name" name="name" type="text" autocomplete="name"
-                   aria-describedby="name-error">
-            <span id="name-error" class="form-error" role="alert" hidden></span>
-          </div>
-
-          <div class="form-group">
-            <label class="label" for="email">Email <span class="required" aria-hidden="true">*</span></label>
-            <input class="input" id="email" name="email" type="email" autocomplete="email" required
-                   aria-describedby="email-error">
-            <span id="email-error" class="form-error" role="alert" hidden></span>
-          </div>
-
-          <div class="form-group">
-            <label class="label" for="message">Message</label>
-            <textarea class="textarea" id="message" name="message" rows="5"
-                      aria-describedby="message-error"></textarea>
-            <span id="message-error" class="form-error" role="alert" hidden></span>
-          </div>
-
-          <button class="btn btn--primary" type="submit">Send Message</button>
-          <div id="form-status" class="form-status" role="status" hidden></div>
-        </form>
+        <h2 class="section__title">Get in Touch</h2>
+        <p class="section__subtitle">Coming in Phase 3</p>
       </div>
     </section>
   </main>
 
+  <!-- Arcade Mode Placeholder (built in Phase 4) -->
+  <section id="arcade-mode" class="arcade" aria-label="Arcade mode placeholder">
+    <div class="arcade__inner">
+      <h2 class="arcade__title">ARCADE MODE</h2>
+      <p class="arcade__subtitle">Under Construction — Something Epic Is Coming</p>
+      <div class="arcade__actions">
+        <button class="btn btn--primary js-arcade-switch" type="button">Switch to Regular Mode</button>
+        <a class="btn btn--secondary" href="mailto:gcoatllc@gmail.com">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
   <footer class="site-footer" role="contentinfo">
     <div class="container footer__inner">
-      <p class="muted">&copy; <span id="year"></span> Kore Starter</p>
+      <p class="muted">&copy; <span id="year"></span> GCOAT, LLC. All rights reserved.</p>
       <a class="muted" href="#main-content">Back to top</a>
     </div>
   </footer>

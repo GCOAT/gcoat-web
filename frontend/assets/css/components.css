@@ -224,8 +224,9 @@
 }
 
 .btn--primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: var(--gradient-cta);
   border-color: rgba(255, 255, 255, 0.18);
+  color: var(--color-text-inverse);
 }
 
 .btn--primary:hover {
@@ -233,12 +234,13 @@
 }
 
 .btn--secondary {
-  background: rgba(255, 160, 47, 0.12);
-  border-color: rgba(255, 160, 47, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .btn--secondary:hover {
-  background: rgba(255, 160, 47, 0.2);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* ── Forms ── */
@@ -338,4 +340,231 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ── Brand Gradient ── */
+.brand {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 2px;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand:visited {
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Mode Toggle ── */
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--color-border-hover);
+}
+
+/* In regular mode: show gamepad icon (switch TO arcade), hide briefcase icon */
+.mode-toggle__icon--arcade {
+  display: none;
+}
+
+[data-mode="arcade"] .mode-toggle__icon--regular {
+  display: none;
+}
+
+[data-mode="arcade"] .mode-toggle__icon--arcade {
+  display: block;
+}
+
+/* ── Splash Overlay ── */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  animation: splashFadeIn 0.5s ease forwards;
+}
+
+/* Hide splash when mode is already chosen (early detection from init.js) */
+[data-mode] .splash {
+  display: none;
+}
+
+.splash__inner {
+  text-align: center;
+  padding: var(--spacing-lg);
+  max-width: 640px;
+  width: 100%;
+}
+
+.splash__title {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.splash__brand {
+  background: linear-gradient(135deg, #280BD6, #D6D50B);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.splash__subtitle {
+  color: var(--color-muted);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.splash__cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 480px) {
+  .splash__cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.splash__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  color: var(--color-text);
+  font-family: inherit;
+  transition: transform var(--transition-fast),
+              border-color var(--transition-fast),
+              background var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.splash__card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(40, 11, 214, 0.2);
+}
+
+.splash__card:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.splash__icon {
+  color: var(--color-primary);
+}
+
+.splash__card:nth-child(2) .splash__icon {
+  color: #6366f1;
+}
+
+.splash__card:nth-child(2):hover {
+  border-color: #6366f1;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+}
+
+.splash__card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.splash__card-tagline {
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+}
+
+@keyframes splashFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.splash--exit {
+  animation: splashFadeOut 0.4s ease forwards;
+}
+
+@keyframes splashFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}
+
+/* ── Arcade Mode ── */
+.arcade {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--gradient-hero);
+}
+
+[data-mode="arcade"] .regular-content {
+  display: none;
+}
+
+[data-mode="arcade"] .arcade {
+  display: flex;
+}
+
+.arcade__inner {
+  padding: var(--spacing-2xl);
+  max-width: 600px;
+}
+
+.arcade__title {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 4px;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: var(--spacing-md);
+}
+
+.arcade__subtitle {
+  color: var(--color-muted);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.arcade__actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
 }

@@ -6,3 +6,11 @@ document.documentElement.classList.add("js");
 window.__jsModuleTimeout = setTimeout(function () {
   document.documentElement.classList.remove("js");
 }, 200);
+
+// Early mode detection — prevents flash of wrong theme on return visits
+(function () {
+  var savedMode = localStorage.getItem("gcoat-mode");
+  if (savedMode) {
+    document.documentElement.setAttribute("data-mode", savedMode);
+  }
+})();
