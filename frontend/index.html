@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Home — Kore Starter</title>
+  <meta name="description" content="Static-first websites with optional serverless features. Vanilla HTML/CSS/JS starter template.">
+  <link rel="canonical" href="https://example.com/">
+
+  <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+
+  <meta property="og:title" content="Home — Kore Starter">
+  <meta property="og:description" content="Static-first websites with optional serverless features.">
+  <meta property="og:image" content="https://example.com/assets/images/og-image.jpg">
+  <!-- TODO: Replace with real OG image (1200x630px recommended) -->
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:type" content="website">
+
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.execute-api.*.amazonaws.com;">
+
+  <script src="assets/js/init.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <!-- KORE:CSS_DEPS --><!-- /KORE:CSS_DEPS -->
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="container header__inner">
+      <a class="brand" href="./index.html">Kore Starter</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav__toggle js-nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+          <span class="nav__toggle-bar"></span>
+          <span class="nav__toggle-bar"></span>
+          <span class="nav__toggle-bar"></span>
+        </button>
+        <div class="nav__menu" id="nav-menu">
+          <a class="nav__link" href="#features">Features</a>
+          <a class="nav__link" href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="site-main">
+    <section class="hero">
+      <div class="container hero__inner">
+        <h1 class="hero__title">Static-first websites with optional serverless features.</h1>
+        <p class="hero__subtitle">Vanilla HTML/CSS/JS starter that plugs into Kore's API.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#contact">Contact</a>
+          <a class="btn btn--secondary" href="#features">See Features</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2 class="section__title">Features</h2>
+        <div class="grid">
+          <article class="card">
+            <h3 class="card__title">Fast</h3>
+            <p class="card__body">Static-first for performance and reliability.</p>
+          </article>
+          <article class="card">
+            <h3 class="card__title">Secure</h3>
+            <p class="card__body">Tier 1 baseline: throttling, CORS, admin token.</p>
+          </article>
+          <article class="card">
+            <h3 class="card__title">Extensible</h3>
+            <p class="card__body">Leads, content, and media upload APIs.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section section--alt">
+      <div class="container">
+        <h2 class="section__title">Contact</h2>
+        <p class="section__subtitle">Submits to <code>POST /leads</code> if configured.</p>
+
+        <form id="contact-form" class="form" novalidate>
+          <div class="hp" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="name">Name</label>
+            <input class="input" id="name" name="name" type="text" autocomplete="name"
+                   aria-describedby="name-error">
+            <span id="name-error" class="form-error" role="alert" hidden></span>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="email">Email <span class="required" aria-hidden="true">*</span></label>
+            <input class="input" id="email" name="email" type="email" autocomplete="email" required
+                   aria-describedby="email-error">
+            <span id="email-error" class="form-error" role="alert" hidden></span>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="message">Message</label>
+            <textarea class="textarea" id="message" name="message" rows="5"
+                      aria-describedby="message-error"></textarea>
+            <span id="message-error" class="form-error" role="alert" hidden></span>
+          </div>
+
+          <button class="btn btn--primary" type="submit">Send Message</button>
+          <div id="form-status" class="form-status" role="status" hidden></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer__inner">
+      <p class="muted">&copy; <span id="year"></span> Kore Starter</p>
+      <a class="muted" href="#main-content">Back to top</a>
+    </div>
+  </footer>
+
+  <div id="status-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+  <noscript>
+    <p>This site works best with JavaScript enabled for dynamic features like form submissions.</p>
+  </noscript>
+
+  <!-- KORE:JS_DEPS --><!-- /KORE:JS_DEPS -->
+  <script src="assets/js/config.js"></script>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

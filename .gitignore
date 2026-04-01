@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Environment
+.env
+.env.local
+
+# AWS SAM
+.aws-sam/
+
+# Node (should not exist, but just in case)
+node_modules/
+
+# Kore config (contains environment-specific settings)
+kore.config.json
+
+# Local dev logs
+backend/local/*.log
+logs/
+
+# Kore template internals (kept locally, not published)
+AI_INSTRUCTIONS.md
+CLAUDE.md
+.github/copilot-instructions.md
+kore.config.example.json
+design-refs/
+docs/
+scripts/
+kore-recipes/
+
+# Implementation plan (agent handoff, not published)
+PLAN.md

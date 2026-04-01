@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page Not Found — Kore Starter</title>
+  <meta name="description" content="The page you are looking for does not exist.">
+  <script src="assets/js/init.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <!-- KORE:CSS_DEPS --><!-- /KORE:CSS_DEPS -->
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="container header__inner">
+      <a class="brand" href="./index.html">Kore Starter</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <div class="nav__menu">
+          <a class="nav__link" href="./index.html#features">Features</a>
+          <a class="nav__link" href="./index.html#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="site-main">
+    <section class="section">
+      <div class="container">
+        <h1 class="section__title">Page Not Found</h1>
+        <p>Sorry, the page you are looking for doesn't exist or has been moved.</p>
+        <p><a class="btn btn--primary" href="./index.html">Go to Homepage</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer__inner">
+      <p class="muted">&copy; <span id="year"></span> Kore Starter</p>
+    </div>
+  </footer>
+
+  <!-- KORE:JS_DEPS --><!-- /KORE:JS_DEPS -->
+  <script src="assets/js/config.js"></script>
+  <script type="module">
+    const y = document.getElementById("year");
+    if (y) y.textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>

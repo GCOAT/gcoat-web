@@ -1,0 +1,18 @@
+{
+  "pk": {
+    "S": "CONTENT"
+  },
+  "sk": {
+    "S": "PAGE#home"
+  },
+  "data": {
+    "M": {
+      "headline": {
+        "S": "Hello from Kore Local!"
+      },
+      "body": {
+        "S": "This content comes from DynamoDB Local via GET /content/home."
+      }
+    }
+  }
+}

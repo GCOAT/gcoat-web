@@ -1,0 +1,103 @@
+/* ==========================================================================
+   layout.css — Page-level structural layout
+   ========================================================================== */
+
+.container {
+  width: min(var(--width-wide), 100% - 2 * var(--spacing-lg));
+  margin-inline: auto;
+}
+
+.container--narrow {
+  width: min(var(--width-content), 100% - 2 * var(--spacing-lg));
+  margin-inline: auto;
+}
+
+/* ── Header ── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: rgba(11, 18, 32, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.site-header.is-scrolled {
+  border-bottom-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) 0;
+  min-height: 64px;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: clamp(var(--spacing-2xl), 8vw, 90px) 0;
+}
+
+.hero__inner {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+/* ── Sections ── */
+.section {
+  padding: var(--spacing-xl) 0;
+}
+
+.section--alt {
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* ── Footer ── */
+.site-footer {
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.footer__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ── */
+@media (min-width: 480px) {
+  /* sm — Expansion point: adjust layout for large phones.
+     Example: increase container padding, adjust grid columns. */
+}
+
+@media (min-width: 768px) {
+  /* md — tablets */
+  .hero {
+    padding: var(--spacing-3xl) 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* lg — Expansion point: adjust layout for small desktops.
+     Example: widen container, multi-column layouts. */
+}
+
+@media (min-width: 1280px) {
+  /* xl — Expansion point: adjust layout for standard desktops.
+     Example: max-width container, optimize whitespace. */
+}
