@@ -43,17 +43,31 @@
 
 /* ── Hero ── */
 .hero {
-  padding: clamp(var(--spacing-2xl), 8vw, 90px) 0;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-hero);
+  z-index: 0;
 }
 
 .hero__inner {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-3xl) 0;
 }
 
 /* ── Sections ── */
 .section {
-  padding: var(--spacing-xl) 0;
+  padding: var(--spacing-3xl) 0;
 }
 
 .section--alt {
@@ -62,46 +76,172 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-/* ── Grid ── */
-.grid {
+/* ── About Layout ── */
+.about__grid {
   display: grid;
-  gap: var(--spacing-md);
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-2xl);
+  align-items: start;
 }
 
-/* ── Footer ── */
+/* ── Services Grid ── */
+.services__grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: 1fr;
+}
+
+/* ── Portfolio Grid ── */
+.portfolio__grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: 1fr;
+}
+
+/* ── Process Timeline ── */
+.process__timeline {
+  display: grid;
+  gap: var(--spacing-lg);
+  max-width: 640px;
+  margin-inline: auto;
+  position: relative;
+  padding-left: var(--spacing-2xl);
+}
+
+.process__timeline::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+
+/* ── Testimonials Grid ── */
+.testimonials__grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: 1fr;
+}
+
+/* ── CTA Band ── */
+.cta-band {
+  padding: var(--spacing-3xl) 0;
+  background: var(--gradient-hero);
+  text-align: center;
+}
+
+.cta-band__inner {
+  display: grid;
+  gap: var(--spacing-md);
+  justify-items: center;
+}
+
+/* ── Contact Layout ── */
+.contact__grid {
+  display: grid;
+  gap: var(--spacing-2xl);
+}
+
+/* ── Footer Layout ── */
 .site-footer {
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-2xl) 0 var(--spacing-lg);
   border-top: 1px solid var(--color-border);
 }
 
-.footer__inner {
+.footer__grid {
+  display: grid;
+  gap: var(--spacing-2xl);
+  grid-template-columns: 1fr;
+}
+
+.footer__bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-md);
   flex-wrap: wrap;
+  padding-top: var(--spacing-lg);
+  margin-top: var(--spacing-2xl);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Form Row (two-column) ── */
+.form-row {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: 1fr;
 }
 
 /* ── Responsive ── */
 @media (min-width: 480px) {
-  /* sm — Expansion point: adjust layout for large phones.
-     Example: increase container padding, adjust grid columns. */
+  .services__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (min-width: 768px) {
-  /* md — tablets */
   .hero {
-    padding: var(--spacing-3xl) 0;
+    min-height: 100vh;
+  }
+
+  .hero__inner {
+    padding: var(--spacing-4xl) 0;
+  }
+
+  .section {
+    padding: var(--spacing-4xl) 0;
+  }
+
+  .about__grid {
+    grid-template-columns: 1.5fr 1fr;
+  }
+
+  .services__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .portfolio__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .testimonials__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact__grid {
+    grid-template-columns: 1.5fr 1fr;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
-  /* lg — Expansion point: adjust layout for small desktops.
-     Example: widen container, multi-column layouts. */
+  .services__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .portfolio__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .testimonials__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .footer__grid {
+    grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+  }
 }
 
 @media (min-width: 1280px) {
-  /* xl — Expansion point: adjust layout for standard desktops.
-     Example: max-width container, optimize whitespace. */
+  .hero__inner {
+    padding: var(--spacing-5xl) 0;
+  }
 }

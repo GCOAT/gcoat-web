@@ -9,7 +9,7 @@
 [data-mode="regular"] {
   /* Colors */
   --color-primary: #280BD6;
-  --color-primary-light: #4f21e0;
+  --color-primary-light: #8b6ff2;
   --color-primary-dark: #1e0899;
   --color-secondary: #D6D50B;
   --color-secondary-light: #e6e53a;
@@ -30,7 +30,7 @@
   --color-border-hover: rgba(255, 255, 255, 0.22);
 
   --color-focus: #D6D50B;
-  --color-link: #4f21e0;
+  --color-link: #8b6ff2;
   --color-link-visited: #9575cd;
 
   /* Gradients */
@@ -164,6 +164,7 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
   min-height: 100vh;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

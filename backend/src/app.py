@@ -26,6 +26,22 @@ MAX_BODY_BYTES = 10_240  # 10KB
 MAX_NAME_LEN = 100
 MAX_EMAIL_LEN = 254
 MAX_MESSAGE_LEN = 2000
+MAX_PHONE_LEN = 20
+MAX_SOURCE_LEN = 50
+MAX_STRING_FIELD_LEN = 50
+MAX_COMPANY_LEN = 100
+MAX_FEATURES_COUNT = 10
+MAX_FEATURE_ITEM_LEN = 50
+
+ALLOWED_LEAD_FIELDS = {
+    "name", "email", "message", "source", "phone", "projectType",
+    "budgetRange", "timeline", "companyName", "features", "website",
+}
+
+ALLOWED_SOURCES = {"intake", "contact", "signup", "kore-starter"}
+
+# Sources that require name + email + message
+SOURCES_REQUIRE_MESSAGE = {"intake", "contact", "kore-starter"}
 
 ALLOWED_EXTS = {"png","jpg","jpeg","webp","gif","mp3","wav","m4a","aac","ogg"}
 ALLOWED_MIME = {
@@ -231,22 +247,76 @@ def handle_post_leads(event):
     data = _body_json(event)
     if data is None:
         return _json(400, {"ok": False, "message": "Invalid JSON", "code": "VALIDATION_ERROR"})
-    if str(data.get("website") or "").strip():  # honeypot
+    if not isinstance(data, dict):
+        return _json(400, {"ok": False, "message": "Invalid JSON", "code": "VALIDATION_ERROR"})
+
+    # Honeypot check — silently accept
+    if str(data.get("website") or "").strip():
         return _json(200, {"ok": True, "data": {"ignored": True}})
 
+    # Reject unknown fields
+    unknown = set(data.keys()) - ALLOWED_LEAD_FIELDS
+    if unknown:
+        return _json(400, {"ok": False, "message": "Unknown fields", "code": "VALIDATION_ERROR"})
+
+    # Extract and sanitize fields
     email = str(data.get("email") or "").strip()
     name = str(data.get("name") or "").strip()
     message = str(data.get("message") or "").strip()
     source = str(data.get("source") or "").strip()
+    phone = str(data.get("phone") or "").strip()
+    project_type = str(data.get("projectType") or "").strip()
+    budget_range = str(data.get("budgetRange") or "").strip()
+    timeline = str(data.get("timeline") or "").strip()
+    company_name = str(data.get("companyName") or "").strip()
+    features_raw = data.get("features")
 
+    # Source validation
+    if not source:
+        return _json(400, {"ok": False, "message": "Source is required", "code": "VALIDATION_ERROR"})
+    if source not in ALLOWED_SOURCES:
+        return _json(400, {"ok": False, "message": "Invalid source", "code": "VALIDATION_ERROR"})
+
+    # Email — always required
     if not email or len(email) > MAX_EMAIL_LEN or not EMAIL_RE.match(email):
         return _json(400, {"ok": False, "message": "Invalid email", "code": "VALIDATION_ERROR"})
+
+    # Source-specific required fields
+    if source in SOURCES_REQUIRE_MESSAGE:
+        if not name:
+            return _json(400, {"ok": False, "message": "Name is required", "code": "VALIDATION_ERROR"})
+        if not message:
+            return _json(400, {"ok": False, "message": "Message is required", "code": "VALIDATION_ERROR"})
+
+    # Field length limits
     if name and len(name) > MAX_NAME_LEN:
         return _json(400, {"ok": False, "message": "Name too long", "code": "VALIDATION_ERROR"})
     if message and len(message) > MAX_MESSAGE_LEN:
         return _json(400, {"ok": False, "message": "Message too long", "code": "VALIDATION_ERROR"})
-    if source and len(source) > 100:
-        return _json(400, {"ok": False, "message": "Source too long", "code": "VALIDATION_ERROR"})
+    if phone and len(phone) > MAX_PHONE_LEN:
+        return _json(400, {"ok": False, "message": "Phone too long", "code": "VALIDATION_ERROR"})
+    if project_type and len(project_type) > MAX_STRING_FIELD_LEN:
+        return _json(400, {"ok": False, "message": "Project type too long", "code": "VALIDATION_ERROR"})
+    if budget_range and len(budget_range) > MAX_STRING_FIELD_LEN:
+        return _json(400, {"ok": False, "message": "Budget range too long", "code": "VALIDATION_ERROR"})
+    if timeline and len(timeline) > MAX_STRING_FIELD_LEN:
+        return _json(400, {"ok": False, "message": "Timeline too long", "code": "VALIDATION_ERROR"})
+    if company_name and len(company_name) > MAX_COMPANY_LEN:
+        return _json(400, {"ok": False, "message": "Company name too long", "code": "VALIDATION_ERROR"})
+
+    # Features validation
+    features = []
+    if features_raw is not None:
+        if not isinstance(features_raw, list):
+            return _json(400, {"ok": False, "message": "Features must be a list", "code": "VALIDATION_ERROR"})
+        if len(features_raw) > MAX_FEATURES_COUNT:
+            return _json(400, {"ok": False, "message": "Too many features", "code": "VALIDATION_ERROR"})
+        for item in features_raw:
+            val = str(item).strip()
+            if len(val) > MAX_FEATURE_ITEM_LEN:
+                return _json(400, {"ok": False, "message": "Feature item too long", "code": "VALIDATION_ERROR"})
+            if val:
+                features.append(val)
 
     table = os.environ.get("LEADS_TABLE_NAME") or ""
     if not table:
@@ -263,6 +333,19 @@ def handle_post_leads(event):
         "source": source,
         "expiresAt": int(time.time()) + 365 * 86400,
     }
+    # Add optional fields only if non-empty
+    if phone:
+        item["phone"] = phone
+    if project_type:
+        item["projectType"] = project_type
+    if budget_range:
+        item["budgetRange"] = budget_range
+    if timeline:
+        item["timeline"] = timeline
+    if company_name:
+        item["companyName"] = company_name
+    if features:
+        item["features"] = features
 
     try:
         _ddb().Table(table).put_item(Item=item)
