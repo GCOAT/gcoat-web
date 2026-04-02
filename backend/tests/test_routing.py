@@ -1,7 +1,7 @@
 """Tests for routing, OPTIONS, CORS headers, and response format."""
 import json
-from backend.src.app import lambda_handler
-from backend.tests.conftest import make_event, FakeContext
+from src.app import lambda_handler
+from tests.conftest import make_event, FakeContext
 
 
 class TestRouting:

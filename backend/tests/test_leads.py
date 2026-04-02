@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import MagicMock, patch
 from botocore.exceptions import ClientError
 
-from backend.src.app import lambda_handler
-from backend.tests.conftest import make_event, FakeContext
+from src.app import lambda_handler
+from tests.conftest import make_event, FakeContext
 
 
 class TestPostLeads:

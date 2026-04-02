@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 @pytest.fixture(autouse=True)
 def reset_cached_clients():
     """Reset all cached boto3 clients and admin token before each test."""
-    import backend.src.app as app
+    import src.app as app
     app._DDB = None
     app._S3 = None
     app._SSM = None
@@ -43,7 +43,7 @@ def mock_ddb():
     mock_resource = MagicMock()
     mock_resource.Table.return_value = mock_table
 
-    with patch("backend.src.app._ddb", return_value=mock_resource):
+    with patch("src.app._ddb", return_value=mock_resource):
         yield mock_table, mock_resource
 
 
@@ -53,7 +53,7 @@ def mock_s3():
     mock_client = MagicMock()
     mock_client.generate_presigned_url.return_value = "https://s3.example.com/presigned"
 
-    with patch("backend.src.app._s3", return_value=mock_client):
+    with patch("src.app._s3", return_value=mock_client):
         yield mock_client
 
 
@@ -65,7 +65,7 @@ def mock_ssm():
         "Parameter": {"Value": "test-admin-token-123"}
     }
 
-    with patch("backend.src.app._ssm", return_value=mock_client):
+    with patch("src.app._ssm", return_value=mock_client):
         yield mock_client
 
 
@@ -75,7 +75,7 @@ def mock_ses():
     mock_client = MagicMock()
     mock_client.send_email.return_value = {"MessageId": "test-msg-id"}
 
-    with patch("backend.src.app._ses", return_value=mock_client):
+    with patch("src.app._ses", return_value=mock_client):
         yield mock_client
 
 
