@@ -45,6 +45,7 @@
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -59,7 +60,7 @@
 
 .hero__inner {
   position: relative;
-  z-index: 1;
+  z-index: 4;
   display: grid;
   gap: var(--spacing-lg);
   padding: var(--spacing-3xl) 0;
@@ -187,6 +188,7 @@
 @media (min-width: 768px) {
   .hero {
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .hero__inner {

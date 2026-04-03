@@ -9,7 +9,9 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
   <link rel="stylesheet" href="assets/css/components.css">
-  <!-- KORE:CSS_DEPS --><!-- /KORE:CSS_DEPS -->
+  <!-- KORE:CSS_DEPS -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.170/build/three.module.min.js" type="module" integrity="sha384-IDC7sAMAIMB/TZ6dgKKPPAKZ2bXXXP8+FBMBC8cU319eBhKITx+PaalhfDkDNH28" crossorigin="anonymous"></script> <!-- dep:three -->
+  <!-- /KORE:CSS_DEPS -->
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -43,7 +45,11 @@
     </div>
   </footer>
 
-  <!-- KORE:JS_DEPS --><!-- /KORE:JS_DEPS -->
+  <!-- KORE:JS_DEPS -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script> <!-- dep:gsap -->
+  
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" integrity="sha384-xNHNOfrykny9oFwnmpfNbkSc6isny38d1GZvTRVuFV0l9fTMIZKhULvomyQJSMRl" crossorigin="anonymous"></script> <!-- dep:gsap-scrolltrigger -->
+  <!-- /KORE:JS_DEPS -->
   <script src="assets/js/config.js"></script>
   <script type="module">
     const y = document.getElementById("year");

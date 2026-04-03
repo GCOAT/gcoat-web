@@ -4,43 +4,28 @@
 
 /* ── Design Tokens ── */
 
-/* Regular mode (default) */
-:root,
-[data-mode="regular"] {
-  /* Colors */
-  --color-primary: #280BD6;
-  --color-primary-light: #8b6ff2;
-  --color-primary-dark: #1e0899;
-  --color-secondary: #D6D50B;
-  --color-secondary-light: #e6e53a;
-  --color-secondary-dark: #b0af09;
+/* ── HSL Primitives — modified by color scheme presets / sliders ── */
+:root {
+  /* Primary accent (Electric default: deep blue-violet) */
+  --hue-primary: 250;
+  --sat-primary: 90%;
+  --light-primary: 44%;
 
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  /* Secondary accent (Electric default: chartreuse yellow) */
+  --hue-secondary: 60;
+  --sat-secondary: 90%;
+  --light-secondary: 44%;
 
-  --color-bg: #0b1220;
-  --color-surface: #111b2e;
-  --color-text: #eaf0ff;
-  --color-text-light: #a9b6d3;
-  --color-text-inverse: #ffffff;
-  --color-muted: #a9b6d3;
-  --color-border: rgba(255, 255, 255, 0.12);
-  --color-border-hover: rgba(255, 255, 255, 0.22);
+  /* Color scheme presets — override via data-scheme attribute */
+  /* Scheme: electric (default) — blue-violet / chartreuse */
+  /* Scheme: midnight — purple / cyan */
+  /* Scheme: ember — crimson / warm gold */
+  /* Scheme: forest — emerald / lime */
+  /* Scheme: monochrome — gray / single accent */
 
-  --color-focus: #D6D50B;
-  --color-link: #8b6ff2;
-  --color-link-visited: #9575cd;
-
-  /* Gradients */
-  --gradient-hero: linear-gradient(135deg, #0b1220 0%, #1a0a3e 50%, #0b1220 100%);
-  --gradient-cta: linear-gradient(135deg, #280BD6, #4f21e0);
-  --gradient-text: linear-gradient(135deg, #280BD6, #D6D50B);
-  --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-
-  /* Typography */
-  --font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Typography — updated by font changer */
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
   --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
   --font-size-xs: 0.75rem;
@@ -82,12 +67,6 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
-
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
@@ -108,14 +87,135 @@
   --width-max: 1280px;
 }
 
-/* Arcade mode */
+/* ── Dark Theme (default) ── */
+:root,
+[data-theme="dark"] {
+  --color-primary: hsl(var(--hue-primary) var(--sat-primary) var(--light-primary));
+  --color-primary-light: hsl(var(--hue-primary) calc(var(--sat-primary) - 10%) 65%);
+  --color-primary-dark: hsl(var(--hue-primary) var(--sat-primary) 30%);
+  --color-secondary: hsl(var(--hue-secondary) var(--sat-secondary) var(--light-secondary));
+  --color-secondary-light: hsl(var(--hue-secondary) calc(var(--sat-secondary) - 10%) 60%);
+  --color-secondary-dark: hsl(var(--hue-secondary) var(--sat-secondary) 32%);
+
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  --color-bg: hsl(220 40% 8%);
+  --color-surface: hsl(220 35% 12%);
+  --color-text: hsl(220 60% 96%);
+  --color-text-light: hsl(220 25% 70%);
+  --color-text-inverse: #ffffff;
+  --color-muted: hsl(220 25% 70%);
+  --color-border: hsl(0 0% 100% / 0.12);
+  --color-border-hover: hsl(0 0% 100% / 0.22);
+
+  --color-focus: var(--color-secondary);
+  --color-link: var(--color-primary-light);
+  --color-link-visited: hsl(var(--hue-primary) 40% 60%);
+
+  --gradient-hero: linear-gradient(135deg, hsl(220 40% 8%) 0%, hsl(var(--hue-primary) 60% 14%) 50%, hsl(220 40% 8%) 100%);
+  --gradient-cta: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  --gradient-text: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.05) 0%, hsl(0 0% 100% / 0.02) 100%);
+
+  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.2);
+  --shadow-md: 0 4px 6px hsl(0 0% 0% / 0.25);
+  --shadow-lg: 0 10px 24px hsl(0 0% 0% / 0.3);
+  --shadow-xl: 0 20px 60px hsl(0 0% 0% / 0.4);
+}
+
+/* ── Light Theme ── */
+[data-theme="light"] {
+  --color-primary: hsl(var(--hue-primary) var(--sat-primary) 42%);
+  --color-primary-light: hsl(var(--hue-primary) calc(var(--sat-primary) - 10%) 55%);
+  --color-primary-dark: hsl(var(--hue-primary) var(--sat-primary) 32%);
+  --color-secondary: hsl(var(--hue-secondary) var(--sat-secondary) 38%);
+  --color-secondary-light: hsl(var(--hue-secondary) calc(var(--sat-secondary) - 10%) 50%);
+  --color-secondary-dark: hsl(var(--hue-secondary) var(--sat-secondary) 28%);
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: #2563eb;
+
+  --color-bg: hsl(220 20% 97%);
+  --color-surface: hsl(220 20% 100%);
+  --color-text: hsl(220 30% 12%);
+  --color-text-light: hsl(220 15% 40%);
+  --color-text-inverse: #ffffff;
+  --color-muted: hsl(220 15% 55%);
+  --color-border: hsl(220 15% 85%);
+  --color-border-hover: hsl(220 15% 70%);
+
+  --color-focus: hsl(var(--hue-primary) var(--sat-primary) 42%);
+  --color-link: hsl(var(--hue-primary) var(--sat-primary) 42%);
+  --color-link-visited: hsl(var(--hue-primary) 40% 35%);
+
+  --gradient-hero: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(var(--hue-primary) 30% 92%) 50%, hsl(220 20% 97%) 100%);
+  --gradient-cta: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  --gradient-text: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.8) 0%, hsl(0 0% 100% / 0.4) 100%);
+
+  --shadow-sm: 0 1px 2px hsl(220 15% 75% / 0.2);
+  --shadow-md: 0 4px 6px hsl(220 15% 75% / 0.15);
+  --shadow-lg: 0 10px 24px hsl(220 15% 75% / 0.2);
+  --shadow-xl: 0 20px 60px hsl(220 15% 75% / 0.25);
+}
+
+/* ── Color Scheme Presets ── */
+[data-scheme="midnight"] {
+  --hue-primary: 270;
+  --sat-primary: 80%;
+  --light-primary: 50%;
+  --hue-secondary: 185;
+  --sat-secondary: 85%;
+  --light-secondary: 50%;
+}
+
+[data-scheme="ember"] {
+  --hue-primary: 350;
+  --sat-primary: 85%;
+  --light-primary: 48%;
+  --hue-secondary: 40;
+  --sat-secondary: 90%;
+  --light-secondary: 50%;
+}
+
+[data-scheme="forest"] {
+  --hue-primary: 155;
+  --sat-primary: 75%;
+  --light-primary: 38%;
+  --hue-secondary: 80;
+  --sat-secondary: 80%;
+  --light-secondary: 48%;
+}
+
+[data-scheme="monochrome"] {
+  --hue-primary: 220;
+  --sat-primary: 10%;
+  --light-primary: 45%;
+  --hue-secondary: 220;
+  --sat-secondary: 60%;
+  --light-secondary: 50%;
+}
+
+/* ── Arcade mode ── */
 [data-mode="arcade"] {
-  --color-primary: #6366f1;
-  --color-primary-light: #8b5cf6;
-  --color-primary-dark: #4f46e5;
-  --color-secondary: #22d3ee;
-  --color-secondary-light: #67e8f9;
-  --color-secondary-dark: #0891b2;
+  --hue-primary: 239;
+  --sat-primary: 84%;
+  --light-primary: 67%;
+  --hue-secondary: 185;
+  --sat-secondary: 80%;
+  --light-secondary: 53%;
+
+  --color-primary: hsl(var(--hue-primary) var(--sat-primary) var(--light-primary));
+  --color-primary-light: hsl(var(--hue-primary) calc(var(--sat-primary) - 10%) 72%);
+  --color-primary-dark: hsl(var(--hue-primary) var(--sat-primary) 55%);
+  --color-secondary: hsl(var(--hue-secondary) var(--sat-secondary) var(--light-secondary));
+  --color-secondary-light: hsl(var(--hue-secondary) calc(var(--sat-secondary) - 10%) 65%);
+  --color-secondary-dark: hsl(var(--hue-secondary) var(--sat-secondary) 40%);
 
   --color-success: #10b981;
   --color-warning: #f59e0b;
@@ -135,11 +235,40 @@
   --color-link: #8b5cf6;
   --color-link-visited: #a78bfa;
 
-  /* Gradients */
   --gradient-hero: linear-gradient(135deg, #080810 0%, #121220 50%, #080810 100%);
   --gradient-cta: linear-gradient(135deg, #6366f1, #8b5cf6);
   --gradient-text: linear-gradient(135deg, #6366f1, #22d3ee);
   --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+/* ── Theme Transition ── */
+body.theme-transitioning,
+body.theme-transitioning *,
+body.theme-transitioning *::before,
+body.theme-transitioning *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* ── Font Pairings ── */
+/* Default is "tech" — Space Grotesk + Inter, set in :root above */
+[data-font="classic"] {
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Source Sans 3", system-ui, sans-serif;
+}
+
+[data-font="geometric"] {
+  --font-heading: "Outfit", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+[data-font="mono"] {
+  --font-heading: "JetBrains Mono", "SFMono-Regular", monospace;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+[data-font="system"] {
+  --font-heading: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ── CSS Reset ── */
@@ -158,18 +287,20 @@ html {
 }
 
 body {
-  font-family: var(--font-family-base);
+  font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--color-text);
   background: var(--color-bg);
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
   line-height: var(--line-height-snug);
 }
 

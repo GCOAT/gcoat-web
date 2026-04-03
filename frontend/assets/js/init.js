@@ -7,10 +7,57 @@ window.__jsModuleTimeout = setTimeout(function () {
   document.documentElement.classList.remove("js");
 }, 200);
 
-// Early mode detection — prevents flash of wrong theme on return visits
+// Early detection — prevents flash of wrong theme/scheme/font on return visits
 (function () {
+  var root = document.documentElement;
+
+  // Mode (regular / arcade)
   var savedMode = localStorage.getItem("gcoat-mode");
   if (savedMode) {
-    document.documentElement.setAttribute("data-mode", savedMode);
+    root.setAttribute("data-mode", savedMode);
+  }
+
+  // Theme (dark / light)
+  var savedTheme = localStorage.getItem("gcoat-theme");
+  if (savedTheme) {
+    root.setAttribute("data-theme", savedTheme);
+  } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+    root.setAttribute("data-theme", "light");
+  }
+
+  // Color scheme preset (electric / midnight / ember / forest / monochrome)
+  var savedScheme = localStorage.getItem("gcoat-scheme");
+  if (savedScheme) {
+    root.setAttribute("data-scheme", savedScheme);
+  }
+
+  // Custom HSL overrides from OKLCH sliders
+  var customColors = localStorage.getItem("gcoat-custom-colors");
+  if (customColors) {
+    try {
+      var colors = JSON.parse(customColors);
+      if (colors.huePrimary) root.style.setProperty("--hue-primary", colors.huePrimary);
+      if (colors.satPrimary) root.style.setProperty("--sat-primary", colors.satPrimary);
+      if (colors.lightPrimary) root.style.setProperty("--light-primary", colors.lightPrimary);
+      if (colors.hueSecondary) root.style.setProperty("--hue-secondary", colors.hueSecondary);
+      if (colors.satSecondary) root.style.setProperty("--sat-secondary", colors.satSecondary);
+      if (colors.lightSecondary) root.style.setProperty("--light-secondary", colors.lightSecondary);
+    } catch (e) { /* invalid JSON — ignore */ }
+  }
+
+  // Font pairing (tech / classic / geometric / mono / system)
+  var savedFont = localStorage.getItem("gcoat-font");
+  if (savedFont && savedFont !== "custom") {
+    root.setAttribute("data-font", savedFont);
+  }
+
+  // Custom font overrides (typed in manually)
+  var customFonts = localStorage.getItem("gcoat-custom-fonts");
+  if (customFonts) {
+    try {
+      var fonts = JSON.parse(customFonts);
+      if (fonts.heading) root.style.setProperty("--font-heading", '"' + fonts.heading + '", system-ui, sans-serif');
+      if (fonts.body) root.style.setProperty("--font-body", '"' + fonts.body + '", system-ui, sans-serif');
+    } catch (e) { /* invalid JSON — ignore */ }
   }
 })();

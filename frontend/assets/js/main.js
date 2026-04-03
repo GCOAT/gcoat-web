@@ -4,6 +4,8 @@
 clearTimeout(window.__jsModuleTimeout);
 
 import { submitLead } from "./api.js";
+import { initHeroShader, pauseHeroShader, resumeHeroShader } from "./hero-shader.js";
+import { initInteractions } from "./interactions.js";
 
 // ── DOM References ──
 const yearEl = document.getElementById("year");
@@ -11,7 +13,9 @@ const navToggle = document.querySelector(".js-nav-toggle");
 const navMenu = document.querySelector("#nav-menu");
 const header = document.querySelector(".site-header");
 const splash = document.getElementById("mode-splash");
+const loader = document.getElementById("loading-screen");
 const modeToggle = document.querySelector(".js-mode-toggle");
+const themeToggle = document.querySelector(".js-theme-toggle");
 const arcadeSwitch = document.querySelector(".js-arcade-switch");
 const announcer = document.querySelector("#status-announcer");
 
@@ -36,6 +40,27 @@ function updateModeToggleLabel() {
   }
 }
 
+// ── Theme System (Dark/Light) ──
+function getTheme() {
+  return document.documentElement.getAttribute("data-theme") || "dark";
+}
+
+function setTheme(theme) {
+  document.body.classList.add("theme-transitioning");
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("gcoat-theme", theme);
+  updateThemeToggleLabel();
+  if (announcer) announcer.textContent = `Switched to ${theme} mode`;
+  // Remove transition class after animation
+  setTimeout(() => document.body.classList.remove("theme-transitioning"), 350);
+}
+
+function updateThemeToggleLabel() {
+  if (!themeToggle) return;
+  const current = getTheme();
+  themeToggle.setAttribute("aria-label", current === "dark" ? "Switch to light mode" : "Switch to dark mode");
+}
+
 // ── Splash Interaction ──
 function initSplash() {
   if (getMode()) {
@@ -50,8 +75,121 @@ function initSplash() {
       const mode = card.getAttribute("data-mode-value");
       setMode(mode);
       splash.classList.add("splash--exit");
-      splash.addEventListener("animationend", () => splash.remove(), { once: true });
+      splash.addEventListener("animationend", () => {
+        splash.remove();
+        startLoadingSequence();
+      }, { once: true });
     });
+  });
+}
+
+// ── Loading Screen ──
+const LOADER_MIN_MS = 2500;
+const LOADER_RETURNING_MS = 1200;
+
+function startLoadingSequence() {
+  if (!loader) {
+    revealHero();
+    return;
+  }
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) {
+    loader.remove();
+    revealHero();
+    return;
+  }
+
+  loader.classList.add("is-active");
+
+  const isReturning = localStorage.getItem("gcoat-visited");
+  const minDuration = isReturning ? LOADER_RETURNING_MS : LOADER_MIN_MS;
+  const startTime = performance.now();
+
+  // Mark as visited for next time
+  localStorage.setItem("gcoat-visited", "1");
+
+  // Wait for minimum duration, then exit
+  function checkReady() {
+    const elapsed = performance.now() - startTime;
+    if (elapsed >= minDuration) {
+      exitLoader();
+    } else {
+      setTimeout(checkReady, minDuration - elapsed);
+    }
+  }
+
+  checkReady();
+}
+
+function exitLoader() {
+  if (!loader) return;
+  loader.classList.add("loader--exit");
+  setTimeout(() => {
+    loader.classList.add("is-hidden");
+    setTimeout(() => loader.remove(), 600);
+    revealHero();
+  }, 500);
+}
+
+// ── Hero Shader + GSAP Reveal ──
+const heroCanvas = document.getElementById("hero-canvas");
+const heroSection = document.getElementById("hero");
+const heroScroll = document.querySelector(".hero__scroll");
+let shaderActive = false;
+
+function initHero() {
+  shaderActive = initHeroShader(heroCanvas);
+  if (shaderActive && heroCanvas) {
+    heroCanvas.classList.add("is-active");
+  }
+
+  // Pause/resume shader when hero leaves viewport
+  if (heroSection && shaderActive) {
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) resumeHeroShader();
+        else pauseHeroShader();
+      },
+      { threshold: 0.05 }
+    );
+    obs.observe(heroSection);
+  }
+
+  // Update shader colors when scheme changes
+  window.addEventListener("gcoat-scheme-change", () => {
+    // Small delay to let CSS custom properties settle
+    requestAnimationFrame(() => {
+      import("./hero-shader.js").then(({ updateShaderColors }) => updateShaderColors());
+    });
+  });
+
+  // Scroll indicator — fade on scroll
+  if (heroScroll) {
+    window.addEventListener("scroll", () => {
+      heroScroll.classList.toggle("is-hidden", window.scrollY > 80);
+    }, { passive: true });
+  }
+}
+
+function revealHero() {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const els = document.querySelectorAll("[data-hero-reveal]");
+
+  if (prefersReducedMotion || typeof gsap === "undefined") {
+    els.forEach((el) => {
+      el.style.opacity = "1";
+      el.style.transform = "none";
+    });
+    return;
+  }
+
+  gsap.to(els, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    ease: "power3.out",
+    stagger: 0.15,
   });
 }
 
@@ -61,7 +199,15 @@ if (yearEl) {
 }
 
 initSplash();
+initHero();
+initInteractions();
 updateModeToggleLabel();
+updateThemeToggleLabel();
+
+// If mode is already chosen (returning visitor), splash was removed → start loader directly
+if (getMode()) {
+  startLoadingSequence();
+}
 
 // ── Event Listeners ──
 modeToggle?.addEventListener("click", () => {
@@ -71,6 +217,10 @@ modeToggle?.addEventListener("click", () => {
 
 arcadeSwitch?.addEventListener("click", () => {
   setMode("regular");
+});
+
+themeToggle?.addEventListener("click", () => {
+  setTheme(getTheme() === "dark" ? "light" : "dark");
 });
 
 navToggle?.addEventListener("click", handleNavToggle);
