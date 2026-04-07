@@ -6,22 +6,22 @@
 
 /* ── HSL Primitives — modified by color scheme presets / sliders ── */
 :root {
-  /* Primary accent (Electric default: deep blue-violet) */
-  --hue-primary: 250;
-  --sat-primary: 90%;
-  --light-primary: 44%;
+  /* Primary accent (Monochrome default: neutral gray) */
+  --hue-primary: 220;
+  --sat-primary: 10%;
+  --light-primary: 45%;
 
-  /* Secondary accent (Electric default: chartreuse yellow) */
-  --hue-secondary: 60;
-  --sat-secondary: 90%;
-  --light-secondary: 44%;
+  /* Secondary accent (Monochrome default: soft accent blue) */
+  --hue-secondary: 220;
+  --sat-secondary: 60%;
+  --light-secondary: 50%;
 
   /* Color scheme presets — override via data-scheme attribute */
-  /* Scheme: electric (default) — blue-violet / chartreuse */
+  /* Scheme: monochrome (default) — gray / single accent */
+  /* Scheme: electric — blue-violet / chartreuse */
   /* Scheme: midnight — purple / cyan */
   /* Scheme: ember — crimson / warm gold */
   /* Scheme: forest — emerald / lime */
-  /* Scheme: monochrome — gray / single accent */
 
   /* Typography — updated by font changer */
   --font-heading: "Space Grotesk", system-ui, sans-serif;
@@ -165,6 +165,15 @@
 }
 
 /* ── Color Scheme Presets ── */
+[data-scheme="electric"] {
+  --hue-primary: 250;
+  --sat-primary: 90%;
+  --light-primary: 44%;
+  --hue-secondary: 60;
+  --sat-secondary: 90%;
+  --light-secondary: 44%;
+}
+
 [data-scheme="midnight"] {
   --hue-primary: 270;
   --sat-primary: 80%;
@@ -190,15 +199,6 @@
   --hue-secondary: 80;
   --sat-secondary: 80%;
   --light-secondary: 48%;
-}
-
-[data-scheme="monochrome"] {
-  --hue-primary: 220;
-  --sat-primary: 10%;
-  --light-primary: 45%;
-  --hue-secondary: 220;
-  --sat-secondary: 60%;
-  --light-secondary: 50%;
 }
 
 /* ── Arcade mode ── */
@@ -314,6 +314,7 @@ svg {
 a {
   color: var(--color-link);
   text-decoration: none;
+  cursor: pointer;
   transition: color var(--transition-fast);
 }
 

@@ -9,11 +9,11 @@ const FONT_URLS = {
 };
 
 const SCHEME_DEFAULTS = {
+  monochrome:  { huePrimary: "220", satPrimary: "10%", lightPrimary: "45%", hueSecondary: "220", satSecondary: "60%", lightSecondary: "50%" },
   electric:    { huePrimary: "250", satPrimary: "90%", lightPrimary: "44%", hueSecondary: "60",  satSecondary: "90%", lightSecondary: "44%" },
   midnight:    { huePrimary: "270", satPrimary: "80%", lightPrimary: "50%", hueSecondary: "185", satSecondary: "85%", lightSecondary: "50%" },
   ember:       { huePrimary: "350", satPrimary: "85%", lightPrimary: "48%", hueSecondary: "40",  satSecondary: "90%", lightSecondary: "50%" },
   forest:      { huePrimary: "155", satPrimary: "75%", lightPrimary: "38%", hueSecondary: "80",  satSecondary: "80%", lightSecondary: "48%" },
-  monochrome:  { huePrimary: "220", satPrimary: "10%", lightPrimary: "45%", hueSecondary: "220", satSecondary: "60%", lightSecondary: "50%" },
 };
 
 // ── DOM References ──
@@ -36,7 +36,7 @@ const fontLink = document.getElementById("google-fonts-link");
 const announcer = document.getElementById("status-announcer");
 
 // ── State ──
-let currentScheme = localStorage.getItem("gcoat-scheme") || "electric";
+let currentScheme = localStorage.getItem("gcoat-scheme") || "monochrome";
 let currentFont = localStorage.getItem("gcoat-font") || "tech";
 
 // ── Panel Open/Close ──
@@ -102,7 +102,7 @@ function applyScheme(schemeName) {
   root.style.removeProperty("--light-secondary");
 
   // Set data-scheme attr (CSS selectors handle the rest)
-  if (schemeName === "electric") {
+  if (schemeName === "monochrome") {
     root.removeAttribute("data-scheme");
   } else {
     root.setAttribute("data-scheme", schemeName);

@@ -65,6 +65,7 @@ const fragmentShader = /* glsl */ `
   uniform vec2  uMouse;
   uniform vec3  uColor0, uColor1, uColor2, uColor3, uColor4;
   uniform float uNoiseScale, uMouseRadius, uMouseStrength;
+  uniform float uDissolve;
   varying vec2 vUv;
 
   vec4 permute(vec4 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
@@ -152,7 +153,20 @@ const fragmentShader = /* glsl */ `
     color *= 0.85 + 0.15 * n3;
     float vig = 1.0 - smoothstep(0.4, 1.4, length((uv - 0.5) * 1.8));
     color *= vig;
-    gl_FragColor = vec4(color, 1.0);
+
+    /* ── Dissolve ── */
+    float dissolveNoise = snoise(vec3(uv * 4.0, t * 0.1 + 50.0)) * 0.5 + 0.5;
+    dissolveNoise += (1.0 - uv.y) * 0.3;
+    dissolveNoise = clamp(dissolveNoise, 0.0, 1.0);
+    float edge = 0.06;
+    float dissolveAlpha = smoothstep(uDissolve - edge, uDissolve + edge, dissolveNoise);
+    /* edge glow */
+    float glowBand = smoothstep(uDissolve - edge * 3.0, uDissolve, dissolveNoise)
+                   - smoothstep(uDissolve, uDissolve + edge * 0.5, dissolveNoise);
+    color += glowBand * mix(uColor0, uColor1, 0.5) * 2.5;
+
+    /* Alpha-based dissolve — canvas becomes transparent, fallback bg shows through */
+    gl_FragColor = vec4(color, dissolveAlpha);
   }
 `;
 
@@ -176,8 +190,14 @@ export function initHeroShader(canvasEl) {
   const colors = getSchemeColors();
   const pixelRatio = Math.min(devicePixelRatio, 1.5);
 
-  renderer = new THREE.WebGLRenderer({ canvas: canvasEl, antialias: false });
-  renderer.setSize(canvasEl.clientWidth, canvasEl.clientHeight);
+  // Use parent dimensions — canvas clientWidth can be 0 before CSS layout on hard reload
+  const parent = canvasEl.parentElement || canvasEl;
+  const initW = parent.clientWidth || window.innerWidth;
+  const initH = parent.clientHeight || window.innerHeight;
+
+  renderer = new THREE.WebGLRenderer({ canvas: canvasEl, antialias: false, alpha: true });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setSize(initW, initH);
   renderer.setPixelRatio(pixelRatio);
 
   scene = new THREE.Scene();
@@ -185,7 +205,7 @@ export function initHeroShader(canvasEl) {
 
   uniforms = {
     uTime:          { value: 0 },
-    uResolution:    { value: new THREE.Vector2(canvasEl.clientWidth, canvasEl.clientHeight) },
+    uResolution:    { value: new THREE.Vector2(initW, initH) },
     uMouse:         { value: new THREE.Vector2(0.5, 0.5) },
     uColor0:        { value: new THREE.Vector3(...colors.c0) },
     uColor1:        { value: new THREE.Vector3(...colors.c1) },
@@ -195,11 +215,12 @@ export function initHeroShader(canvasEl) {
     uNoiseScale:    { value: CONFIG.noiseScale },
     uMouseRadius:   { value: CONFIG.mouseRadius },
     uMouseStrength: { value: CONFIG.mouseStrength },
+    uDissolve:      { value: 0.0 },
   };
 
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(2, 2),
-    new THREE.ShaderMaterial({ uniforms, vertexShader, fragmentShader }),
+    new THREE.ShaderMaterial({ uniforms, vertexShader, fragmentShader, transparent: true }),
   );
   scene.add(plane);
 
@@ -208,6 +229,9 @@ export function initHeroShader(canvasEl) {
 
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("resize", onResize);
+
+  // Force a resize after layout settles (fixes hard-reload sizing)
+  requestAnimationFrame(() => onResize());
 
   isRunning = true;
   tick();
@@ -222,8 +246,11 @@ function onPointerMove(e) {
 function onResize() {
   if (!renderer) return;
   const canvas = renderer.domElement;
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  uniforms.uResolution.value.set(canvas.clientWidth, canvas.clientHeight);
+  const parent = canvas.parentElement || canvas;
+  const w = parent.clientWidth || window.innerWidth;
+  const h = parent.clientHeight || window.innerHeight;
+  renderer.setSize(w, h);
+  uniforms.uResolution.value.set(w, h);
 }
 
 const clock = { start: 0 };
@@ -260,4 +287,35 @@ export function updateShaderColors() {
   uniforms.uColor2.value.set(...colors.c2);
   uniforms.uColor3.value.set(...colors.c3);
   uniforms.uColor4.value.set(...colors.c4);
+}
+
+/** Animate uDissolve from current → 1.0 (evaporate). Returns a Promise. */
+export function dissolveShader(duration = 1500) {
+  return animateDissolve(1.0, duration);
+}
+
+/** Animate uDissolve from current → 0.0 (materialize). Returns a Promise. */
+export function materializeShader(duration = 1500) {
+  return animateDissolve(0.0, duration);
+}
+
+function animateDissolve(target, duration) {
+  return new Promise((resolve) => {
+    if (!uniforms) { resolve(); return; }
+    const start = uniforms.uDissolve.value;
+    const startTime = performance.now();
+    function step(now) {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1.0);
+      const eased = t * t * (3 - 2 * t);          // smoothstep
+      uniforms.uDissolve.value = start + (target - start) * eased;
+      if (t < 1.0) {
+        requestAnimationFrame(step);
+      } else {
+        uniforms.uDissolve.value = target;
+        resolve();
+      }
+    }
+    requestAnimationFrame(step);
+  });
 }

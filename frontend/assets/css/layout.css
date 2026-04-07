@@ -17,20 +17,61 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background: rgba(11, 18, 32, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-bottom: 1px solid transparent;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition: background 0.4s ease,
+              backdrop-filter 0.4s ease,
+              -webkit-backdrop-filter 0.4s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease,
+              min-height 0.3s ease,
+              padding 0.3s ease;
 }
 
 [data-mode="arcade"] .site-header {
-  background: rgba(8, 8, 16, 0.85);
+  background: transparent;
 }
 
 .site-header.is-scrolled {
+  background: rgba(11, 18, 32, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom-color: var(--color-border);
   box-shadow: var(--shadow-sm);
+}
+
+[data-mode="arcade"] .site-header.is-scrolled {
+  background: rgba(8, 8, 16, 0.85);
+}
+
+.site-header.is-compact {
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+[data-mode="arcade"] .site-header.is-compact {
+  background: rgba(8, 8, 16, 0.92);
+}
+
+.site-header.is-compact .header__inner {
+  min-height: 48px;
+  padding-top: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+}
+
+.site-header.is-compact .brand {
+  font-size: var(--font-size-base);
+}
+
+[data-theme="light"] .site-header.is-scrolled {
+  background: rgba(244, 245, 247, 0.88);
+}
+
+[data-theme="light"] .site-header.is-compact {
+  background: rgba(244, 245, 247, 0.94);
 }
 
 .header__inner {
@@ -49,6 +90,8 @@
   display: flex;
   align-items: center;
   overflow: hidden;
+  border-bottom: 2px solid var(--color-secondary);
+  box-shadow: 0 2px 12px 0 color-mix(in srgb, var(--color-secondary) 40%, transparent);
 }
 
 .hero__bg {
@@ -92,30 +135,83 @@
 }
 
 /* ── Portfolio Grid ── */
+#portfolio {
+  position: relative;
+  overflow: hidden;
+}
+
+#portfolio > .container {
+  position: relative;
+  z-index: 1;
+}
+
 .portfolio__grid {
   display: grid;
   gap: var(--spacing-lg);
   grid-template-columns: 1fr;
 }
 
-/* ── Process Timeline ── */
-.process__timeline {
-  display: grid;
-  gap: var(--spacing-lg);
-  max-width: 640px;
-  margin-inline: auto;
+/* ── Process (Space Theme) ── */
+#process {
   position: relative;
-  padding-left: var(--spacing-2xl);
+  overflow: hidden;
+  clip-path: inset(0);
 }
 
+#process > .container {
+  position: relative;
+  z-index: 1;
+}
+
+.process__cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.process__stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.process__timeline {
+  display: grid;
+  gap: var(--spacing-xl);
+  max-width: 680px;
+  margin-inline: auto;
+  position: relative;
+  padding-left: 56px;
+}
+
+/* Orbital path — glowing gradient line */
 .process__timeline::before {
   content: "";
   position: absolute;
-  left: 16px;
+  left: 20px;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: var(--color-border);
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--hue-primary) var(--sat-primary) 60%) 0%,
+    hsl(var(--hue-secondary) var(--sat-secondary) 60%) 40%,
+    hsl(var(--hue-primary) var(--sat-primary) 55%) 70%,
+    hsl(var(--hue-primary) var(--sat-primary) 35% / 0.2) 100%
+  );
+  border-radius: var(--radius-full);
+  box-shadow:
+    0 0 6px hsl(var(--hue-primary) var(--sat-primary) 55% / 0.4),
+    0 0 16px hsl(var(--hue-primary) var(--sat-primary) 55% / 0.2),
+    0 0 32px hsl(var(--hue-secondary) var(--sat-secondary) 50% / 0.1);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+#process.is-in-view .process__timeline::before {
+  opacity: 1;
 }
 
 /* ── Testimonials Grid ── */
@@ -127,25 +223,27 @@
 
 /* ── CTA Band ── */
 .cta-band {
-  padding: var(--spacing-3xl) 0;
   background: var(--gradient-hero);
   text-align: center;
 }
 
-.cta-band__inner {
-  display: grid;
-  gap: var(--spacing-md);
-  justify-items: center;
+/* ── Intake Page ── */
+.intake-page {
+  padding-top: var(--spacing-4xl);
 }
 
 /* ── Contact Layout ── */
 .contact__grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--spacing-2xl);
 }
 
 /* ── Footer Layout ── */
 .site-footer {
+  position: relative;
+  overflow: hidden;
   padding: var(--spacing-2xl) 0 var(--spacing-lg);
   border-top: 1px solid var(--color-border);
 }
@@ -235,6 +333,11 @@
 
   .testimonials__grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .process__timeline {
+    max-width: 720px;
+    gap: var(--spacing-2xl);
   }
 
   .footer__grid {

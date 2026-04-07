@@ -11,36 +11,28 @@ export function initInteractions() {
   initCursorBlob();
 }
 
-// ── Auto-Hide Navigation ──
-// Hides header on scroll-down, reappears on scroll-up.
+// ── Smart Navigation ──
+// Always visible. Transparent at top, compact glassmorphism on scroll.
 // Progressive enhancement: header stays visible if JS fails.
 function initHideyNav() {
   const header = document.querySelector(".site-header");
   if (!header) return;
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (prefersReducedMotion) return;
-
-  const THRESHOLD = 5;
-  let lastScrollY = window.scrollY;
+  const hero = document.getElementById("hero");
+  let heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 300;
   let ticking = false;
 
+  // Recalc on resize
+  window.addEventListener("resize", () => {
+    heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 300;
+  }, { passive: true });
+
   function onScroll() {
-    const currentScrollY = window.scrollY;
-    const delta = currentScrollY - lastScrollY;
+    const y = window.scrollY;
 
-    if (Math.abs(delta) < THRESHOLD) {
-      ticking = false;
-      return;
-    }
+    // Compact mode once scrolled past hero
+    header.classList.toggle("is-compact", y > heroBottom * 0.6);
 
-    if (delta > 0 && currentScrollY > header.offsetHeight) {
-      header.classList.add("is-hidden");
-    } else if (delta < 0) {
-      header.classList.remove("is-hidden");
-    }
-
-    lastScrollY = currentScrollY;
     ticking = false;
   }
 
@@ -50,6 +42,9 @@ function initHideyNav() {
       ticking = true;
     }
   }, { passive: true });
+
+  // Run once on load
+  onScroll();
 }
 
 // ── Active Section Indicator ──
@@ -79,7 +74,7 @@ function initActiveSection() {
         }
       });
     },
-    { threshold: 0.3, rootMargin: "-64px 0px -40% 0px" }
+    { threshold: 0.2, rootMargin: "-64px 0px -30% 0px" }
   );
 
   sections.forEach((s) => observer.observe(s.el));
@@ -87,6 +82,7 @@ function initActiveSection() {
 
 // ── Mouse Glare Effect ──
 // Radial light gradient follows pointer on .js-glare elements.
+// Also applies subtle 3D tilt on .js-tilt elements (opt-in).
 function initMouseGlare() {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (prefersReducedMotion) return;
@@ -94,18 +90,48 @@ function initMouseGlare() {
   const cards = document.querySelectorAll(".js-glare");
   if (!cards.length) return;
 
+  const isTouchPrimary = window.matchMedia("(pointer: coarse)").matches;
+  const MAX_TILT = 4; // degrees — subtle
+
   cards.forEach((card) => {
     let rafId = null;
+    const hasTilt = !isTouchPrimary && card.classList.contains("js-tilt");
 
     card.addEventListener("pointermove", (e) => {
       if (rafId) return;
       rafId = requestAnimationFrame(() => {
         const rect = card.getBoundingClientRect();
-        card.style.setProperty("--glare-x", (e.clientX - rect.left) + "px");
-        card.style.setProperty("--glare-y", (e.clientY - rect.top) + "px");
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.setProperty("--glare-x", x + "px");
+        card.style.setProperty("--glare-y", y + "px");
+
+        if (hasTilt) {
+          // Normalize to -1..1 from center
+          const nx = (x / rect.width - 0.5) * 2;
+          const ny = (y / rect.height - 0.5) * 2;
+          // rotateY follows horizontal, rotateX inverts vertical
+          card.style.setProperty("--tilt-x", (-ny * MAX_TILT).toFixed(2) + "deg");
+          card.style.setProperty("--tilt-y", (nx * MAX_TILT).toFixed(2) + "deg");
+        }
+
         rafId = null;
       });
     });
+
+    if (hasTilt) {
+      card.addEventListener("pointerenter", () => {
+        card.style.willChange = "transform";
+      });
+
+      card.addEventListener("pointerleave", () => {
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+        // Remove will-change after transition completes
+        setTimeout(() => { card.style.willChange = ""; }, 350);
+      });
+    }
 
     card.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "touch") card.classList.add("is-touched");
@@ -135,6 +161,11 @@ function initMarquee() {
 
     // Duplicate for seamless loop
     track.innerHTML = html + html;
+
+    // Reverse direction if data attribute set
+    if (track.dataset.direction === "reverse") {
+      track.classList.add("marquee__track--reverse");
+    }
   });
 }
 

@@ -25,9 +25,9 @@ window.__jsModuleTimeout = setTimeout(function () {
     root.setAttribute("data-theme", "light");
   }
 
-  // Color scheme preset (electric / midnight / ember / forest / monochrome)
+  // Color scheme preset (monochrome is default — no data-scheme needed for it)
   var savedScheme = localStorage.getItem("gcoat-scheme");
-  if (savedScheme) {
+  if (savedScheme && savedScheme !== "monochrome") {
     root.setAttribute("data-scheme", savedScheme);
   }
 
