@@ -1,4 +1,5 @@
 """Tests for POST /leads endpoint."""
+import base64
 import json
 import pytest
 from unittest.mock import MagicMock, patch
@@ -516,3 +517,193 @@ class TestPostLeadsFieldValidation:
         assert "phone" not in item
         assert "projectType" not in item
         assert "features" not in item
+
+
+class TestPostLeadsBase64Body:
+    """Tests for base64-encoded body handling."""
+
+    def test_base64_body_valid(self, mock_ddb):
+        """Base64-encoded body is decoded and processed correctly."""
+        payload = json.dumps({
+            "email": "user@example.com",
+            "source": "signup"
+        })
+        encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
+        event = make_event("POST", "/leads")
+        event["body"] = encoded
+        event["isBase64Encoded"] = True
+
+        resp = lambda_handler(event, FakeContext())
+        body = json.loads(resp["body"])
+
+        assert resp["statusCode"] == 200
+        assert body["ok"] is True
+
+    def test_base64_body_with_all_fields(self, mock_ddb):
+        """Base64-encoded body with all intake fields works."""
+        mock_table, _ = mock_ddb
+        payload = json.dumps({
+            "name": "Jane",
+            "email": "jane@example.com",
+            "message": "Hello",
+            "source": "intake",
+            "phone": "555-1234",
+            "companyName": "Acme"
+        })
+        encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
+        event = make_event("POST", "/leads")
+        event["body"] = encoded
+        event["isBase64Encoded"] = True
+
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 200
+
+    def test_base64_body_exceeds_pre_decode_limit(self):
+        """Base64 body exceeding 50KB pre-decode guard returns 400."""
+        # Create a raw string > 50KB before base64 decoding
+        large_payload = "A" * 52_000
+        event = make_event("POST", "/leads")
+        event["body"] = large_payload
+        event["isBase64Encoded"] = True
+
+        resp = lambda_handler(event, FakeContext())
+        body = json.loads(resp["body"])
+
+        assert resp["statusCode"] == 400
+        assert body["code"] == "VALIDATION_ERROR"
+
+    def test_base64_body_exceeds_post_decode_limit(self):
+        """Base64 body that decodes to > 10KB returns 400."""
+        # Create a payload that's < 50KB encoded but > 10KB decoded
+        large_json = json.dumps({"message": "A" * 11_000, "email": "a@b.com", "source": "signup"})
+        encoded = base64.b64encode(large_json.encode("utf-8")).decode("utf-8")
+        event = make_event("POST", "/leads")
+        event["body"] = encoded
+        event["isBase64Encoded"] = True
+
+        resp = lambda_handler(event, FakeContext())
+        body = json.loads(resp["body"])
+
+        assert resp["statusCode"] == 400
+        assert body["code"] == "VALIDATION_ERROR"
+
+    def test_non_base64_body_exceeds_limit(self):
+        """Non-base64 body exceeding 50KB pre-decode guard returns 400."""
+        large_body = "A" * 52_000
+        event = make_event("POST", "/leads")
+        event["body"] = large_body
+
+        resp = lambda_handler(event, FakeContext())
+        body = json.loads(resp["body"])
+
+        assert resp["statusCode"] == 400
+        assert body["code"] == "VALIDATION_ERROR"
+
+
+class TestPostLeadsEmailEdgeCases:
+    """Email validation edge case tests."""
+
+    def test_email_consecutive_dots(self):
+        """Email with consecutive dots in local part returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user..name@example.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Invalid email"
+
+    def test_email_dot_at_start(self):
+        """Email starting with dot in local part returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": ".user@example.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Invalid email"
+
+    def test_email_dot_at_end_of_local(self):
+        """Email ending with dot in local part returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user.@example.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Invalid email"
+
+    def test_email_local_part_too_long(self):
+        """Email with local part > 64 chars returns 400."""
+        long_local = "a" * 65
+        event = make_event("POST", "/leads", body={
+            "email": f"{long_local}@example.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Invalid email"
+
+    def test_email_valid_with_dots(self, mock_ddb):
+        """Email with valid dots passes validation."""
+        event = make_event("POST", "/leads", body={
+            "email": "first.last@example.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 200
+
+    def test_email_valid_with_plus(self, mock_ddb):
+        """Email with plus addressing passes."""
+        event = make_event("POST", "/leads", body={
+            "email": "user+tag@example.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 200
+
+    def test_email_valid_with_hyphen(self, mock_ddb):
+        """Email with hyphens in domain passes."""
+        event = make_event("POST", "/leads", body={
+            "email": "user@my-domain.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 200
+
+    def test_email_no_at_sign(self):
+        """Email without @ returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "userexample.com",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+
+    def test_email_no_domain(self):
+        """Email without domain returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user@",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+
+    def test_email_no_tld(self):
+        """Email without TLD returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user@example",
+            "source": "signup"
+        })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400

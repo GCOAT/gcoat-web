@@ -1,3 +1,4 @@
+import html
 import json
 import logging
 import os
@@ -20,7 +21,11 @@ _ADMIN_TOKEN_LOADED_AT = 0
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-EMAIL_RE = re.compile(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
+# Multi-step email validation (hybrid approach)
+_EMAIL_STRUCT_RE = re.compile(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
+_CONSECUTIVE_DOTS_RE = re.compile(r"\.\.")
+_DOT_AT_LOCAL_BOUNDARY_RE = re.compile(r"(^\.|\.$)")
+MAX_LOCAL_PART_LEN = 64
 
 MAX_BODY_BYTES = 10_240  # 10KB
 MAX_NAME_LEN = 100
@@ -74,15 +79,21 @@ def _route_key(event):
     path = event.get("rawPath") or event.get("path") or ""
     return f"{method} {path}"
 
+MAX_PRE_DECODE_BYTES = 51_200  # 50KB pre-decode guard
+
 def _body_json(event):
     raw = event.get("body") or ""
     if isinstance(raw, (dict, list)):
         return raw
-    if len(raw.encode("utf-8")) > MAX_BODY_BYTES:
+    # Pre-decode size guard (base64 inflates ~33%)
+    if len(raw.encode("utf-8")) > MAX_PRE_DECODE_BYTES:
         return None
     if event.get("isBase64Encoded"):
         import base64
         raw = base64.b64decode(raw).decode("utf-8")
+    # Post-decode size check
+    if len(raw.encode("utf-8")) > MAX_BODY_BYTES:
+        return None
     raw = raw.strip()
     if not raw:
         return {}
@@ -134,6 +145,7 @@ def _get_admin_token():
         resp = _ssm().get_parameter(Name=param_name, WithDecryption=True)
         _ADMIN_TOKEN = resp["Parameter"]["Value"]
     except ClientError:
+        logger.exception("Failed to retrieve admin token from SSM: %s", param_name)
         _ADMIN_TOKEN = ""
     _ADMIN_TOKEN_LOADED_AT = now
     return _ADMIN_TOKEN
@@ -144,6 +156,12 @@ def _require_admin(event):
     expected = _get_admin_token()
     return bool(expected and provided and provided == expected)
 
+def _sanitize_for_email(value):
+    """Strip CR/LF to prevent email header injection."""
+    if not value:
+        return value
+    return value.replace("\r", "").replace("\n", "")
+
 def _send_lead_notification(email, name, message, source):
     """Send SES notification for a new lead. Fails silently."""
     if os.environ.get("ENABLE_SES") != "true":
@@ -152,14 +170,18 @@ def _send_lead_notification(email, name, message, source):
     if not sender:
         return
     stage = os.environ.get("STAGE", "unknown")
-    subject = f"New lead from {name or email}"
+    safe_name = _sanitize_for_email(name)
+    safe_email = _sanitize_for_email(email)
+    safe_message = _sanitize_for_email(message)
+    safe_source = _sanitize_for_email(source)
+    subject = f"New lead from {safe_name or safe_email}"
     body_text = (
         f"New lead submission\n"
         f"-------------------\n"
-        f"Name:    {name or '(not provided)'}\n"
-        f"Email:   {email}\n"
-        f"Message: {message or '(not provided)'}\n"
-        f"Source:  {source or '(not provided)'}\n"
+        f"Name:    {safe_name or '(not provided)'}\n"
+        f"Email:   {safe_email}\n"
+        f"Message: {safe_message or '(not provided)'}\n"
+        f"Source:  {safe_source or '(not provided)'}\n"
         f"Stage:   {stage}\n"
         f"Time:    {_now_iso()}\n"
     )
@@ -218,11 +240,14 @@ def _send_lead_confirmation(lead_email, lead_name):
         return
     site_name = os.environ.get("SITE_NAME", "") or "Our Team"
     subject = os.environ.get("CONFIRMATION_SUBJECT", "Thanks for signing up!")
-    display_name = lead_name or "there"
+    safe_lead_name = _sanitize_for_email(lead_name)
+    display_name = safe_lead_name or "there"
+    safe_site_name = html.escape(site_name)
+    safe_display_name = html.escape(display_name)
     body_text = f"Thanks for reaching out, {display_name}! We received your submission and appreciate your interest."
     body_html = CONFIRMATION_EMAIL_HTML.format(
-        site_name=site_name,
-        name=display_name,
+        site_name=safe_site_name,
+        name=safe_display_name,
         confirmation_body=f"Thanks for reaching out! We received your submission and appreciate your interest.",
     )
     try:
@@ -277,8 +302,17 @@ def handle_post_leads(event):
     if source not in ALLOWED_SOURCES:
         return _json(400, {"ok": False, "message": "Invalid source", "code": "VALIDATION_ERROR"})
 
-    # Email — always required
-    if not email or len(email) > MAX_EMAIL_LEN or not EMAIL_RE.match(email):
+    # Email — always required (multi-step validation)
+    if not email or len(email) > MAX_EMAIL_LEN:
+        return _json(400, {"ok": False, "message": "Invalid email", "code": "VALIDATION_ERROR"})
+    if not _EMAIL_STRUCT_RE.match(email):
+        return _json(400, {"ok": False, "message": "Invalid email", "code": "VALIDATION_ERROR"})
+    local_part = email.split("@")[0]
+    if len(local_part) > MAX_LOCAL_PART_LEN:
+        return _json(400, {"ok": False, "message": "Invalid email", "code": "VALIDATION_ERROR"})
+    if _CONSECUTIVE_DOTS_RE.search(local_part):
+        return _json(400, {"ok": False, "message": "Invalid email", "code": "VALIDATION_ERROR"})
+    if _DOT_AT_LOCAL_BOUNDARY_RE.search(local_part):
         return _json(400, {"ok": False, "message": "Invalid email", "code": "VALIDATION_ERROR"})
 
     # Source-specific required fields

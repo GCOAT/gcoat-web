@@ -61,7 +61,7 @@ Globals:
   Function:
     Runtime: python3.13
     Architectures: [arm64]
-    Timeout: 10
+    Timeout: 15
     MemorySize: 256
     Environment:
       Variables:
@@ -197,7 +197,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - ses:SendEmail
-                Resource: "*"
+                Resource: !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${SenderEmail}"
           - !Ref AWS::NoValue
       Environment:
         Variables:
