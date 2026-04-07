@@ -1,0 +1,8 @@
+# robots.txt — Controls search engine crawler access
+# Docs: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+
+User-agent: *
+Allow: /
+
+# TODO: Replace with your actual domain
+Sitemap: https://example.com/sitemap.xml
