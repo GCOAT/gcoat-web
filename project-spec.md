@@ -183,8 +183,8 @@ The site is a single-page layout with the following sections, in order:
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| Primary | `#280BD6` | Buttons, links, accents, header gradient |
-| Secondary | `#D6D50B` | CTA highlights, hover states, accent borders |
+| Primary | `#676E7E` | Buttons, links, accents, header gradient |
+| Secondary | `#3265CC` | CTA highlights, hover states, accent borders |
 | Background | `#0b1220` | Page background (dark) |
 | Surface | `#111b2e` | Card backgrounds, elevated surfaces |
 | Text Primary | `#eaf0ff` | Main body text |

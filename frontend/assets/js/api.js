@@ -50,3 +50,25 @@ export async function submitLead(data) {
 export async function fetchContent(slug) {
   return apiRequest(`/content/${encodeURIComponent(slug)}`);
 }
+
+/**
+ * Fetch published blog posts (paginated, optionally filtered by tag).
+ * @param {object} params - Query params: { tag?, limit?, nextKey? }
+ * @returns {Promise<object>} { ok, data: { posts, nextKey } }
+ */
+export async function getBlogPosts(params = {}) {
+  const query = new URLSearchParams();
+  if (params.tag) query.set("tag", params.tag);
+  if (params.limit) query.set("limit", String(params.limit));
+  const qs = query.toString();
+  return apiRequest(`/blog/posts${qs ? `?${qs}` : ""}`);
+}
+
+/**
+ * Fetch a single blog post by slug.
+ * @param {string} slug - Post URL slug
+ * @returns {Promise<object>} { ok, data: { title, content, ... } }
+ */
+export async function getBlogPost(slug) {
+  return apiRequest(`/blog/posts/${encodeURIComponent(slug)}`);
+}

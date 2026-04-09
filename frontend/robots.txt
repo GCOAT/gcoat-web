@@ -3,6 +3,6 @@
 
 User-agent: *
 Allow: /
+Disallow: /admin.html
 
-# TODO: Replace with your actual domain
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://gcoat.github.io/gcoat-web/sitemap.xml

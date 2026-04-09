@@ -517,6 +517,112 @@ class TestPostLeadsFieldValidation:
         assert "phone" not in item
         assert "projectType" not in item
         assert "features" not in item
+        assert "existingWebsite" not in item
+        assert "inspirationLinks" not in item
+        assert "brandingStatus" not in item
+
+    def test_existing_website_valid(self, mock_ddb):
+        """existingWebsite field is stored when provided."""
+        mock_table, _ = mock_ddb
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "existingWebsite": "https://my-site.com"
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 200
+        item = mock_table.put_item.call_args.kwargs["Item"]
+        assert item["existingWebsite"] == "https://my-site.com"
+
+    def test_existing_website_too_long(self):
+        """existingWebsite exceeding max length returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "existingWebsite": "https://x.com/" + "a" * 250
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Existing website URL too long"
+
+    def test_inspiration_links_valid(self, mock_ddb):
+        """inspirationLinks field is stored when provided."""
+        mock_table, _ = mock_ddb
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "inspirationLinks": "https://example.com, https://cool-site.io"
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 200
+        item = mock_table.put_item.call_args.kwargs["Item"]
+        assert item["inspirationLinks"] == "https://example.com, https://cool-site.io"
+
+    def test_inspiration_links_too_long(self):
+        """inspirationLinks exceeding max length returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "inspirationLinks": "https://x.com/" + "a" * 500
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Inspiration links too long"
+
+    def test_branding_status_valid(self, mock_ddb):
+        """brandingStatus field is stored when provided."""
+        mock_table, _ = mock_ddb
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "brandingStatus": "I have a logo and brand colors"
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 200
+        item = mock_table.put_item.call_args.kwargs["Item"]
+        assert item["brandingStatus"] == "I have a logo and brand colors"
+
+    def test_branding_status_too_long(self):
+        """brandingStatus exceeding max length returns 400."""
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "brandingStatus": "a" * 201
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 400
+        assert json.loads(resp["body"])["message"] == "Branding status too long"
+
+    def test_all_new_optional_fields_together(self, mock_ddb):
+        """All three new optional fields submitted together are stored."""
+        mock_table, _ = mock_ddb
+        event = make_event("POST", "/leads", body={
+            "email": "user@example.com",
+            "name": "Test",
+            "message": "Hi",
+            "source": "intake",
+            "existingWebsite": "https://old-site.com",
+            "inspirationLinks": "https://stripe.com",
+            "brandingStatus": "I need everything designed"
+        })
+        resp = lambda_handler(event, FakeContext())
+        assert resp["statusCode"] == 200
+        item = mock_table.put_item.call_args.kwargs["Item"]
+        assert item["existingWebsite"] == "https://old-site.com"
+        assert item["inspirationLinks"] == "https://stripe.com"
+        assert item["brandingStatus"] == "I need everything designed"
 
 
 class TestPostLeadsBase64Body:

@@ -12,6 +12,10 @@ Parameters:
   AllowedOrigin:
     Type: String
     Description: Allowed CORS origin (GitHub Pages or custom domain)
+  DevOrigin:
+    Type: String
+    Default: ""
+    Description: Optional secondary CORS origin for local development
   AdminTokenParam:
     Type: String
     Description: SSM SecureString path for admin token (e.g., /client/stage/admin-token)
@@ -66,6 +70,7 @@ Globals:
     Environment:
       Variables:
         ALLOWED_ORIGIN: !Ref AllowedOrigin
+        DEV_ORIGIN: !Ref DevOrigin
         ADMIN_TOKEN_PARAM: !Ref AdminTokenParam
         STAGE: !Ref StageName
     Tags:
@@ -81,12 +86,15 @@ Resources:
       CorsConfiguration:
         AllowOrigins:
           - !Ref AllowedOrigin
+          - !Ref DevOrigin
         AllowHeaders:
           - content-type
           - x-admin-token
         AllowMethods:
           - GET
           - POST
+          - PUT
+          - DELETE
           - OPTIONS
       DefaultRouteSettings:
         ThrottlingRateLimit: !Ref ThrottleRateLimit
@@ -132,6 +140,50 @@ Resources:
           KeyType: HASH
         - AttributeName: sk
           KeyType: RANGE
+
+  BlogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${ClientName}-${StageName}-blog
+      BillingMode: PAY_PER_REQUEST
+      DeletionProtectionEnabled: !If [IsDeletionProtection, true, false]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: !If [IsPITR, true, false]
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+        - AttributeName: GSI2PK
+          AttributeType: S
+        - AttributeName: GSI2SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: GSI2
+          KeySchema:
+            - AttributeName: GSI2PK
+              KeyType: HASH
+            - AttributeName: GSI2SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
 
   MediaBucket:
     Type: AWS::S3::Bucket
@@ -183,6 +235,8 @@ Resources:
             TableName: !Ref LeadsTable
         - DynamoDBReadPolicy:
             TableName: !Ref ContentTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BlogTable
         - S3WritePolicy:
             BucketName: !Ref MediaBucket
         - Statement:
@@ -203,6 +257,7 @@ Resources:
         Variables:
           LEADS_TABLE_NAME: !Ref LeadsTable
           CONTENT_TABLE_NAME: !Ref ContentTable
+          BLOG_TABLE_NAME: !Ref BlogTable
           MEDIA_BUCKET_NAME: !Ref MediaBucket
           SENDER_EMAIL: !Ref SenderEmail
           ENABLE_SES: !Ref EnableSES
@@ -229,6 +284,42 @@ Resources:
             ApiId: !Ref HttpApi
             Method: POST
             Path: /media/presign
+        GetBlogPosts:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /blog/posts
+        GetBlogFeed:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /blog/feed
+        GetBlogPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /blog/posts/{slug}
+        PostBlogPosts:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /blog/posts
+        PutBlogPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: PUT
+            Path: /blog/posts/{slug}
+        DeleteBlogPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: DELETE
+            Path: /blog/posts/{slug}
         OptionsAny:
           Type: HttpApi
           Properties:
@@ -334,6 +425,8 @@ Outputs:
     Value: !Ref ContentTable
   MediaBucketName:
     Value: !Ref MediaBucket
+  BlogTableName:
+    Value: !Ref BlogTable
   FrontendBucketName:
     Condition: IsCloudFront
     Value: !Ref FrontendBucket

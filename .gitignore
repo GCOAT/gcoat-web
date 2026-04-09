@@ -41,3 +41,9 @@ kore-recipes/
 
 # Implementation plan (agent handoff, not published)
 PLAN.md
+
+# Business docs (internal only)
+business-docs/
+
+# AI workspace (internal only)
+gcoat-ai/

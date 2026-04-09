@@ -84,6 +84,26 @@ class TestCORS:
 
         assert resp["headers"]["Access-Control-Allow-Origin"] == "https://example.com"
 
+    def test_cors_dev_origin(self, monkeypatch):
+        """DEV_ORIGIN is accepted when request Origin header matches."""
+        import src.app as app
+        monkeypatch.setenv("DEV_ORIGIN", "http://localhost:8080")
+        app._ALLOWED_ORIGINS = {"https://example.com", "http://localhost:8080"}
+
+        event = make_event("OPTIONS", "/{proxy+}", headers={"origin": "http://localhost:8080"})
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["headers"]["Access-Control-Allow-Origin"] == "http://localhost:8080"
+        # Cleanup
+        app._ALLOWED_ORIGINS = {"https://example.com"}
+
+    def test_cors_unknown_origin_rejected(self):
+        """Unknown origin falls back to ALLOWED_ORIGIN."""
+        event = make_event("OPTIONS", "/{proxy+}", headers={"origin": "http://evil.com"})
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["headers"]["Access-Control-Allow-Origin"] == "https://example.com"
+
     def test_cors_headers_header(self):
         """Response has Access-Control-Allow-Headers."""
         event = make_event("OPTIONS", "/{proxy+}")

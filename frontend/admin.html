@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — GCOAT</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://oz8sqtiive.execute-api.us-east-1.amazonaws.com">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="google-fonts-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+
+  <script src="assets/js/init.js"></script>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <!-- Quill editor -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="container header__inner">
+      <a class="brand glitch glitch--hover" href="./index.html" data-text="GCOAT">GCOAT Admin</a>
+      <div class="admin-auth" id="admin-auth">
+        <input type="password" class="input" id="admin-token" placeholder="Admin token" style="max-width:220px">
+        <button class="btn btn--primary" id="admin-login-btn">Login</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    <!-- Auth gate -->
+    <div id="admin-gate" class="admin-gate">
+      <p>Enter your admin token to continue.</p>
+    </div>
+
+    <!-- Admin content (hidden until authed) -->
+    <div id="admin-panel" hidden>
+      <!-- Tab navigation -->
+      <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
+        <button class="admin-tab is-active" role="tab" aria-selected="true"
+                aria-controls="panel-blog" id="tab-blog">Blog</button>
+      </nav>
+
+      <!-- Blog panel -->
+      <section id="panel-blog" role="tabpanel" aria-labelledby="tab-blog">
+        <!-- List view -->
+        <div id="blog-list-view">
+          <div class="admin-toolbar">
+            <h2>Blog Posts</h2>
+            <button class="btn btn--primary" id="btn-new-post">+ New Post</button>
+          </div>
+
+          <table class="admin-table" id="blog-posts-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="blog-posts-tbody">
+              <tr><td colspan="5" class="admin-table__empty">Loading&hellip;</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Editor view (hidden by default) -->
+        <div id="blog-editor-view" hidden>
+          <div class="admin-toolbar">
+            <h2 id="editor-heading">New Post</h2>
+            <button class="btn" id="btn-back-to-list">&larr; Back</button>
+          </div>
+
+          <form id="post-form" class="admin-form">
+            <div class="form-group">
+              <label class="label" for="post-title">Title <span class="required">*</span></label>
+              <input class="input" type="text" id="post-title" required maxlength="200">
+            </div>
+
+            <div class="form-group">
+              <label class="label" for="post-slug">Slug</label>
+              <input class="input" type="text" id="post-slug" maxlength="120"
+                     placeholder="auto-generated from title">
+            </div>
+
+            <div class="form-group">
+              <label class="label" for="post-excerpt">Excerpt</label>
+              <input class="input" type="text" id="post-excerpt" maxlength="500"
+                     placeholder="Short summary for cards and SEO">
+            </div>
+
+            <div class="form-group">
+              <label class="label" for="post-tags">Tags</label>
+              <input class="input" type="text" id="post-tags"
+                     placeholder="Comma-separated: web design, small business, tips">
+            </div>
+
+            <div class="form-group">
+              <label class="label" for="post-featured-image">Featured Image URL</label>
+              <input class="input" type="text" id="post-featured-image"
+                     placeholder="https://... or uploads/...">
+            </div>
+
+            <div class="form-group">
+              <label class="label">Content <span class="required">*</span></label>
+              <div id="quill-editor"></div>
+            </div>
+
+            <div class="admin-form__actions">
+              <button type="submit" class="btn btn--primary" id="btn-save-draft"
+                      data-status="draft">Save as Draft</button>
+              <button type="button" class="btn btn--secondary" id="btn-publish"
+                      data-status="published">Publish</button>
+              <button type="button" class="btn" id="btn-delete-post" hidden
+                      style="margin-left:auto; color: var(--color-error);">Delete</button>
+            </div>
+
+            <p id="editor-status" class="form-status" hidden></p>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <script type="module" src="assets/js/admin.js"></script>
+  <noscript>
+    <p>This page requires JavaScript to manage blog posts.</p>
+  </noscript>
+</body>
+</html>

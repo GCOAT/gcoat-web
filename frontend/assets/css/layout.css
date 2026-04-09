@@ -268,8 +268,9 @@
 /* ── Form Row (two-column) ── */
 .form-row {
   display: grid;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
   grid-template-columns: 1fr;
+  margin-bottom: var(--spacing-xs);
 }
 
 /* ── Responsive ── */

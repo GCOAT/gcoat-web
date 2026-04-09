@@ -116,7 +116,7 @@
   --color-link-visited: hsl(var(--hue-primary) 40% 60%);
 
   --gradient-hero: linear-gradient(135deg, hsl(220 40% 8%) 0%, hsl(var(--hue-primary) 60% 14%) 50%, hsl(220 40% 8%) 100%);
-  --gradient-cta: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  --gradient-cta: linear-gradient(135deg, hsl(var(--hue-primary) clamp(40%, calc(var(--sat-primary) + 30%), 90%) clamp(28%, calc(var(--light-primary) - 8%), 42%)), hsl(var(--hue-primary) clamp(35%, calc(var(--sat-primary) + 20%), 85%) clamp(35%, calc(var(--light-primary) + 2%), 50%)));
   --gradient-text: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.05) 0%, hsl(0 0% 100% / 0.02) 100%);
 
@@ -154,7 +154,7 @@
   --color-link-visited: hsl(var(--hue-primary) 40% 35%);
 
   --gradient-hero: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(var(--hue-primary) 30% 92%) 50%, hsl(220 20% 97%) 100%);
-  --gradient-cta: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  --gradient-cta: linear-gradient(135deg, hsl(var(--hue-primary) clamp(40%, calc(var(--sat-primary) + 30%), 90%) clamp(30%, calc(var(--light-primary) - 5%), 45%)), hsl(var(--hue-primary) clamp(35%, calc(var(--sat-primary) + 20%), 85%) clamp(38%, calc(var(--light-primary) + 5%), 52%)));
   --gradient-text: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.8) 0%, hsl(0 0% 100% / 0.4) 100%);
 

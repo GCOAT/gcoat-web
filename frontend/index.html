@@ -13,7 +13,6 @@
   <meta property="og:title" content="GCOAT — We Build Software That Ships">
   <meta property="og:description" content="GCOAT is a software development consultancy. Landing pages, web apps, MVPs — production-ready.">
   <meta property="og:image" content="https://gcoat.github.io/gcoat-web/assets/images/og-image.jpg">
-  <!-- TODO: Replace with real OG image (1200x630px recommended) -->
   <meta property="og:url" content="https://gcoat.github.io/gcoat-web/">
   <meta property="og:type" content="website">
 
@@ -22,12 +21,42 @@
   <meta name="twitter:description" content="GCOAT is a software development consultancy. Landing pages, web apps, MVPs — production-ready.">
   <meta name="twitter:image" content="https://gcoat.github.io/gcoat-web/assets/images/og-image.jpg">
 
-  <meta name="theme-color" content="#280BD6" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#3265CC" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
   <link rel="apple-touch-icon" href="assets/images/icons/apple-touch-icon.png">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "GCOAT",
+    "legalName": "GCOAT, LLC",
+    "alternateName": "Greatest Coders of All Time",
+    "url": "https://gcoat.github.io/gcoat-web/",
+    "logo": "https://gcoat.github.io/gcoat-web/assets/images/icons/favicon.svg",
+    "description": "Software development consultancy building landing pages, web apps, and MVPs — fast, accessible, production-ready.",
+    "email": "gcoatllc@gmail.com",
+    "foundingDate": "2025",
+    "founder": {
+      "@type": "Person",
+      "name": "Amali Krigger"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "VI",
+      "addressCountry": "US"
+    },
+    "sameAs": [
+      "https://github.com/gcoat",
+      "https://www.linkedin.com/company/gcoat"
+    ],
+    "areaServed": "Worldwide",
+    "knowsAbout": ["Web Development", "Landing Pages", "Web Applications", "MVP Development", "Small Business Websites"]
+  }
+  </script>
+
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.execute-api.*.amazonaws.com">
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://oz8sqtiive.execute-api.us-east-1.amazonaws.com">
 
   <!-- Google Fonts — preconnect + default pairing (Space Grotesk + Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,6 +132,7 @@
           <a class="nav__link" href="#process">Process</a>
           <a class="nav__link" href="#testimonials">Testimonials</a>
           <a class="nav__link" href="#contact">Contact</a>
+          <a class="nav__link" href="./blog.html">Blog</a>
           <a class="nav__cta" href="./start.html">Start a Project</a>
         </div>
         <button class="theme-toggle js-theme-toggle" type="button" aria-label="Switch to light mode">
@@ -863,6 +893,24 @@
       </div>
     </section>
 
+    <!-- ── Featured Blog ── -->
+    <section id="blog" class="section">
+      <div class="container">
+        <h2 class="section__title gradient-text reveal">From the Blog</h2>
+        <p class="section__subtitle typewriter-reveal reveal" data-tw-n="40" data-tw-duration="1.5s">Insights on software, shipping, and strategy.</p>
+
+        <div id="home-blog-grid" class="blog-grid stagger" aria-live="polite">
+          <!-- Populated by homepage-blog.js -->
+        </div>
+
+        <p id="home-blog-empty" class="blog-empty" hidden>No posts yet — check back soon.</p>
+
+        <div class="home-blog__cta reveal" style="text-align:center; margin-top:var(--spacing-2xl)">
+          <a class="btn btn--secondary" href="./blog.html">View All Posts →</a>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Inline Newsletter ── -->
     <section class="newsletter-inline reveal">
       <div class="container newsletter-inline__inner">
@@ -1036,6 +1084,7 @@
           <li><a href="#testimonials">Testimonials</a></li>
           <li><a href="./start.html">Start a Project</a></li>
           <li><a href="#contact">Contact</a></li>
+          <li><a href="./blog.html">Blog</a></li>
         </ul>
       </nav>
 
@@ -1170,23 +1219,23 @@
       <div class="design-panel__color-input-group">
         <label class="design-panel__slider-label" for="hex-primary">Primary Color</label>
         <div class="design-panel__hex-row">
-          <input class="design-panel__color-picker" id="color-picker-primary" type="color" value="#280BD6" data-target="primary" aria-label="Pick primary color">
-          <input class="design-panel__hex-input" id="hex-primary" type="text" value="#280BD6" maxlength="7" pattern="^#[0-9a-fA-F]{6}$" data-target="primary" placeholder="#280BD6" aria-label="Primary hex color code">
+          <input class="design-panel__color-picker" id="color-picker-primary" type="color" value="#676E7E" data-target="primary" aria-label="Pick primary color">
+          <input class="design-panel__hex-input" id="hex-primary" type="text" value="#676E7E" maxlength="7" pattern="^#[0-9a-fA-F]{6}$" data-target="primary" placeholder="#676E7E" aria-label="Primary hex color code">
         </div>
       </div>
       <div class="design-panel__slider-group">
         <div class="design-panel__slider-header">
           <label class="design-panel__slider-label" for="slider-hue-primary">Hue</label>
-          <input class="design-panel__number-input" id="num-hue-primary" type="number" min="0" max="360" value="250" data-slider="slider-hue-primary" aria-label="Primary hue value">
+          <input class="design-panel__number-input" id="num-hue-primary" type="number" min="0" max="360" value="220" data-slider="slider-hue-primary" aria-label="Primary hue value">
         </div>
-        <input class="design-panel__slider" id="slider-hue-primary" type="range" min="0" max="360" value="250" data-prop="--hue-primary" data-number="num-hue-primary" aria-valuenow="250">
+        <input class="design-panel__slider" id="slider-hue-primary" type="range" min="0" max="360" value="220" data-prop="--hue-primary" data-number="num-hue-primary" aria-valuenow="220">
       </div>
       <div class="design-panel__slider-group">
         <div class="design-panel__slider-header">
           <label class="design-panel__slider-label" for="slider-sat-primary">Saturation</label>
-          <input class="design-panel__number-input" id="num-sat-primary" type="number" min="0" max="100" value="90" data-slider="slider-sat-primary" aria-label="Primary saturation value">
+          <input class="design-panel__number-input" id="num-sat-primary" type="number" min="0" max="100" value="10" data-slider="slider-sat-primary" aria-label="Primary saturation value">
         </div>
-        <input class="design-panel__slider" id="slider-sat-primary" type="range" min="0" max="100" value="90" data-prop="--sat-primary" data-suffix="%" data-number="num-sat-primary" aria-valuenow="90">
+        <input class="design-panel__slider" id="slider-sat-primary" type="range" min="0" max="100" value="10" data-prop="--sat-primary" data-suffix="%" data-number="num-sat-primary" aria-valuenow="10">
       </div>
       <div class="design-panel__preview design-panel__preview--primary" aria-hidden="true"></div>
 
@@ -1195,23 +1244,23 @@
       <div class="design-panel__color-input-group">
         <label class="design-panel__slider-label" for="hex-secondary">Secondary Color</label>
         <div class="design-panel__hex-row">
-          <input class="design-panel__color-picker" id="color-picker-secondary" type="color" value="#D6D50B" data-target="secondary" aria-label="Pick secondary color">
-          <input class="design-panel__hex-input" id="hex-secondary" type="text" value="#D6D50B" maxlength="7" pattern="^#[0-9a-fA-F]{6}$" data-target="secondary" placeholder="#D6D50B" aria-label="Secondary hex color code">
+          <input class="design-panel__color-picker" id="color-picker-secondary" type="color" value="#3265CC" data-target="secondary" aria-label="Pick secondary color">
+          <input class="design-panel__hex-input" id="hex-secondary" type="text" value="#3265CC" maxlength="7" pattern="^#[0-9a-fA-F]{6}$" data-target="secondary" placeholder="#3265CC" aria-label="Secondary hex color code">
         </div>
       </div>
       <div class="design-panel__slider-group">
         <div class="design-panel__slider-header">
           <label class="design-panel__slider-label" for="slider-hue-secondary">Hue</label>
-          <input class="design-panel__number-input" id="num-hue-secondary" type="number" min="0" max="360" value="60" data-slider="slider-hue-secondary" aria-label="Secondary hue value">
+          <input class="design-panel__number-input" id="num-hue-secondary" type="number" min="0" max="360" value="220" data-slider="slider-hue-secondary" aria-label="Secondary hue value">
         </div>
-        <input class="design-panel__slider" id="slider-hue-secondary" type="range" min="0" max="360" value="60" data-prop="--hue-secondary" data-number="num-hue-secondary" aria-valuenow="60">
+        <input class="design-panel__slider" id="slider-hue-secondary" type="range" min="0" max="360" value="220" data-prop="--hue-secondary" data-number="num-hue-secondary" aria-valuenow="220">
       </div>
       <div class="design-panel__slider-group">
         <div class="design-panel__slider-header">
           <label class="design-panel__slider-label" for="slider-sat-secondary">Saturation</label>
-          <input class="design-panel__number-input" id="num-sat-secondary" type="number" min="0" max="100" value="90" data-slider="slider-sat-secondary" aria-label="Secondary saturation value">
+          <input class="design-panel__number-input" id="num-sat-secondary" type="number" min="0" max="100" value="60" data-slider="slider-sat-secondary" aria-label="Secondary saturation value">
         </div>
-        <input class="design-panel__slider" id="slider-sat-secondary" type="range" min="0" max="100" value="90" data-prop="--sat-secondary" data-suffix="%" data-number="num-sat-secondary" aria-valuenow="90">
+        <input class="design-panel__slider" id="slider-sat-secondary" type="range" min="0" max="100" value="60" data-prop="--sat-secondary" data-suffix="%" data-number="num-sat-secondary" aria-valuenow="60">
       </div>
       <div class="design-panel__preview design-panel__preview--secondary" aria-hidden="true"></div>
 
@@ -1284,5 +1333,6 @@
   <script type="module" src="assets/js/interactions.js"></script>
   <script type="module" src="assets/js/theme-panel.js"></script>
   <script type="module" src="assets/js/main.js"></script>
+  <script type="module" src="assets/js/homepage-blog.js"></script>
 </body>
 </html>

@@ -149,95 +149,84 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 
 ---
 
-## Phase 3: Arcade Page (~2-3 hrs, Day 7)
+## Phase 3: Blog Section (~4-6 hrs, Days 7-9)
 
-- [ ] **3.1** Create `frontend/arcade.html` with cyberpunk theme
-- [ ] **3.2** Arcade hero + game tile grid
-- [ ] **3.3** 3-5 placeholder game cards with "Coming Soon" badges
-- [ ] **3.4** CRT scanlines, orbs, glitch text (reuse existing CSS)
-- [ ] **3.5** Link from `index.html` arcade mode → `/arcade.html`
-- [ ] **3.6** Back-to-main CTA
-
----
-
-## Phase 4: Blog Section (~4-6 hrs, Days 7-9)
-
-- [ ] **4.1** Add `marked.js` via CDN (with SRI hash)
-- [ ] **4.2** Create `frontend/blog/index.html` — post listing (title, date, excerpt)
-- [ ] **4.3** Create `frontend/blog/post.html` — loads `.md` via fetch + marked.js
-- [ ] **4.4** Write 3 posts:
+- [ ] **3.1** Add `marked.js` via CDN (with SRI hash)
+- [ ] **3.2** Create `frontend/blog/index.html` — post listing (title, date, excerpt)
+- [ ] **3.3** Create `frontend/blog/post.html` — loads `.md` via fetch + marked.js
+- [ ] **3.4** Write 3 posts:
   - "Why Every Small Business in St. Croix Needs a Website in 2026"
   - "What Makes a Great Landing Page (And Why Yours Might Be Losing Customers)"
   - "How Much Should a Small Business Website Cost?"
-- [ ] **4.5** Blog styling — article typography, reading time, responsive
-- [ ] **4.6** Blog SEO — per-post `<title>`, description, `og:type=article`, `Article` JSON-LD
-- [ ] **4.7** Add "Blog" to nav on all pages
-- [ ] **4.8** Add `marked.js` to deps-registry
+- [ ] **3.5** Blog styling — article typography, reading time, responsive
+- [ ] **3.6** Blog SEO — per-post `<title>`, description, `og:type=article`, `Article` JSON-LD
+- [ ] **3.7** Add "Blog" to nav on all pages
+- [ ] **3.8** Add `marked.js` to deps-registry
 
 ---
 
-## Phase 5: SEO & Analytics (~2-3 hrs, Days 9-10)
+## Phase 4: SEO & Analytics (~2-3 hrs, Days 9-10)
 
-- [ ] **5.1** Organization JSON-LD on `index.html` (GCOAT-specific)
-- [ ] **5.2** Twitter Card tags on all pages
-- [ ] **5.3** OG image — 1200×630px GCOAT branded image
-- [ ] **5.4** Replace all `example.com` → actual domain
-- [ ] **5.5** Unique `<title>` + `meta description` per page
-- [ ] **5.6** Generate sitemap — `./scripts/seo.sh generate https://gcoat.com`
-- [ ] **5.7** Update `robots.txt` with actual domain
-- [ ] **5.8** Verify all images have `alt` text
-- [ ] **5.9** `./scripts/seo.sh validate` → 0 errors
-- [ ] **5.10** Create GA4 property + add measurement tag to all pages
-- [ ] **5.11** Configure GA4 conversion events (form_submission, newsletter_signup, scroll_depth)
-- [ ] **5.12** Update CSP for GA4 domains
-- [ ] **5.13** Google Search Console — verify + submit sitemap
-- [ ] **5.14** Google Business Profile — GCOAT as Web Design service in St. Croix
-
----
-
-## Phase 6: Mobile & Cross-Browser (~3-4 hrs, Days 10-11)
-
-- [ ] **6.1** Responsive audit — all pages at 320px, 375px, 480px, 768px, 1024px, 1280px, 1440px
-- [ ] **6.2** Chat intake mobile verification
-- [ ] **6.3** Blog pages mobile — readable at all sizes
-- [ ] **6.4** Arcade page mobile — tiles stack, effects don't break
-- [ ] **6.5** WebGL fallback confirmed
-- [ ] **6.6** `backdrop-filter` fallback
-- [ ] **6.7** Touch interactions — hover effects degrade on touch
-- [ ] **6.8** Safari fixes (dvh, backdrop-filter, smooth scroll)
-- [ ] **6.9** Firefox audit
-- [ ] **6.10** `prefers-reduced-motion` respected on all new animations
-- [ ] **6.11** Print styles don't break
+- [ ] **4.1** Organization JSON-LD on `index.html` (GCOAT-specific)
+- [ ] **4.2** Twitter Card tags on all pages
+- [ ] **4.3** OG image — 1200×630px GCOAT branded image
+- [ ] **4.4** Replace all `example.com` → actual domain
+- [ ] **4.5** Unique `<title>` + `meta description` per page
+- [ ] **4.6** Generate sitemap — `./scripts/seo.sh generate https://gcoat.com`
+- [ ] **4.7** Update `robots.txt` with actual domain
+- [ ] **4.8** Verify all images have `alt` text
+- [ ] **4.9** `./scripts/seo.sh validate` → 0 errors
+- [ ] **4.10** Create GA4 property + add measurement tag to all pages
+- [ ] **4.11** Configure GA4 conversion events (form_submission, newsletter_signup, scroll_depth)
+- [ ] **4.12** Update CSP for GA4 domains
+- [ ] **4.13** Google Search Console — verify + submit sitemap
+- [ ] **4.14** Google Business Profile — GCOAT as Web Design service in St. Croix
 
 ---
 
-## Phase 7: Custom Domain (~1-2 hrs, Day 12)
+## Phase 5: Mobile & Cross-Browser (~3-4 hrs, Days 10-11)
 
-- [ ] **7.1** Confirm domain on Hostinger
-- [ ] **7.2** DNS: CNAME `www` → `<username>.github.io`, A records for apex
-- [ ] **7.3** GitHub Pages → Settings → Custom domain
-- [ ] **7.4** Enforce HTTPS
-- [ ] **7.5** Apex redirect
-- [ ] **7.6** Update CORS, CSP, canonical/OG URLs
-- [ ] **7.7** Backend redeploy with correct `AllowedOrigin`
-- [ ] **7.8** Verify everything works
+- [ ] **5.1** Responsive audit — all pages at 320px, 375px, 480px, 768px, 1024px, 1280px, 1440px
+- [ ] **5.2** Chat intake mobile verification
+- [ ] **5.3** Blog pages mobile — readable at all sizes
+- [ ] **5.4** Arcade page mobile — tiles stack, effects don't break
+- [ ] **5.5** WebGL fallback confirmed
+- [ ] **5.6** `backdrop-filter` fallback
+- [ ] **5.7** Touch interactions — hover effects degrade on touch
+- [ ] **5.8** Safari fixes (dvh, backdrop-filter, smooth scroll)
+- [ ] **5.9** Firefox audit
+- [ ] **5.10** `prefers-reduced-motion` respected on all new animations
+- [ ] **5.11** Print styles don't break
 
 ---
 
-## Phase 8: Production Readiness & Launch (~2-3 hrs, Days 13-14)
+## Phase 6: Custom Domain (~1-2 hrs, Day 12)
 
-- [ ] **8.1** All backend tests pass
-- [ ] **8.2** Content review — all text, images, links
-- [ ] **8.3** Link audit — no dead links or anchors
-- [ ] **8.4** Form smoke test — intake + contact + newsletter → DynamoDB + emails
-- [ ] **8.5** Performance — no console.log, clean CSP, no blocking resources
-- [ ] **8.6** `./scripts/seo.sh validate` → 0 errors, Lighthouse SEO > 90
-- [ ] **8.7** Security — CSP correct, honeypot working
-- [ ] **8.8** 404 page updated with all nav links
-- [ ] **8.9** Favicon + OG image verified across platforms
-- [ ] **8.10** GA4 Real-Time showing visits + events
-- [ ] **8.11** Deploy → GitHub Pages + backend
-- [ ] **8.12** Post-deploy smoke test on phone + desktop
+- [ ] **6.1** Confirm domain on Hostinger
+- [ ] **6.2** DNS: CNAME `www` → `<username>.github.io`, A records for apex
+- [ ] **6.3** GitHub Pages → Settings → Custom domain
+- [ ] **6.4** Enforce HTTPS
+- [ ] **6.5** Apex redirect
+- [ ] **6.6** Update CORS, CSP, canonical/OG URLs
+- [ ] **6.7** Backend redeploy with correct `AllowedOrigin`
+- [ ] **6.8** Verify everything works
+
+---
+
+## Phase 7: Production Readiness & Launch (~2-3 hrs, Days 13-14)
+
+- [ ] **7.1** All backend tests pass
+- [ ] **7.2** Content review — all text, images, links
+- [ ] **7.3** Link audit — no dead links or anchors
+- [ ] **7.4** Form smoke test — intake + contact + newsletter → DynamoDB + emails
+- [ ] **7.5** Performance — no console.log, clean CSP, no blocking resources
+- [ ] **7.6** `./scripts/seo.sh validate` → 0 errors, Lighthouse SEO > 90
+- [ ] **7.7** Security — CSP correct, honeypot working
+- [ ] **7.8** 404 page updated with all nav links
+- [ ] **7.9** Favicon + OG image verified across platforms
+- [ ] **7.10** GA4 Real-Time showing visits + events
+- [ ] **7.11** Deploy → GitHub Pages + backend
+- [ ] **7.12** Post-deploy smoke test on phone + desktop
 
 ### Launch Day Actions
 - [ ] Submit sitemap to Google Search Console
@@ -252,23 +241,23 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 
 ---
 
-## Phase 9: Claude AI Chatbot Upgrade (~6-8 hrs, Days 15-18)
+## Phase 8: Claude AI Chatbot Upgrade (~6-8 hrs, Days 15-18)
 
 Replace the scripted intake flow with a real Claude-powered conversation. The website comes alive.
 
-- [ ] **9.1** Backend: `POST /chat` route — proxies to Claude API
+- [ ] **8.1** Backend: `POST /chat` route — proxies to Claude API
   - System prompt: GCOAT intake agent personality (warm, knowledgeable, efficient)
   - Conversation history maintained per session (DynamoDB or in-memory)
   - Claude extracts structured data as conversation progresses
   - Returns: `{ message, extracted_data }`
-- [ ] **9.2** Store Claude API key in SSM Parameter Store (same pattern as admin token)
-- [ ] **9.3** Update `intake-chat.js` — swap `getNextQuestion()` from switch statement to `POST /chat` call
-- [ ] **9.4** Natural conversation flow — no rigid steps, bot asks follow-ups based on answers
-- [ ] **9.5** Summary card still appears at end — client confirms before submitting
-- [ ] **9.6** Rate limiting — prevent API cost runaway (max 15 exchanges per session)
-- [ ] **9.7** Fallback — if API fails, gracefully fall back to scripted flow
-- [ ] **9.8** Test: have 5 real conversations, verify natural flow + correct data extraction
-- [ ] **9.9** Update CSP for Claude API endpoint
+- [ ] **8.2** Store Claude API key in SSM Parameter Store (same pattern as admin token)
+- [ ] **8.3** Update `intake-chat.js` — swap `getNextQuestion()` from switch statement to `POST /chat` call
+- [ ] **8.4** Natural conversation flow — no rigid steps, bot asks follow-ups based on answers
+- [ ] **8.5** Summary card still appears at end — client confirms before submitting
+- [ ] **8.6** Rate limiting — prevent API cost runaway (max 15 exchanges per session)
+- [ ] **8.7** Fallback — if API fails, gracefully fall back to scripted flow
+- [ ] **8.8** Test: have 5 real conversations, verify natural flow + correct data extraction
+- [ ] **8.9** Update CSP for Claude API endpoint
 
 **Claude system prompt:**
 ```
@@ -280,46 +269,46 @@ Never make up pricing. Never pressure. Just help them clarify what they need.
 
 ---
 
-## Phase 10: Owner Dashboard (~6-8 hrs, Days 18-22)
+## Phase 9: Owner Dashboard (~6-8 hrs, Days 18-22)
 
 A private page where you see everything at a glance. Protected by admin token.
 
-- [ ] **10.1** Create `frontend/dashboard.html` — admin-only page (admin token in URL or localStorage)
-- [ ] **10.2** Leads panel — table of all leads/intakes sorted by date
+- [ ] **9.1** Create `frontend/dashboard.html` — admin-only page (admin token in URL or localStorage)
+- [ ] **9.2** Leads panel — table of all leads/intakes sorted by date
   - Name, email, source (contact/intake/signup), date, status
   - Click to expand → see full intake details (budget, timeline, project type, conversation transcript)
-- [ ] **10.3** Pipeline view — leads categorized: New → Contacted → Proposal Sent → Closed → Delivered
+- [ ] **9.3** Pipeline view — leads categorized: New → Contacted → Proposal Sent → Closed → Delivered
   - Drag-and-drop or dropdown to update status
   - Status stored in DynamoDB (new field on lead item)
-- [ ] **10.4** Quick stats bar:
+- [ ] **9.4** Quick stats bar:
   - Leads this week / this month / all time
   - Leads by source (contact vs intake vs signup)
   - Conversion rate (leads → proposals → closed)
-- [ ] **10.5** Backend routes (admin-protected):
+- [ ] **9.5** Backend routes (admin-protected):
   - `GET /leads` — list all leads (paginated, sortable)
   - `PUT /leads/{id}` — update lead status
   - `GET /leads/stats` — aggregated metrics
-- [ ] **10.6** Auto-build button — "Generate Project" next to intake leads
+- [ ] **9.6** Auto-build button — "Generate Project" next to intake leads
   - Calls `POST /generate` → runs intake-to-kore mapping → returns project status
   - For now: marks the lead as "project generated" and shows the mapped kore params
   - Full auto-build (actually running `kore generate`) is a future CLI integration
-- [ ] **10.7** Email notification preferences — toggle which notifications you receive
-- [ ] **10.8** Mobile responsive — check dashboard on phone
+- [ ] **9.7** Email notification preferences — toggle which notifications you receive
+- [ ] **9.8** Mobile responsive — check dashboard on phone
 
 **Backend additions for dashboard:**
-- [ ] **10.9** Add `status` field to lead items (default: "new")
-- [ ] **10.10** Add `GET /leads` route (admin, paginated, filterable by source/status)
-- [ ] **10.11** Add `PUT /leads/{id}` route (admin, update status)
-- [ ] **10.12** Add `GET /leads/stats` route (admin, aggregated counts)
-- [ ] **10.13** Tests for all new routes
+- [ ] **9.9** Add `status` field to lead items (default: "new")
+- [ ] **9.10** Add `GET /leads` route (admin, paginated, filterable by source/status)
+- [ ] **9.11** Add `PUT /leads/{id}` route (admin, update status)
+- [ ] **9.12** Add `GET /leads/stats` route (admin, aggregated counts)
+- [ ] **9.13** Tests for all new routes
 
 ---
 
-## Phase 11: Auto-Build Pipeline (~4-6 hrs, Days 22-25)
+## Phase 10: Auto-Build Pipeline (~4-6 hrs, Days 22-25)
 
 Intake data → Kore project auto-generated. You refine, not build from scratch.
 
-- [ ] **11.1** Intake-to-Kore mapping config (`intake-mapping.json`):
+- [ ] **10.1** Intake-to-Kore mapping config (`intake-mapping.json`):
   ```json
   {
     "projectType": {
@@ -335,18 +324,29 @@ Intake data → Kore project auto-generated. You refine, not build from scratch.
     }
   }
   ```
-- [ ] **11.2** `scripts/kore-generate-from-intake.py`:
+- [ ] **10.2** `scripts/kore-generate-from-intake.py`:
   - Read intake record from DynamoDB by ID
   - Map fields to `kore new` parameters
   - Auto-detect industry from business description (keyword matching)
   - Generate `project-spec.md` with client's actual business info pre-filled
   - Run `kore new` (or output the command for manual execution)
-- [ ] **11.3** Claude-enhanced spec generation:
+- [ ] **10.3** Claude-enhanced spec generation:
   - Feed intake data + conversation transcript to Claude
   - Claude writes suggested page sections, headlines, CTA text
   - Output as pre-filled `project-spec.md`
-- [ ] **11.4** Test: submit fake intake → run generate → verify assembled project makes sense
-- [ ] **11.5** Dashboard integration: "Generate Project" button on intake leads triggers this pipeline
+- [ ] **10.4** Test: submit fake intake → run generate → verify assembled project makes sense
+- [ ] **10.5** Dashboard integration: "Generate Project" button on intake leads triggers this pipeline
+
+---
+
+## Phase 11: Arcade Page (~2-3 hrs)
+
+- [ ] **11.1** Create `frontend/arcade.html` with cyberpunk theme
+- [ ] **11.2** Arcade hero + game tile grid
+- [ ] **11.3** 3-5 placeholder game cards with "Coming Soon" badges
+- [ ] **11.4** CRT scanlines, orbs, glitch text (reuse existing CSS)
+- [ ] **11.5** Link from `index.html` arcade mode → `/arcade.html`
+- [ ] **11.6** Back-to-main CTA
 
 ---
 
@@ -447,20 +447,20 @@ How do you KNOW the websites you build actually work? Quantify it.
 | 0. Audit fixes | Day 1 | Security before anything |
 | 1. Section design | Days 1-4 | Make it beautiful |
 | 2. Intake form (scripted) | Days 4-6 | Start taking clients |
-| 3. Arcade page | Day 7 | Fun differentiator |
 | **WEEK 2** | | |
-| 4. Blog | Days 7-9 | Content + SEO |
-| 5. SEO & Analytics | Days 9-10 | Be findable |
-| 6. Mobile testing | Days 10-11 | Works everywhere |
-| 7. Custom domain | Day 12 | Professional URL |
-| 8. Launch | Days 13-14 | **GO LIVE** |
+| 3. Blog | Days 7-9 | Content + SEO |
+| 4. SEO & Analytics | Days 9-10 | Be findable |
+| 5. Mobile testing | Days 10-11 | Works everywhere |
+| 6. Custom domain | Day 12 | Professional URL |
+| 7. Launch | Days 13-14 | **GO LIVE** |
 | **WEEK 3** | | |
-| 9. AI chatbot | Days 15-18 | Website comes alive |
-| 10. Dashboard | Days 18-22 | See everything |
+| 8. AI chatbot | Days 15-18 | Website comes alive |
+| 9. Dashboard | Days 18-22 | See everything |
 | **WEEK 4** | | |
-| 11. Auto-build pipeline | Days 22-25 | Business runs itself |
-| 12. Email sequences | Days 25-27 | Automated follow-up |
-| 13. Value measurement | Days 27-30 | Prove it works |
+| 10. Auto-build pipeline | Days 22-25 | Business runs itself |
+| 11. Email sequences | Days 25-27 | Automated follow-up |
+| 12. Value measurement | Days 27-30 | Prove it works |
+| 13. Arcade page | When ready | Fun differentiator |
 
 ---
 
