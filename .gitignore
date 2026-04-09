@@ -39,8 +39,9 @@ docs/
 scripts/
 kore-recipes/
 
-# Implementation plan (agent handoff, not published)
+# Implementation plans (agent handoff, not published)
 PLAN.md
+plans/
 
 # Business docs (internal only)
 business-docs/
