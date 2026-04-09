@@ -202,7 +202,7 @@ function createCard(post) {
 
   const img = post.featuredImage
     ? `<div class="blog-card__img-wrap">
-        <img class="blog-card__img" src="${escapeHtml(post.featuredImage)}" alt="" width="640" height="360" loading="lazy">
+        <img class="blog-card__img" src="${escapeHtml(post.featuredImage)}" alt="${escapeHtml(post.title)}" width="640" height="360" loading="lazy">
         ${dateObj ? `<span class="blog-card__date-badge" aria-hidden="true">
           <span class="blog-card__date-badge-day">${dateObj.getDate()}</span>
           <span class="blog-card__date-badge-month">${dateObj.toLocaleString("en-US", { month: "short" })}</span>

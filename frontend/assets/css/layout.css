@@ -351,3 +351,27 @@
     padding: var(--spacing-5xl) 0;
   }
 }
+
+/* ── Extra-small screen fixes (320px) ── */
+@media (max-width: 359px) {
+  .container {
+    width: min(var(--width-wide), 100% - 2 * var(--spacing-md));
+  }
+
+  .container--narrow {
+    width: min(var(--width-content), 100% - 2 * var(--spacing-md));
+  }
+
+  .hero__inner {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}

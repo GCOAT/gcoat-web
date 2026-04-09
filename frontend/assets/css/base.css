@@ -294,6 +294,7 @@ body {
   background: var(--color-bg);
   min-height: 100vh;
   min-height: 100dvh;
+  overflow-x: hidden;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -433,6 +434,7 @@ code {
     background: transparent !important;
     color: #000 !important;
     box-shadow: none !important;
+    text-shadow: none !important;
   }
 
   a,
@@ -453,5 +455,131 @@ code {
   body {
     font-size: 12pt;
     line-height: 1.5;
+    overflow-x: visible !important;
+  }
+
+  /* Hide loader, splash, and mode UI */
+  .loader,
+  #loading-screen,
+  .splash,
+  #mode-splash,
+  .design-panel,
+  .design-panel-trigger,
+  .design-panel__backdrop {
+    display: none !important;
+  }
+
+  /* Hide fixed-position interactive elements */
+  .cursor-blob,
+  .scroll-progress,
+  .fab-cta,
+  .sticky-bar,
+  .mobile-sticky-bar {
+    display: none !important;
+  }
+
+  /* Hide canvases and WebGL */
+  canvas,
+  .hero__canvas,
+  .process__stars,
+  .services__fire-canvas,
+  .blog-bg,
+  .blog-bg__canvas,
+  .confetti-canvas {
+    display: none !important;
+  }
+
+  /* Hide aurora bands, nebulae, and decorative overlays */
+  [class*="__aurora"],
+  .process__nebula,
+  .process__shooting-star,
+  .process__cursor-trail,
+  .about__cursor-trail,
+  .services__cursor-trail,
+  .portfolio__decoration,
+  .footer__aurora {
+    display: none !important;
+  }
+
+  /* Hide hero decorative elements */
+  .hero__orb,
+  .hero__firefly,
+  .hero__grain,
+  .hero__scroll,
+  .hero__bg {
+    display: none !important;
+  }
+
+  /* Hide portfolio underwater decorations */
+  .portfolio__fish,
+  .portfolio__octopus,
+  .portfolio__rain,
+  .portfolio__ray,
+  .portfolio__seaweed,
+  .portfolio__bubble,
+  .portfolio__vent-bubble,
+  .portfolio__vent-mega,
+  .portfolio__particles,
+  .portfolio__surface,
+  .portfolio__depth,
+  .portfolio__fog,
+  .portfolio__cursor-trail {
+    display: none !important;
+  }
+
+  /* Hide marquee animations */
+  .marquee {
+    display: none !important;
+  }
+
+  /* Ensure fixed backgrounds don't print */
+  .hero,
+  .cta-band,
+  section {
+    position: relative !important;
+    break-inside: avoid;
+  }
+
+  /* Reset sticky header */
+  .site-header {
+    position: relative !important;
+  }
+
+  /* Ensure text is readable */
+  .gradient-text {
+    -webkit-text-fill-color: #000 !important;
+    background: none !important;
+  }
+
+  /* Show content that's hidden by JS reveal */
+  .reveal,
+  .reveal--left,
+  .reveal--right,
+  .reveal--scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Ensure images print */
+  img {
+    max-width: 100% !important;
+    break-inside: avoid;
+  }
+
+  /* Disable backdrop-filter for print */
+  .hero__glass,
+  .process__card,
+  .site-header {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Page breaks */
+  h1, h2, h3 {
+    break-after: avoid;
+  }
+
+  .section {
+    break-before: auto;
   }
 }

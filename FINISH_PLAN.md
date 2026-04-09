@@ -151,52 +151,57 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 
 ## Phase 3: Blog Section (~4-6 hrs, Days 7-9)
 
-- [ ] **3.1** Add `marked.js` via CDN (with SRI hash)
-- [ ] **3.2** Create `frontend/blog/index.html` — post listing (title, date, excerpt)
-- [ ] **3.3** Create `frontend/blog/post.html` — loads `.md` via fetch + marked.js
-- [ ] **3.4** Write 3 posts:
+- [x] **3.1** ~~Add `marked.js` via CDN~~ — N/A: blog uses backend API + DynamoDB instead of client-side markdown
+- [x] **3.2** Create `frontend/blog.html` — post listing (title, date, excerpt, tags, featured post hero)
+- [x] **3.3** Create `frontend/post.html` — loads posts via fetch from backend API
+- [x] **3.4** Write 3 posts (seeded via `backend/local/seed_blog_post{1,2,3}.json`):
   - "Why Every Small Business in St. Croix Needs a Website in 2026"
-  - "What Makes a Great Landing Page (And Why Yours Might Be Losing Customers)"
-  - "How Much Should a Small Business Website Cost?"
-- [ ] **3.5** Blog styling — article typography, reading time, responsive
-- [ ] **3.6** Blog SEO — per-post `<title>`, description, `og:type=article`, `Article` JSON-LD
-- [ ] **3.7** Add "Blog" to nav on all pages
-- [ ] **3.8** Add `marked.js` to deps-registry
+  - "What Makes a Great Landing Page (And Why Most Miss the Mark)"
+  - "How Much Should a Small Business Website Cost in 2026?"
+- [x] **3.5** Blog styling — article typography, reading time, responsive, dark/light theme
+- [x] **3.6** Blog SEO — dynamic `<title>`, description, `og:type=article`, `BlogPosting` JSON-LD
+- [x] **3.7** Add "Blog" to nav on all pages (index, blog, post, start, 404)
+- [x] **3.8** ~~Add `marked.js` to deps-registry~~ — N/A: not using marked.js
 
 ---
 
 ## Phase 4: SEO & Analytics (~2-3 hrs, Days 9-10)
 
-- [ ] **4.1** Organization JSON-LD on `index.html` (GCOAT-specific)
-- [ ] **4.2** Twitter Card tags on all pages
-- [ ] **4.3** OG image — 1200×630px GCOAT branded image
-- [ ] **4.4** Replace all `example.com` → actual domain
-- [ ] **4.5** Unique `<title>` + `meta description` per page
-- [ ] **4.6** Generate sitemap — `./scripts/seo.sh generate https://gcoat.com`
-- [ ] **4.7** Update `robots.txt` with actual domain
-- [ ] **4.8** Verify all images have `alt` text
-- [ ] **4.9** `./scripts/seo.sh validate` → 0 errors
-- [ ] **4.10** Create GA4 property + add measurement tag to all pages
-- [ ] **4.11** Configure GA4 conversion events (form_submission, newsletter_signup, scroll_depth)
-- [ ] **4.12** Update CSP for GA4 domains
-- [ ] **4.13** Google Search Console — verify + submit sitemap
-- [ ] **4.14** Google Business Profile — GCOAT as Web Design service in St. Croix
+- [x] **4.1** Organization JSON-LD on `index.html` — upgraded to dual-type `["Organization", "ProfessionalService"]` with full address (Christiansted, VI 00820), 5 social profiles, service catalog (6 services), 3 testimonial reviews, expanded knowsAbout, USVI + Worldwide areaServed
+- [x] **4.2** Twitter Card tags on all pages — present and synced with updated meta descriptions
+- [ ] **4.3** OG image — 1200×630px GCOAT branded image *(deferred to Phase 7 — current is placeholder)*
+- [x] **4.4** No `example.com` in SEO tags (only in form placeholders, correct UX). Domain URL swap deferred to Phase 6
+- [x] **4.5** Unique `<title>` + `meta description` per page — keyword-optimized with USVI + global terms, all within Kore length guidelines
+- [x] **4.6** Generate sitemap — `./scripts/seo.sh generate https://gcoat.github.io/gcoat-web` (4 pages, 2026-04-09)
+- [x] **4.7** `robots.txt` already correct (allows all, blocks admin.html, sitemap declared)
+- [x] **4.8** Verify all images have `alt` text — fixed dynamic blog card images (blog.js, post.js), added `aria-hidden` to 3 decorative SVGs
+- [x] **4.9** `./scripts/seo.sh validate` → 0 errors (2 acceptable warnings on post.html: dynamic JSON-LD + mutually exclusive H1s)
+- [ ] **4.10** Create GA4 property + add measurement tag to all pages *(deferred to Phase 7)*
+- [ ] **4.11** Configure GA4 conversion events (form_submission, newsletter_signup, scroll_depth) *(deferred to Phase 7)*
+- [ ] **4.12** Update CSP for GA4 domains *(deferred to Phase 7)*
+- [ ] **4.13** Google Search Console — verify + submit sitemap *(deferred to Phase 7)*
+- [ ] **4.14** Google Business Profile — GCOAT as Web Design service in St. Croix *(deferred to post-launch)*
+- [x] **4.15** *(added)* Geo meta tags on all 4 public pages — `geo.region: US-VI`, `geo.placename: St. Croix, US Virgin Islands`, coordinates
+- [x] **4.16** *(added)* Blog H1 updated: "Blog" → "Deh GCOAT Blog"
+- [x] **4.17** *(added)* JSON-LD on blog.html enhanced: `inLanguage`, logo in publisher
+- [x] **4.18** *(added)* JSON-LD on start.html enhanced: `inLanguage`, keyword-rich description, logo in publisher
+- [x] **4.19** *(added)* OG/Twitter tags synced with updated titles and descriptions on all pages
 
 ---
 
 ## Phase 5: Mobile & Cross-Browser (~3-4 hrs, Days 10-11)
 
-- [ ] **5.1** Responsive audit — all pages at 320px, 375px, 480px, 768px, 1024px, 1280px, 1440px
-- [ ] **5.2** Chat intake mobile verification
-- [ ] **5.3** Blog pages mobile — readable at all sizes
-- [ ] **5.4** Arcade page mobile — tiles stack, effects don't break
-- [ ] **5.5** WebGL fallback confirmed
-- [ ] **5.6** `backdrop-filter` fallback
-- [ ] **5.7** Touch interactions — hover effects degrade on touch
-- [ ] **5.8** Safari fixes (dvh, backdrop-filter, smooth scroll)
-- [ ] **5.9** Firefox audit
-- [ ] **5.10** `prefers-reduced-motion` respected on all new animations
-- [ ] **5.11** Print styles don't break
+- [x] **5.1** Responsive audit — all pages at 320px, 375px, 480px, 768px, 1024px, 1280px, 1440px — added `@media (max-width: 359px)` rules in layout.css + components.css for hero glass, buttons, stats, service cards, testimonials, CTA band, newsletter, chat intake
+- [x] **5.2** Chat intake mobile verification — 480px rules already solid, added 320px rules for bubbles/choices/input
+- [x] **5.3** Blog pages mobile — readable at all sizes; fixed `read-more` visibility on touch devices via `@media (pointer: coarse)`
+- [x] **5.4** Arcade page mobile — tiles stack via flex-wrap, clamp-based title, reduced-motion covered
+- [x] **5.5** WebGL fallback confirmed — `hasWebGL()`, reduced-motion check, hardware concurrency guard, mobile skip, CSS `.hero__bg-fallback` gradient
+- [x] **5.6** `backdrop-filter` fallback — all ~25 instances have `-webkit-` prefix AND rgba/hsl background fallback
+- [x] **5.7** Touch interactions — hover effects degrade on touch via `(pointer: coarse)` checks in all JS files; blog card read-more now visible on touch
+- [x] **5.8** Safari fixes — `overflow-x: hidden` fallback before `clip`, dvh with vh fallback, `-webkit-backdrop-filter` everywhere, `env(safe-area-inset-bottom)` on sticky-bar + design-panel-trigger, `-webkit-mask-image` on blog tags
+- [x] **5.9** Firefox audit — 4 `@property` instances for gradient rotation; Firefox <128 shows static gradient (acceptable degradation, no layout break)
+- [x] **5.10** `prefers-reduced-motion` respected — global wildcard in base.css catches all 144+ keyframes; 14 component-level blocks for element hiding; all JS files check `prefers-reduced-motion`
+- [x] **5.11** Print styles — expanded from 8 rules to comprehensive coverage: hides loader/splash/canvas/aurora/orbs/firefly/cursor-blob/scroll-progress/fab/sticky-bar/design-panel/marquee/portfolio-decorations; resets gradient-text, reveals JS-hidden content, proper page-break rules
 
 ---
 
@@ -215,18 +220,26 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 
 ## Phase 7: Production Readiness & Launch (~2-3 hrs, Days 13-14)
 
-- [ ] **7.1** All backend tests pass
-- [ ] **7.2** Content review — all text, images, links
-- [ ] **7.3** Link audit — no dead links or anchors
+- [x] **7.1** All backend tests pass — 259/259 passed in 1.28s
+- [x] **7.2** Content review — all pages scanned: no lorem ipsum, no placeholder text, no suspicious example.com (only in form placeholders — correct UX), "Coming Soon" badges intentional
+- [x] **7.3** Link audit — all anchor IDs (#about, #services, #portfolio, #process, #testimonials, #contact) verified in index.html, cross-page anchors correct, external social links valid
 - [ ] **7.4** Form smoke test — intake + contact + newsletter → DynamoDB + emails
-- [ ] **7.5** Performance — no console.log, clean CSP, no blocking resources
+- [x] **7.5** Performance — zero console.log/warn/error across all 16 JS files, CSP per-page tailored (intentional differences), init.js/config.js blocking justified (FOUC prevention), all modules async
 - [ ] **7.6** `./scripts/seo.sh validate` → 0 errors, Lighthouse SEO > 90
-- [ ] **7.7** Security — CSP correct, honeypot working
-- [ ] **7.8** 404 page updated with all nav links
+- [x] **7.7** Security — CSP verified per page (index/admin allow CDN, 404 minimal, others self-only), honeypot complete: 4 hidden fields across all forms, client-side isHoneypotFilled() guard + server-side silent accept in app.py
+- [x] **7.8** 404 page updated — added "Start a Project" CTA to header nav, full footer with nav links (8 links), social icons (5 SVGs), email, back-to-top link, page-404.js back-to-top handler
 - [ ] **7.9** Favicon + OG image verified across platforms
 - [ ] **7.10** GA4 Real-Time showing visits + events
 - [ ] **7.11** Deploy → GitHub Pages + backend
 - [ ] **7.12** Post-deploy smoke test on phone + desktop
+
+### Deferred from Phase 4 (SEO items requiring live domain or manual setup)
+- [ ] **7.13** Create OG image — 1200×630px GCOAT branded image, replace placeholder `og-image.jpg`
+- [ ] **7.14** Create GA4 property + add measurement tag (`gtag.js`) to all pages
+- [ ] **7.15** Configure GA4 conversion events: `form_submission`, `newsletter_signup`, `scroll_depth`
+- [ ] **7.16** Update CSP on all pages to allow GA4 domains (`googletagmanager.com`, `google-analytics.com`)
+- [ ] **7.17** Google Search Console — verify site ownership + submit sitemap URL
+- [ ] **7.18** Replace all `gcoat.github.io/gcoat-web` URLs with custom domain (canonical, OG, JSON-LD, sitemap, robots.txt, post.js) — coordinate with Phase 6
 
 ### Launch Day Actions
 - [ ] Submit sitemap to Google Search Console

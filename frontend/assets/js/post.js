@@ -445,7 +445,7 @@ function createRelatedCard(post) {
 
   const img = post.featuredImage
     ? `<div class="blog-card__img-wrap">
-        <img class="blog-card__img" src="${escapeHtml(post.featuredImage)}" alt="" width="640" height="360" loading="lazy">
+        <img class="blog-card__img" src="${escapeHtml(post.featuredImage)}" alt="${escapeHtml(post.title)}" width="640" height="360" loading="lazy">
       </div>`
     : "";
 
