@@ -26,6 +26,8 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          custom_url: https://gcoat.io
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

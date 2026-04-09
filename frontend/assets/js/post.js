@@ -176,7 +176,7 @@ function renderPost(post) {
     "publisher": {
       "@type": "Organization",
       "name": "GCOAT",
-      "url": "https://gcoat.github.io/gcoat-web/"
+      "url": "https://gcoat.io/"
     },
     "mainEntityOfPage": { "@type": "WebPage", "@id": window.location.href }
   };

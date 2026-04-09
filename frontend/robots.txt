@@ -5,4 +5,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://gcoat.github.io/gcoat-web/sitemap.xml
+Sitemap: https://gcoat.io/sitemap.xml
