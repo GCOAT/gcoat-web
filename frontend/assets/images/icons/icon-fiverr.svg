@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+  <!-- Fiverr "fi" lettermark -->
+  <!-- "f" letter: stem + hook + crossbar -->
+  <path d="M3 21V11H1V8h2V6.5C3 3.5 4.8 1.5 7.5 1.5H10v3H8.5C7.2 4.5 6.5 5.3 6.5 6.8V8H10v3H6.5v10H3z"/>
+  <!-- "i" letter: stem -->
+  <rect x="12" y="8" width="3.5" height="13" rx="0.3"/>
+  <!-- "i" letter: dot -->
+  <circle cx="13.75" cy="4" r="2.2"/>
+  <!-- crossbar connecting f and i -->
+  <rect x="1" y="8" width="14.5" height="3" rx="0.3"/>
+</svg>
