@@ -35,7 +35,7 @@
   <meta name="ICBM" content="17.7466, -64.7032">
 
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://oz8sqtiive.execute-api.us-east-1.amazonaws.com">
+        content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: https://www.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://oz8sqtiive.execute-api.us-east-1.amazonaws.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,6 +46,10 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
   <link rel="stylesheet" href="assets/css/components.css">
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QX6KHWBC4N"></script>
+  <script src="assets/js/gtag.js"></script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>

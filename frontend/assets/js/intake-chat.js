@@ -1117,6 +1117,7 @@ export function initIntakeChat() {
     try {
       const data = { ...answers, source: "intake" };
       await submitLead(data);
+      window.gtag?.("event", "form_submission", { form_type: "intake_chat" });
       clearDraft();
 
       messagesEl.innerHTML = "";

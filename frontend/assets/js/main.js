@@ -1059,6 +1059,7 @@ function initIntakeForm() {
       const data = collectFormData(form);
       data.source = "intake";
       await submitLead(data);
+      window.gtag?.("event", "form_submission", { form_type: "intake" });
       showStatus(statusEl, "success", "Thank you! We'll be in touch within 24 hours.");
       form.reset();
     } catch {
@@ -1094,6 +1095,7 @@ function initContactForm() {
       const data = collectFormData(form);
       data.source = "contact";
       await submitLead(data);
+      window.gtag?.("event", "form_submission", { form_type: "contact" });
       showStatus(statusEl, "success", "Message sent! We'll get back to you soon.");
       form.reset();
     } catch {
@@ -1126,6 +1128,7 @@ function initSignupForm() {
     try {
       const data = { email: emailInput.value.trim(), source: "signup" };
       await submitLead(data);
+      window.gtag?.("event", "newsletter_signup", { form_type: "signup" });
       showStatus(statusEl, "success", "You're subscribed!");
       form.reset();
     } catch {
@@ -1157,6 +1160,7 @@ function initNewsletterInlineForm() {
     try {
       const data = { email: emailInput.value.trim(), source: "signup" };
       await submitLead(data);
+      window.gtag?.("event", "newsletter_signup", { form_type: "newsletter_inline" });
       showStatus(statusEl, "success", "You're subscribed!");
       form.reset();
     } catch {

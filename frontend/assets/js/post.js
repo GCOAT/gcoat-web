@@ -513,6 +513,7 @@ if (subscribeForm) {
 
     try {
       await submitLead({ email, source: "blog-subscribe" });
+      window.gtag?.("event", "newsletter_signup", { form_type: "post_subscribe" });
       subscribeStatus.textContent = "You're subscribed! Thanks for signing up.";
       subscribeStatus.classList.add("blog-subscribe__status--success");
       subscribeForm.reset();
