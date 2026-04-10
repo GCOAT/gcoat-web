@@ -255,11 +255,51 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 - [ ] **7.24** Upload logo + avatar across all social profiles for consistent branding
 - [ ] **7.25** Update site social links (footer, contact section) with final profile URLs
 - [ ] **7.26** Create OG image using final logo (1200×630px) — replaces placeholder from 7.13
+- [ ] **7.27** Update OG image with hero section screenshot (1200×630px, professional state without liquid effect) — final version right before launch
+
+### Final Pre-Launch Push (Apr 10–13)
+
+**Day 1–2: Brand Identity (you)**
+- [ ] Design GCOAT logo — wordmark + square icon (Canva, Figma, or hire)
+- [ ] Export: SVG wordmark, square PNG (512×512), favicon sizes (16, 32, 180, 192, 512)
+
+**Day 2: Favicon + OG Image (you + Claude)**
+- [ ] Generate favicon set from logo (favicon.ico, apple-touch-icon.png, etc.)
+- [ ] Replace `frontend/assets/images/icons/favicon.svg` + `apple-touch-icon.png`
+- [ ] Screenshot hero section at 1200×630px → save as `og-image.jpg`
+- [ ] Push — Claude verifies favicon renders + OG image previews correctly (7.9)
+
+**Day 2: Email Setup (you)**
+- [ ] Set up hello@gcoat.io on Hostinger (or Google Workspace)
+- [ ] Verify gcoat.io sender identity in AWS SES
+- [ ] Update `SenderEmail` param in backend deploy → redeploy backend
+- [ ] Test: submit a form → confirm email arrives from hello@gcoat.io
+
+**Day 2–3: Social Profiles (you)**
+- [ ] Instagram — create @gcoatvi or @gcoat.io, add logo + bio + link
+- [ ] LinkedIn — create GCOAT company page
+- [ ] Fiverr — create GCOAT freelancer profile
+- [ ] Upwork — create GCOAT freelancer profile
+- [ ] GitHub org — update bio/avatar/links on existing org
+
+**Day 3: Final Code Updates (Claude)**
+- [ ] Update footer + contact social links with final profile URLs (7.25)
+- [ ] Update site email from gcoatllc@gmail.com → hello@gcoat.io (if changed)
+- [ ] Final `seo.sh validate` → 0 errors
+- [ ] Final content review — no stale placeholders
+- [ ] Push + deploy
+
+**Day 3: Launch Verification**
+- [ ] Visit gcoat.io on phone + desktop — full smoke test (7.12)
+- [ ] Verify GA4 Realtime showing visits + events (7.10)
+- [ ] Submit a test form → confirm DynamoDB + email flow
+- [ ] Check OG preview: paste gcoat.io into Twitter/LinkedIn/iMessage
+- [ ] Google Search Console — confirm sitemap is processing
 
 ### Launch Day Actions
-- [ ] Submit sitemap to Google Search Console
-- [ ] Update Google Business Profile
-- [ ] Share launch on social media (all profiles from 7.23)
+- [x] Submit sitemap to Google Search Console
+- [ ] Update Google Business Profile (7.14 — deferred to post-launch)
+- [ ] Share launch on social media (all profiles)
 - [ ] Set 30-day check-in reminder
 
 ---
