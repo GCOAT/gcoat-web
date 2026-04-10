@@ -123,21 +123,11 @@
 /* ── Background Image Sections ──
    Apply .section--bg to any section with a background image.
    Set the image via inline style: style="--bg-image: url('...')"
-   The tint overlay automatically adapts to the active color scheme. */
+   The overlay automatically adapts to the active color scheme. */
 .section--bg {
   position: relative;
   overflow: hidden;
-}
-
-.section--bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 0;
+  background: var(--bg-image) center / cover no-repeat;
 }
 
 .section--bg::after {
@@ -159,25 +149,19 @@
   z-index: 2;
 }
 
-/* Dark overlay variant — stronger fade for text readability */
-.section--bg-dark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* Dark overlay variant — semi-transparent fade for text readability. */
+.section--bg-dark::after {
   background: linear-gradient(
     to bottom,
-    rgba(11, 18, 32, 0.82),
-    rgba(11, 18, 32, 0.92)
+    rgba(11, 18, 32, 0.55),
+    rgba(11, 18, 32, 0.7)
   );
+  mix-blend-mode: normal;
   z-index: 1;
 }
 
-.section--bg-dark::after {
-  z-index: 2;
-}
-
 .section--bg-dark > * {
-  z-index: 3;
+  z-index: 2;
 }
 
 /* ── About Layout ── */

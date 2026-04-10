@@ -8902,17 +8902,18 @@ select.input:focus-visible {
   text-align: center;
   background: linear-gradient(
     to bottom,
-    transparent 0%,
-    rgba(255, 255, 255, 0.02) 30%,
+    rgba(11, 18, 32, 0.3) 0%,
+    rgba(11, 18, 32, 0.15) 20%,
+    rgba(255, 255, 255, 0.02) 50%,
     rgba(255, 255, 255, 0.04) 100%
   );
-  border-top: 1px solid var(--color-border);
+  border-top: none;
 }
 
 [data-theme="light"] .newsletter-inline {
   background: linear-gradient(
     to bottom,
-    transparent 0%,
+    rgba(0, 0, 0, 0.03) 0%,
     rgba(0, 0, 0, 0.015) 30%,
     rgba(0, 0, 0, 0.03) 100%
   );
