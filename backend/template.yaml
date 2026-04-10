@@ -233,11 +233,11 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref LeadsTable
-        - DynamoDBReadPolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref ContentTable
         - DynamoDBCrudPolicy:
             TableName: !Ref BlogTable
-        - S3WritePolicy:
+        - S3CrudPolicy:
             BucketName: !Ref MediaBucket
         - Statement:
             - Effect: Allow
@@ -272,6 +272,18 @@ Resources:
             ApiId: !Ref HttpApi
             Method: POST
             Path: /leads
+        GetLeads:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /leads
+        DeleteLead:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: DELETE
+            Path: /leads/{sk}
         GetContent:
           Type: HttpApi
           Properties:
@@ -284,6 +296,18 @@ Resources:
             ApiId: !Ref HttpApi
             Method: POST
             Path: /media/presign
+        GetMediaList:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /media/list
+        DeleteMedia:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: DELETE
+            Path: /media/delete
         GetBlogPosts:
           Type: HttpApi
           Properties:

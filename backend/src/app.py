@@ -114,6 +114,19 @@ def _route_key(event):
     path = event.get("rawPath") or event.get("path") or ""
     return f"{method} {path}"
 
+def _path_param(event, name, *, prefix=""):
+    """Safely extract a path parameter, with rawPath fallback."""
+    val = (event.get("pathParameters") or {}).get(name, "")
+    if val:
+        return val
+    if prefix:
+        raw = event.get("rawPath") or event.get("path") or ""
+        if prefix in raw:
+            val = raw.split(prefix, 1)[-1].split("/")[0]
+            from urllib.parse import unquote
+            return unquote(val)
+    return ""
+
 def _body_json(event, *, max_bytes=None):
     max_bytes = max_bytes or MAX_BODY_BYTES
     raw = event.get("body") or ""
@@ -213,7 +226,10 @@ def _send_lead_notification(email, name, message, source, **extra):
         f"Time:    {_now_iso()}\n"
     )
     # Append optional extra fields
-    for label, key in [("Existing Website", "existingWebsite"),
+    for label, key in [("Phone", "phone"), ("Company", "companyName"),
+                       ("Project Type", "projectType"), ("Budget", "budgetRange"),
+                       ("Timeline", "timeline"),
+                       ("Existing Website", "existingWebsite"),
                        ("Inspiration", "inspirationLinks"),
                        ("Branding", "brandingStatus"),
                        ("Features", "features")]:
@@ -437,6 +453,9 @@ def handle_post_leads(event):
     try:
         db.put_item(table, item)
         _send_lead_notification(email, name, message, source,
+                                phone=phone, companyName=company_name,
+                                projectType=project_type, budgetRange=budget_range,
+                                timeline=timeline,
                                 existingWebsite=existing_website,
                                 inspirationLinks=inspiration_links,
                                 brandingStatus=branding_status,
@@ -447,7 +466,7 @@ def handle_post_leads(event):
         return _json(500, {"ok": False, "message": "Failed to store lead", "code": "INTERNAL_ERROR"})
 
 def handle_get_content(event):
-    page = ((event.get("pathParameters") or {}).get("page") or "").strip().lower()
+    page = _path_param(event, "page", prefix="/content/").strip().lower()
     if not page or not re.match(r"^[a-z0-9\-]{1,100}$", page):
         return _json(400, {"ok": False, "message": "Invalid page", "code": "VALIDATION_ERROR"})
 
@@ -543,7 +562,7 @@ def handle_delete_lead(event):
     if not table:
         return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
 
-    sk = ((event.get("pathParameters") or {}).get("sk") or "").strip()
+    sk = _path_param(event, "sk", prefix="/leads/").strip()
     if not sk:
         return _json(400, {"ok": False, "message": "Missing lead ID", "code": "VALIDATION_ERROR"})
 
@@ -594,11 +613,14 @@ def handle_delete_media(event):
     if not _require_admin(event):
         return _json(401, {"ok": False, "message": "Unauthorized", "code": "AUTH_REQUIRED"})
 
-    data = _body_json(event)
-    if data is None:
-        return _json(400, {"ok": False, "message": "Invalid JSON", "code": "VALIDATION_ERROR"})
-
-    key = str(data.get("key") or "").strip()
+    # Accept key from query param (preferred) or body (fallback)
+    params = event.get("queryStringParameters") or {}
+    key = (params.get("key") or "").strip()
+    if not key:
+        data = _body_json(event)
+        if data is None:
+            return _json(400, {"ok": False, "message": "Invalid JSON", "code": "VALIDATION_ERROR"})
+        key = str(data.get("key") or "").strip()
     if not key or not key.startswith("uploads/"):
         return _json(400, {"ok": False, "message": "Invalid key", "code": "VALIDATION_ERROR"})
 
@@ -835,7 +857,7 @@ def handle_get_blog_post(event):
     if not table:
         return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
 
-    slug = ((event.get("pathParameters") or {}).get("slug") or "").strip().lower()
+    slug = _path_param(event, "slug", prefix="/blog/posts/").strip().lower()
     if not slug or not _SLUG_RE.match(slug):
         return _json(400, {"ok": False, "message": "Invalid slug", "code": "VALIDATION_ERROR"})
 
@@ -934,7 +956,7 @@ def handle_put_blog_post(event):
     if not table:
         return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
 
-    slug = ((event.get("pathParameters") or {}).get("slug") or "").strip().lower()
+    slug = _path_param(event, "slug", prefix="/blog/posts/").strip().lower()
     if not slug or not _SLUG_RE.match(slug):
         return _json(400, {"ok": False, "message": "Invalid slug", "code": "VALIDATION_ERROR"})
 
@@ -1022,7 +1044,7 @@ def handle_delete_blog_post(event):
     if not table:
         return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
 
-    slug = ((event.get("pathParameters") or {}).get("slug") or "").strip().lower()
+    slug = _path_param(event, "slug", prefix="/blog/posts/").strip().lower()
     if not slug or not _SLUG_RE.match(slug):
         return _json(400, {"ok": False, "message": "Invalid slug", "code": "VALIDATION_ERROR"})
 
@@ -1046,6 +1068,8 @@ def handle_delete_blog_post(event):
 def handle_get_blog_feed(event):
     """Return an RSS 2.0 XML feed of the latest published blog posts."""
     table = _blog_table()
+    if not table:
+        return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
     origin = os.environ.get("ALLOWED_ORIGIN", "")
     site_name = os.environ.get("SITE_NAME", "Blog")
 

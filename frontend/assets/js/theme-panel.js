@@ -120,6 +120,9 @@ function applyScheme(schemeName) {
   // Sync sliders to new preset values
   syncSlidersToPreset(schemeName);
 
+  // Swap CTA band background image
+  updateCtaBg(schemeName);
+
   announce(`Color scheme changed to ${schemeName}`);
 
   // Notify shader to update colors
@@ -492,6 +495,45 @@ fontOptions?.forEach((opt) => {
 // Load saved font stylesheet on init
 if (fontLink && currentFont !== "tech" && FONT_URLS[currentFont]) {
   fontLink.href = FONT_URLS[currentFont];
+}
+
+// ── CTA Background Swap ──
+const CTA_BG_MAP = {
+  electric: "ember-earth.webp",
+  midnight: "midnight-bubbles.webp",
+  ember:    "ember-nodes.webp",
+  forest:   "forest-network.webp",
+};
+
+function updateCtaBg(schemeName) {
+  const bg = document.querySelector(".cta-band__bg");
+  if (!bg) return;
+  const file = CTA_BG_MAP[schemeName];
+  if (!file) {
+    // Monochrome or custom — fade out overlay, inline default shows through
+    bg.classList.remove("is-active");
+    return;
+  }
+  bg.style.backgroundImage = `linear-gradient(to bottom, rgba(11,18,32,0.6), rgba(11,18,32,0.75)), url('assets/images/backgrounds/${file}')`;
+  bg.classList.add("is-active");
+}
+
+// Set initial CTA background to match saved scheme
+updateCtaBg(currentScheme);
+
+// ── Auto-open design panel when newsletter section enters viewport ──
+const newsletterSection = document.querySelector(".newsletter-inline");
+if (newsletterSection && panel) {
+  const newsletterObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        openPanel();
+        newsletterObserver.disconnect();
+      }
+    },
+    { threshold: 0.3 }
+  );
+  newsletterObserver.observe(newsletterSection);
 }
 
 // ── Accessibility ──

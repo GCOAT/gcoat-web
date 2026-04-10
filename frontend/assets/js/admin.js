@@ -160,13 +160,14 @@ function showPanel() {
 // ── API helpers ──
 async function apiFetch(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
+  const { headers: optHeaders, ...rest } = options;
   const config = {
+    ...rest,
     headers: {
       "Content-Type": "application/json",
       "x-admin-token": adminToken,
-      ...options.headers,
+      ...optHeaders,
     },
-    ...options,
   };
   if (config.body && typeof config.body === "object") {
     config.body = JSON.stringify(config.body);
@@ -267,18 +268,20 @@ function showLeadDetail(lead) {
     ["Project Type", lead.projectType],
     ["Budget", lead.budgetRange],
     ["Timeline", lead.timeline],
+    ["Features", lead.features],
     ["Existing Website", lead.existingWebsite],
     ["Inspiration", lead.inspirationLinks],
     ["Branding", lead.brandingStatus],
     ["Message", lead.message],
   ].filter(([, v]) => v);
 
-  leadDetailBody.innerHTML = fields.map(([label, val]) =>
-    `<div class="admin-detail__row">
+  leadDetailBody.innerHTML = fields.map(([label, val]) => {
+    const display = Array.isArray(val) ? val.join(", ") : val;
+    return `<div class="admin-detail__row">
       <span class="admin-detail__label">${esc(label)}</span>
-      <span class="admin-detail__value">${esc(val)}</span>
-    </div>`
-  ).join("");
+      <span class="admin-detail__value">${esc(display)}</span>
+    </div>`;
+  }).join("");
   leadDetail.hidden = false;
 }
 
@@ -300,7 +303,7 @@ function exportLeadsCSV() {
   const filtered = allLeads.filter(lead => {
     if (source && lead.source !== source) return false;
     if (query) {
-      const haystack = `${lead.name || ""} ${lead.email || ""}`.toLowerCase();
+      const haystack = `${lead.name || ""} ${lead.email || ""} ${lead.message || ""}`.toLowerCase();
       if (!haystack.includes(query)) return false;
     }
     return true;
@@ -431,7 +434,7 @@ async function editPost(slug) {
     editorView.hidden = false;
     editorStatus.hidden = true;
   } catch (err) {
-    showStatusMsg(editorStatus, "error", `Failed to load post: ${err.message}`);
+    alert(`Failed to load post: ${err.message}`);
   }
 }
 
@@ -454,7 +457,7 @@ async function savePost(status) {
     status,
     slug: fSlug.value.trim() || undefined,
     excerpt: fExcerpt.value.trim() || undefined,
-    tags: fTags.value.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean) || undefined,
+    tags: fTags.value.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean),
     featuredImage: fFeaturedImage.value.trim() || undefined,
   };
 
@@ -585,9 +588,8 @@ async function handleMediaUpload() {
 async function deleteMedia(key) {
   if (!confirm(`Delete "${key.split("/").pop()}"?`)) return;
   try {
-    await apiFetch("/media/delete", {
+    await apiFetch(`/media/delete?key=${encodeURIComponent(key)}`, {
       method: "DELETE",
-      body: { key },
     });
     loadMediaList();
   } catch (err) {

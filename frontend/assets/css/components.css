@@ -7787,6 +7787,22 @@ select.input {
   100% { transform: translate(-15px, 20px) scale(1.02); }
 }
 
+/* ── CTA Band Background Overlay (theme-swap crossfade) ── */
+.cta-band__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.cta-band__bg.is-active {
+  opacity: 1;
+}
+
 /* Glass inner container */
 .cta-band__inner {
   position: relative;
