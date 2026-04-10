@@ -4,6 +4,7 @@ window.APP_CONFIG = {
   ENV: "prod",
   FEATURES: {
     CONTACT_FORM: true,
-    BLOG: true
+    BLOG: true,
+    MEDIA: true
   }
 };

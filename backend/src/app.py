@@ -504,6 +504,115 @@ def handle_post_media_presign(event):
     except ClientError:
         return _json(500, {"ok": False, "message": "Failed to create presign", "code": "INTERNAL_ERROR"})
 
+
+# ---------------------------------------------------------------------------
+# Admin: Leads
+# ---------------------------------------------------------------------------
+
+def handle_get_leads(event):
+    """GET /leads — list all leads (admin only)."""
+    if not _require_admin(event):
+        return _json(401, {"ok": False, "message": "Unauthorized", "code": "AUTH_REQUIRED"})
+
+    table = os.environ.get("LEADS_TABLE_NAME") or ""
+    if not table:
+        return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
+
+    params = event.get("queryStringParameters") or {}
+    try:
+        limit = min(int(params.get("limit") or 200), 500)
+    except (ValueError, TypeError):
+        limit = 200
+
+    try:
+        items, last_key = db.query_items(
+            table, Key("pk").eq("LEADS"),
+            scan_forward=False, limit=limit,
+        )
+        return _json(200, {"ok": True, "data": {"leads": items, "nextKey": last_key}})
+    except ClientError:
+        return _json(500, {"ok": False, "message": "Failed to list leads", "code": "INTERNAL_ERROR"})
+
+
+def handle_delete_lead(event):
+    """DELETE /leads/{sk} — delete a single lead (admin only)."""
+    if not _require_admin(event):
+        return _json(401, {"ok": False, "message": "Unauthorized", "code": "AUTH_REQUIRED"})
+
+    table = os.environ.get("LEADS_TABLE_NAME") or ""
+    if not table:
+        return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
+
+    sk = ((event.get("pathParameters") or {}).get("sk") or "").strip()
+    if not sk:
+        return _json(400, {"ok": False, "message": "Missing lead ID", "code": "VALIDATION_ERROR"})
+
+    try:
+        db.delete_item(table, {"pk": "LEADS", "sk": sk})
+        return _json(200, {"ok": True, "data": {"deleted": True}})
+    except ClientError:
+        return _json(500, {"ok": False, "message": "Failed to delete lead", "code": "INTERNAL_ERROR"})
+
+
+# ---------------------------------------------------------------------------
+# Admin: Media
+# ---------------------------------------------------------------------------
+
+def handle_get_media_list(event):
+    """GET /media/list — list S3 objects in uploads/ (admin only)."""
+    if not _require_admin(event):
+        return _json(401, {"ok": False, "message": "Unauthorized", "code": "AUTH_REQUIRED"})
+
+    bucket = os.environ.get("MEDIA_BUCKET_NAME") or ""
+    if not bucket:
+        return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
+
+    try:
+        resp = _s3().list_objects_v2(Bucket=bucket, Prefix="uploads/", MaxKeys=200)
+        contents = resp.get("Contents", [])
+        region = os.environ.get("AWS_REGION") or "us-east-1"
+        files = []
+        for obj in contents:
+            key = obj["Key"]
+            if key == "uploads/":
+                continue
+            url = f"https://{bucket}.s3.{region}.amazonaws.com/{key}"
+            files.append({
+                "key": key,
+                "url": url,
+                "size": obj.get("Size", 0),
+                "lastModified": obj.get("LastModified", "").isoformat() if hasattr(obj.get("LastModified", ""), "isoformat") else "",
+            })
+        files.sort(key=lambda f: f["lastModified"], reverse=True)
+        return _json(200, {"ok": True, "data": {"files": files}})
+    except ClientError:
+        return _json(500, {"ok": False, "message": "Failed to list media", "code": "INTERNAL_ERROR"})
+
+
+def handle_delete_media(event):
+    """DELETE /media/delete — delete an S3 object (admin only)."""
+    if not _require_admin(event):
+        return _json(401, {"ok": False, "message": "Unauthorized", "code": "AUTH_REQUIRED"})
+
+    data = _body_json(event)
+    if data is None:
+        return _json(400, {"ok": False, "message": "Invalid JSON", "code": "VALIDATION_ERROR"})
+
+    key = str(data.get("key") or "").strip()
+    if not key or not key.startswith("uploads/"):
+        return _json(400, {"ok": False, "message": "Invalid key", "code": "VALIDATION_ERROR"})
+
+    bucket = os.environ.get("MEDIA_BUCKET_NAME") or ""
+    if not bucket:
+        return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
+
+    try:
+        _s3().delete_object(Bucket=bucket, Key=key)
+        return _json(200, {"ok": True, "data": {"deleted": True}})
+    except ClientError:
+        return _json(500, {"ok": False, "message": "Failed to delete media", "code": "INTERNAL_ERROR"})
+
+
 # ---------------------------------------------------------------------------
 # Blog
 # ---------------------------------------------------------------------------
@@ -1015,10 +1124,18 @@ def lambda_handler(event, context):
             response = handle_options(event)
         elif rk == "POST /leads":
             response = handle_post_leads(event)
+        elif rk == "GET /leads":
+            response = handle_get_leads(event)
+        elif rk == "DELETE /leads/{sk}" or rk.startswith("DELETE /leads/"):
+            response = handle_delete_lead(event)
         elif rk == "GET /content/{page}" or rk.startswith("GET /content/"):
             response = handle_get_content(event)
         elif rk == "POST /media/presign":
             response = handle_post_media_presign(event)
+        elif rk == "GET /media/list":
+            response = handle_get_media_list(event)
+        elif rk == "DELETE /media/delete":
+            response = handle_delete_media(event)
         elif rk == "GET /blog/posts":
             response = handle_get_blog_posts(event)
         elif rk == "GET /blog/feed":

@@ -43,13 +43,51 @@
     <!-- Admin content (hidden until authed) -->
     <div id="admin-panel" hidden>
       <!-- Tab navigation -->
-      <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
-        <button class="admin-tab is-active" role="tab" aria-selected="true"
-                aria-controls="panel-blog" id="tab-blog">Blog</button>
+      <nav class="admin-tabs" role="tablist" aria-label="Admin sections" id="admin-tablist">
+        <!-- Tabs injected by JS based on FEATURES flags -->
       </nav>
 
-      <!-- Blog panel -->
-      <section id="panel-blog" role="tabpanel" aria-labelledby="tab-blog">
+      <!-- ═══ Leads panel ═══ -->
+      <section id="panel-leads" class="admin-panel-section" role="tabpanel" aria-labelledby="tab-leads" hidden>
+        <div class="admin-toolbar">
+          <h2>Leads</h2>
+          <div class="admin-toolbar__actions">
+            <select class="input admin-filter-select" id="leads-source-filter">
+              <option value="">All sources</option>
+            </select>
+            <input class="input" type="search" id="leads-search" placeholder="Search email or name…" style="max-width:220px">
+            <button class="btn btn--sm" id="btn-export-leads">Export CSV</button>
+          </div>
+        </div>
+
+        <table class="admin-table" id="leads-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Source</th>
+              <th>Date</th>
+              <th>Message</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leads-tbody">
+            <tr><td colspan="6" class="admin-table__empty">Loading&hellip;</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Lead detail overlay -->
+        <div id="lead-detail" class="admin-detail" hidden>
+          <div class="admin-detail__header">
+            <h3 id="lead-detail-title">Lead Details</h3>
+            <button class="btn btn--sm" id="btn-close-lead-detail">&times; Close</button>
+          </div>
+          <div id="lead-detail-body" class="admin-detail__body"></div>
+        </div>
+      </section>
+
+      <!-- ═══ Blog panel ═══ -->
+      <section id="panel-blog" class="admin-panel-section" role="tabpanel" aria-labelledby="tab-blog" hidden>
         <!-- List view -->
         <div id="blog-list-view">
           <div class="admin-toolbar">
@@ -126,6 +164,23 @@
 
             <p id="editor-status" class="form-status" hidden></p>
           </form>
+        </div>
+      </section>
+
+      <!-- ═══ Media panel ═══ -->
+      <section id="panel-media" class="admin-panel-section" role="tabpanel" aria-labelledby="tab-media" hidden>
+        <div class="admin-toolbar">
+          <h2>Media</h2>
+          <label class="btn btn--primary" id="btn-upload-media">
+            + Upload
+            <input type="file" id="media-file-input" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+          </label>
+        </div>
+
+        <p id="media-upload-status" class="form-status" hidden></p>
+
+        <div id="media-grid" class="admin-media-grid">
+          <p class="admin-table__empty">Loading&hellip;</p>
         </div>
       </section>
     </div>
