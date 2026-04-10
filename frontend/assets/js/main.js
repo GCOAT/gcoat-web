@@ -961,6 +961,14 @@ function collectFormData(form) {
     data[key] = value;
   }
   if (data.features) data.features = data.features.join(", ");
+
+  // Branding: if "Other" radio selected (empty value), use the custom text input
+  if (data.brandingStatus === "") {
+    const otherInput = form.querySelector("#intake-branding-other");
+    if (otherInput?.value.trim()) data.brandingStatus = otherInput.value.trim();
+    else delete data.brandingStatus;
+  }
+
   return data;
 }
 
@@ -1046,6 +1054,19 @@ function initIntakeForm() {
   form.querySelectorAll("[required]").forEach((input) => {
     input.addEventListener("blur", () => validateField(input));
   });
+
+  // Branding status: show/hide custom input when "Other" is selected
+  const brandingRadios = form.querySelectorAll('input[name="brandingStatus"]');
+  const brandingOtherInput = form.querySelector("#intake-branding-other");
+  if (brandingRadios.length && brandingOtherInput) {
+    brandingRadios.forEach((radio) => {
+      radio.addEventListener("change", () => {
+        const isOther = radio.closest(".chip--other-toggle") !== null;
+        brandingOtherInput.hidden = !isOther;
+        if (isOther) brandingOtherInput.focus();
+      });
+    });
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

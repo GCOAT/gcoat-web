@@ -3,7 +3,7 @@
 > **Client:** GCOAT, LLC (Greatest Coders of All Time)
 > **Owner:** Amali Krigger
 > **Tier:** Kore v2 (full-stack)
-> **Contact:** gcoatllc@gmail.com
+> **Contact:** akrigger@gcoat.io
 
 ---
 
@@ -144,7 +144,7 @@ The site is a single-page layout with the following sections, in order:
 - Honeypot field
 - Submit button: "Send Message"
 - Submits via `POST /leads` with `source: "contact"`
-- Also display: gcoatllc@gmail.com as direct email link, social media links
+- Also display: akrigger@gcoat.io as direct email link, social media links
 
 #### 12. Footer
 - GCOAT text brand
@@ -156,7 +156,7 @@ The site is a single-page layout with the following sections, in order:
   - Submits via `POST /leads` with `source: "signup"`
 - Quick links: About, Services, Portfolio, Process, Contact
 - Social links: GitHub, LinkedIn, Instagram, Fiverr, Upwork
-- Contact email: gcoatllc@gmail.com
+- Contact email: akrigger@gcoat.io
 - Copyright: "© 2026 GCOAT, LLC. All rights reserved." (auto-updated year via JS)
 - Back-to-top button
 
@@ -240,7 +240,7 @@ The site is a single-page layout with the following sections, in order:
   - `GET /content/{page}` — Available but not used for MVP (static content)
   - `POST /media/presign` — Available but not used for MVP
 - **SES email** (production only):
-  - Owner notification on new lead (to gcoatllc@gmail.com)
+  - Owner notification on new lead (to akrigger@gcoat.io)
   - User confirmation email (to the email they submitted)
 - **Extended lead fields:** phone, projectType, budgetRange, timeline, companyName, features (list)
 - **Mode system:** Two visual modes via `data-mode` attribute, splash chooser, localStorage persistence
@@ -258,4 +258,4 @@ The site is a single-page layout with the following sections, in order:
 - **Performance**: No console.log in production, CSP meta tag, no render-blocking scripts
 - **Backend**: Python 3.13, boto3 only. No additional pip packages.
 - **AWS profile**: gcoat-admin (GCOAT LLC account)
-- **SES**: Off in dev, on in prod. Sender: gcoatllc@gmail.com
+- **SES**: Off in dev, on in prod. Sender: akrigger@gcoat.io

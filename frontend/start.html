@@ -131,7 +131,7 @@
           <!-- Chat progress bar -->
           <div class="chat__progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Intake progress">
             <div class="chat__progress-fill"></div>
-            <span class="chat__progress-text">Step 1 of 7</span>
+            <span class="chat__progress-text">Step 1 of 8</span>
           </div>
 
           <!-- Conversational chat UI -->
@@ -214,16 +214,16 @@
 
             <fieldset class="form-group form-group--chips">
               <legend class="label">Features / Sections</legend>
-              <div class="chip-group">
-                <label class="chip"><input type="checkbox" name="features" value="Hero Section"><span>Hero Section</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="About"><span>About</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="Services"><span>Services</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="Portfolio / Gallery"><span>Portfolio / Gallery</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="Testimonials"><span>Testimonials</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="Contact Form"><span>Contact Form</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="Newsletter Signup"><span>Newsletter Signup</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="FAQ"><span>FAQ</span></label>
-                <label class="chip"><input type="checkbox" name="features" value="Pricing"><span>Pricing</span></label>
+              <div class="chip-group chip-group--hinted">
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Hero Section"><span class="chip__content"><span class="chip__label">Hero Section</span><span class="chip__hint">Big intro banner at the top</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="About"><span class="chip__content"><span class="chip__label">About</span><span class="chip__hint">Your story and mission</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Services"><span class="chip__content"><span class="chip__label">Services</span><span class="chip__hint">What you offer</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Portfolio / Gallery"><span class="chip__content"><span class="chip__label">Portfolio / Gallery</span><span class="chip__hint">Showcase your work</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Testimonials"><span class="chip__content"><span class="chip__label">Testimonials</span><span class="chip__hint">Client reviews and quotes</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Contact Form"><span class="chip__content"><span class="chip__label">Contact Form</span><span class="chip__hint">Let visitors reach out</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Newsletter Signup"><span class="chip__content"><span class="chip__label">Newsletter Signup</span><span class="chip__hint">Collect email subscribers</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="FAQ"><span class="chip__content"><span class="chip__label">FAQ</span><span class="chip__hint">Common questions answered</span></span></label>
+                <label class="chip chip--hinted"><input type="checkbox" name="features" value="Pricing"><span class="chip__content"><span class="chip__label">Pricing</span><span class="chip__hint">Plans, packages, or rates</span></span></label>
               </div>
             </fieldset>
 
@@ -245,10 +245,18 @@
                   <label class="label" for="intake-inspiration">Inspiration Links</label>
                   <input class="input" id="intake-inspiration" name="inspirationLinks" type="text" maxlength="500" placeholder="e.g. https://stripe.com, https://linear.app">
                 </div>
-                <div class="form-group">
-                  <label class="label" for="intake-branding">Branding Status</label>
-                  <input class="input" id="intake-branding" name="brandingStatus" type="text" maxlength="200" placeholder="e.g. Have logo + colors, need everything">
-                </div>
+                <fieldset class="form-group form-group--chips">
+                  <legend class="label">Branding Status</legend>
+                  <div class="chip-group">
+                    <label class="chip"><input type="radio" name="brandingStatus" value="Have logo + brand colors"><span>Have logo + brand colors</span></label>
+                    <label class="chip"><input type="radio" name="brandingStatus" value="Have a logo only"><span>Have a logo only</span></label>
+                    <label class="chip"><input type="radio" name="brandingStatus" value="Have colors / fonts, no logo"><span>Have colors / fonts, no logo</span></label>
+                    <label class="chip"><input type="radio" name="brandingStatus" value="Starting from scratch"><span>Starting from scratch</span></label>
+                    <label class="chip"><input type="radio" name="brandingStatus" value="Not sure yet"><span>Not sure yet</span></label>
+                    <label class="chip chip--other-toggle"><input type="radio" name="brandingStatus" value=""><span>Other</span></label>
+                  </div>
+                  <input class="input branding-other-input" id="intake-branding-other" type="text" maxlength="200" placeholder="Describe your branding situation…" hidden aria-label="Custom branding status">
+                </fieldset>
               </div>
             </details>
 
@@ -270,7 +278,7 @@
       <div class="footer__brand">
         <span class="brand"><span class="brand__gradient">GCOAT</span></span>
         <p class="footer__tagline">Greatest Coders of All Time</p>
-        <a class="footer__email" href="mailto:gcoatllc@gmail.com">gcoatllc@gmail.com</a>
+        <a class="footer__email" href="mailto:info@gcoat.io">info@gcoat.io</a>
       </div>
 
       <nav class="footer__nav" aria-label="Footer navigation">

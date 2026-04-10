@@ -270,10 +270,12 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 - [ ] Push — Claude verifies favicon renders + OG image previews correctly (7.9)
 
 **Day 2: Email Setup (you)**
-- [ ] Set up hello@gcoat.io on Hostinger (or Google Workspace)
-- [ ] Verify gcoat.io sender identity in AWS SES
-- [ ] Update `SenderEmail` param in backend deploy → redeploy backend
-- [ ] Test: submit a form → confirm email arrives from hello@gcoat.io
+- [x] Set up akrigger@gcoat.io on Hostinger (Starter Business Email — $0.39/mo)
+- [x] Verify akrigger@gcoat.io in AWS SES
+- [ ] Create info@gcoat.io alias in Hostinger → forwards to akrigger@gcoat.io
+- [ ] Verify info@gcoat.io sender identity in AWS SES (needed so form emails come from info@)
+- [ ] Redeploy backend with `SenderEmail: info@gcoat.io`
+- [ ] Test: submit a form → confirm email arrives at akrigger@gcoat.io from info@gcoat.io
 
 **Day 2–3: Social Profiles (you)**
 - [ ] Instagram — create @gcoatvi or @gcoat.io, add logo + bio + link
@@ -283,8 +285,9 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 - [ ] GitHub org — update bio/avatar/links on existing org
 
 **Day 3: Final Code Updates (Claude)**
+- [x] Update site email from gcoatllc@gmail.com → akrigger@gcoat.io (all pages + kore.config.json)
+- [ ] Swap site-facing email to info@gcoat.io once alias is live
 - [ ] Update footer + contact social links with final profile URLs (7.25)
-- [ ] Update site email from gcoatllc@gmail.com → hello@gcoat.io (if changed)
 - [ ] Final `seo.sh validate` → 0 errors
 - [ ] Final content review — no stale placeholders
 - [ ] Push + deploy

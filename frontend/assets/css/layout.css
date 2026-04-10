@@ -120,6 +120,66 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* ── Background Image Sections ──
+   Apply .section--bg to any section with a background image.
+   Set the image via inline style: style="--bg-image: url('...')"
+   The tint overlay automatically adapts to the active color scheme. */
+.section--bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.section--bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.section--bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    hsla(var(--hue-primary), var(--sat-primary), var(--light-primary), 0.12),
+    hsla(var(--hue-secondary), var(--sat-secondary), var(--light-secondary), 0.08)
+  );
+  mix-blend-mode: color;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.section--bg > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Dark overlay variant — stronger fade for text readability */
+.section--bg-dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(11, 18, 32, 0.82),
+    rgba(11, 18, 32, 0.92)
+  );
+  z-index: 1;
+}
+
+.section--bg-dark::after {
+  z-index: 2;
+}
+
+.section--bg-dark > * {
+  z-index: 3;
+}
+
 /* ── About Layout ── */
 .about__grid {
   display: grid;

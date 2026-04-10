@@ -109,7 +109,7 @@ const PLACEHOLDER_EXAMPLES = [
 const ENCOURAGEMENT = {
   message: "Great picks!",
   references: "Love the vision!",
-  budgetTimeline: "Almost there — just a couple more details!",
+  budget: "Almost there — just a couple more details!",
 };
 
 // ── Chat Step Definitions ──
@@ -123,16 +123,29 @@ const SERVICE_MAP = {
 };
 
 const FEATURE_OPTIONS = [
-  "Hero Section",
-  "About",
-  "Services",
-  "Portfolio / Gallery",
-  "Testimonials",
-  "Contact Form",
-  "Newsletter Signup",
-  "FAQ",
-  "Pricing",
+  { label: "Hero Section", hint: "Big intro banner at the top" },
+  { label: "About", hint: "Your story and mission" },
+  { label: "Services", hint: "What you offer" },
+  { label: "Portfolio / Gallery", hint: "Showcase your work" },
+  { label: "Testimonials", hint: "Client reviews and quotes" },
+  { label: "Contact Form", hint: "Let visitors reach out" },
+  { label: "Newsletter Signup", hint: "Collect email subscribers" },
+  { label: "FAQ", hint: "Common questions answered" },
+  { label: "Pricing", hint: "Plans, packages, or rates" },
 ];
+
+/** Helper — get just the label strings for data storage */
+const FEATURE_LABELS = FEATURE_OPTIONS.map((f) => f.label);
+
+/** Smart defaults — pre-select common features by project type */
+const FEATURE_DEFAULTS = {
+  "Landing Page": ["Hero Section", "About", "Contact Form"],
+  "Business Website": ["Hero Section", "About", "Services", "Contact Form", "Testimonials"],
+  "Portfolio": ["Hero Section", "About", "Portfolio / Gallery", "Contact Form"],
+  "Event Page": ["Hero Section", "About", "FAQ", "Contact Form"],
+  "Waitlist / Pre-Launch": ["Hero Section", "About", "Newsletter Signup"],
+  "E-Commerce": ["Hero Section", "About", "Portfolio / Gallery", "Pricing", "Contact Form"],
+};
 
 const STEPS = [
   {
@@ -171,7 +184,10 @@ const STEPS = [
   },
   {
     id: "features",
-    question: () => "What do you need on it? Pick all that apply.",
+    question: (a) =>
+      FEATURE_DEFAULTS[a.projectType]
+        ? "I've pre-selected the most common sections for that type. Adjust as you like!"
+        : "What do you need on it? Pick all that apply.",
     type: "multiselect",
     options: FEATURE_OPTIONS,
     required: true,
@@ -198,32 +214,27 @@ const STEPS = [
     maxLength: 500,
   },
   {
-    id: "budgetTimeline",
+    id: "budget",
     question: () =>
       "What's your budget range? No pressure — helps us scope the right package.",
-    type: "combined",
-    subSteps: [
-      {
-        id: "budget",
-        question: () =>
-          "What's your budget range? No pressure — helps us scope the right package.",
-        options: [
-          "$500–$1K",
-          "$1K–$2K",
-          "$2K–$3.5K",
-          "$3.5K+",
-          "Not sure yet",
-        ],
-        field: "budgetRange",
-      },
-      {
-        id: "timeline",
-        question: () => "And when do you need it done?",
-        options: ["ASAP", "2 weeks", "1 month", "Flexible"],
-        field: "timeline",
-      },
+    type: "choice",
+    options: [
+      "$500–$1K",
+      "$1K–$2K",
+      "$2K–$3.5K",
+      "$3.5K+",
+      "Not sure yet",
     ],
     required: true,
+    field: "budgetRange",
+  },
+  {
+    id: "timeline",
+    question: () => "And when do you need it done?",
+    type: "choice",
+    options: ["ASAP", "2 weeks", "1 month", "Flexible"],
+    required: true,
+    field: "timeline",
   },
   {
     id: "summary",
@@ -246,13 +257,6 @@ export function getNextQuestion(step, answers) {
   if (s.type === "summary") {
     return { type: "summary", html: generateSummary(answers) };
   }
-  if (s.type === "combined") {
-    return {
-      type: "combined",
-      subSteps: s.subSteps,
-      required: s.required,
-    };
-  }
   return {
     type: s.type,
     text: s.question(answers),
@@ -265,7 +269,7 @@ export function getNextQuestion(step, answers) {
 
 export function processAnswer(step, answer) {
   const s = STEPS[step];
-  if (s.type === "multiselect" || s.type === "combined") {
+  if (s.type === "multiselect") {
     return { valid: true, value: answer };
   }
   const trimmed = typeof answer === "string" ? answer.trim() : answer;
@@ -448,11 +452,6 @@ export function initIntakeChat() {
       return;
     }
 
-    if (q.type === "combined") {
-      await renderCombinedStep(q);
-      return;
-    }
-
     if (q.type === "multiselect") {
       await showTypingThenMessage(q.text);
       renderMultiSelectChips(q);
@@ -465,7 +464,7 @@ export function initIntakeChat() {
 
   async function showTypingThenMessage(content, isHtml = false) {
     const typing = addTypingIndicator();
-    await delay(randomDelay(400, 900));
+    await delay(randomDelay(200, 400));
     typing.remove();
     addBotMessage(content, isHtml);
   }
@@ -630,6 +629,8 @@ export function initIntakeChat() {
         onSubmit();
       }
     });
+
+    renderGoBack();
   }
 
   // ── Single Choice Buttons (with "Something Else" handling) ──
@@ -707,6 +708,7 @@ export function initIntakeChat() {
 
     inputArea.appendChild(grid);
     addArrowKeyNav(grid, ".chat__choice-btn");
+    renderGoBack();
     requestAnimationFrame(() => {
       const first = grid.querySelector(".chat__choice-btn");
       if (first) first.focus();
@@ -717,7 +719,12 @@ export function initIntakeChat() {
 
   function renderMultiSelectChips(question) {
     inputArea.innerHTML = "";
-    const selected = new Set(answers.features || []);
+    // Pre-select smart defaults based on project type (if no features chosen yet)
+    const defaults =
+      !answers.features?.length && answers.projectType
+        ? FEATURE_DEFAULTS[answers.projectType] || []
+        : [];
+    const selected = new Set(answers.features || defaults);
     let otherText = "";
 
     const grid = document.createElement("div");
@@ -726,19 +733,32 @@ export function initIntakeChat() {
     grid.setAttribute("aria-label", question.text);
 
     question.options.forEach((opt, i) => {
+      const label = typeof opt === "string" ? opt : opt.label;
+      const hint = typeof opt === "string" ? null : opt.hint;
       const btn = document.createElement("button");
-      btn.className = "chat__choice-btn";
-      if (selected.has(opt)) btn.classList.add("is-selected");
+      btn.className = "chat__choice-btn chat__choice-btn--with-hint";
+      if (selected.has(label)) btn.classList.add("is-selected");
       btn.type = "button";
-      btn.textContent = opt;
-      btn.setAttribute("aria-pressed", selected.has(opt) ? "true" : "false");
+      btn.setAttribute("aria-pressed", selected.has(label) ? "true" : "false");
       btn.tabIndex = i === 0 ? 0 : -1;
+
+      const labelSpan = document.createElement("span");
+      labelSpan.className = "chat__choice-label";
+      labelSpan.textContent = label;
+      btn.appendChild(labelSpan);
+
+      if (hint) {
+        const hintSpan = document.createElement("span");
+        hintSpan.className = "chat__choice-hint";
+        hintSpan.textContent = hint;
+        btn.appendChild(hintSpan);
+      }
 
       btn.addEventListener("click", () => {
         const isOn = btn.classList.toggle("is-selected");
         btn.setAttribute("aria-pressed", isOn ? "true" : "false");
-        if (isOn) selected.add(opt);
-        else selected.delete(opt);
+        if (isOn) selected.add(label);
+        else selected.delete(label);
       });
       grid.appendChild(btn);
     });
@@ -792,6 +812,7 @@ export function initIntakeChat() {
     inputArea.appendChild(errorEl);
 
     addArrowKeyNav(grid, ".chat__choice-btn");
+    renderGoBack();
 
     doneBtn.addEventListener("click", () => {
       const feats = [...selected];
@@ -809,59 +830,6 @@ export function initIntakeChat() {
       currentStep++;
       showNextQuestion();
     });
-  }
-
-  // ── Combined Budget + Timeline Step ──
-
-  async function renderCombinedStep(q) {
-    let subIdx = 0;
-
-    async function showSub() {
-      const sub = q.subSteps[subIdx];
-      await showTypingThenMessage(sub.question(answers));
-      renderSubChoiceButtons(sub);
-    }
-
-    function renderSubChoiceButtons(sub) {
-      inputArea.innerHTML = "";
-      const grid = document.createElement("div");
-      grid.className = "chat__choices";
-      grid.setAttribute("role", "group");
-      grid.setAttribute("aria-label", sub.question(answers));
-
-      sub.options.forEach((opt, i) => {
-        const btn = document.createElement("button");
-        btn.className = "chat__choice-btn";
-        btn.type = "button";
-        btn.textContent = opt;
-        btn.setAttribute("aria-label", opt);
-        btn.tabIndex = i === 0 ? 0 : -1;
-
-        btn.addEventListener("click", () => {
-          answers[sub.field] = opt;
-          addUserMessage(opt);
-          inputArea.innerHTML = "";
-          subIdx++;
-
-          if (subIdx < q.subSteps.length) {
-            showSub();
-          } else {
-            currentStep++;
-            showNextQuestion();
-          }
-        });
-        grid.appendChild(btn);
-      });
-
-      inputArea.appendChild(grid);
-      addArrowKeyNav(grid, ".chat__choice-btn");
-      requestAnimationFrame(() => {
-        const first = grid.querySelector(".chat__choice-btn");
-        if (first) first.focus();
-      });
-    }
-
-    showSub();
   }
 
   // ── Summary Actions + Inline Editing ──
@@ -906,23 +874,14 @@ export function initIntakeChat() {
     const originalHtml = valueEl.innerHTML;
     if (editBtn) editBtn.hidden = true;
 
-    const step = STEPS.find(
-      (s) =>
-        s.field === field ||
-        (s.type === "combined" && s.subSteps?.some((ss) => ss.field === field))
-    );
+    const step = STEPS.find((s) => s.field === field);
 
     if (field === "features") {
       renderInlineMultiSelect(row, valueEl, editBtn, originalHtml);
       return;
     }
 
-    const choiceStep =
-      step?.type === "choice"
-        ? step
-        : step?.type === "combined"
-          ? step.subSteps.find((ss) => ss.field === field)
-          : null;
+    const choiceStep = step?.type === "choice" ? step : null;
     if (choiceStep?.options) {
       renderInlineChoice(
         row,
@@ -1053,7 +1012,7 @@ export function initIntakeChat() {
     const grid = document.createElement("div");
     grid.className = "chat__choices chat__choices--multi chat__choices--inline";
 
-    FEATURE_OPTIONS.forEach((opt) => {
+    FEATURE_LABELS.forEach((opt) => {
       const btn = document.createElement("button");
       btn.className = "chat__choice-btn";
       if (currentFeats.has(opt)) btn.classList.add("is-selected");
@@ -1211,6 +1170,33 @@ export function initIntakeChat() {
         btns[next].focus();
       }
     });
+  }
+
+  function renderGoBack() {
+    if (currentStep <= 0) return;
+    const link = document.createElement("button");
+    link.className = "chat__go-back";
+    link.type = "button";
+    link.innerHTML = "&#8592; Go back";
+    link.setAttribute("aria-label", "Go back to previous question");
+    link.addEventListener("click", () => {
+      // Remove the last bot message + user answer
+      const bubbles = messagesEl.querySelectorAll(".chat__bubble");
+      const toRemove = [];
+      for (let i = bubbles.length - 1; i >= 0 && toRemove.length < 2; i--) {
+        toRemove.push(bubbles[i]);
+      }
+      toRemove.forEach((el) => el.remove());
+
+      // Clear the previous answer
+      const prevStep = STEPS[currentStep - 1];
+      if (prevStep?.field) delete answers[prevStep.field];
+
+      currentStep--;
+      inputArea.innerHTML = "";
+      showNextQuestion();
+    });
+    inputArea.appendChild(link);
   }
 
   function scrollToBottom() {
