@@ -1,7 +1,7 @@
 {
   "koreRepo": "/Users/amalikrigger/Developer/WebstormProjects/kore",
   "koreTemplate": "kore-starter-template-v2",
-  "lastSyncedAt": "2026-04-12T00:43:41Z",
+  "lastSyncedAt": "2026-04-12T01:00:50Z",
   "testImportPrefix": "src",
   "files": {
     "auto": {
@@ -96,8 +96,8 @@
         "projHash": "7b35778437c08cf445cd210f15880a05d7327bcb3f0e3d9e3d2a503ab92605c2"
       },
       "backend/template.yaml": {
-        "koreHash": "09478e1af3783d36985058f5fce28db9b40694dcd86d6267a82ed1f782584a7e",
-        "projHash": "72ca1174a605df4e61cef7009e7300c1cbfc8ed57f07abf95df8669a6f55cf85"
+        "koreHash": "65e33565abbc11f3ca2e12e5ab972fc5b3f26947d1efe175b0006030c9efccf9",
+        "projHash": "1c93a94bb597af7ede94ac72beae497df16e8f2ef10a3f3ca3711dac427b4e32"
       },
       "frontend/admin.html": {
         "koreHash": "552c43a391ca3b3e5926739925749a56ee810b1328f19ab4c485a0f610783c15",
