@@ -60,6 +60,7 @@ Conditions:
   IsPITR: !Equals [!Ref EnablePITR, "true"]
   IsSES: !Equals [!Ref EnableSES, "true"]
   IsCloudFront: !Equals [!Ref EnableCloudFront, "true"]
+  HasDevOrigin: !Not [!Equals [!Ref DevOrigin, ""]]
 
 Globals:
   Function:
@@ -84,9 +85,11 @@ Resources:
     Properties:
       StageName: !Ref StageName
       CorsConfiguration:
-        AllowOrigins:
-          - !Ref AllowedOrigin
-          - !Ref DevOrigin
+        AllowOrigins: !If
+          - HasDevOrigin
+          - - !Ref AllowedOrigin
+            - !Ref DevOrigin
+          - - !Ref AllowedOrigin
         AllowHeaders:
           - content-type
           - x-admin-token
