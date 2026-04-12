@@ -1,8 +1,15 @@
 // theme-panel.js — Design panel: color scheme presets, HSL sliders, font changer
 
 const FONT_URLS = {
+  default: "https://fonts.googleapis.com/css2?family=Aldrich&family=Inter:wght@400;500;600;700&display=swap",
   tech: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
+  tektur: "https://fonts.googleapis.com/css2?family=Tektur:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
+  "days-one": "https://fonts.googleapis.com/css2?family=Days+One&family=Inter:wght@400;500;600;700&display=swap",
+  "jockey-one": "https://fonts.googleapis.com/css2?family=Jockey+One&family=Inter:wght@400;500;600;700&display=swap",
+  farro: "https://fonts.googleapis.com/css2?family=Farro:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap",
+  "reddit-mono": "https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
   classic: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap",
+  crimson: "https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
   geometric: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap",
   mono: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
   system: "",
@@ -37,7 +44,7 @@ const announcer = document.getElementById("status-announcer");
 
 // ── State ──
 let currentScheme = localStorage.getItem("gcoat-scheme") || "monochrome";
-let currentFont = localStorage.getItem("gcoat-font") || "tech";
+let currentFont = localStorage.getItem("gcoat-font") || "default";
 
 // ── Panel Open/Close ──
 function openPanel() {
@@ -455,7 +462,7 @@ function applyFont(fontName) {
   if (headingInput) headingInput.value = "";
   if (bodyInput) bodyInput.value = "";
 
-  if (fontName !== "tech") {
+  if (fontName !== "default") {
     root.setAttribute("data-font", fontName);
   } else {
     root.removeAttribute("data-font");
@@ -493,7 +500,7 @@ fontOptions?.forEach((opt) => {
 });
 
 // Load saved font stylesheet on init
-if (fontLink && currentFont !== "tech" && FONT_URLS[currentFont]) {
+if (fontLink && currentFont !== "default" && FONT_URLS[currentFont]) {
   fontLink.href = FONT_URLS[currentFont];
 }
 
@@ -521,19 +528,22 @@ function updateCtaBg(schemeName) {
 // Set initial CTA background to match saved scheme
 updateCtaBg(currentScheme);
 
-// ── Auto-open design panel when newsletter section enters viewport ──
-const newsletterSection = document.querySelector(".newsletter-inline");
-if (newsletterSection && panel) {
-  const newsletterObserver = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        openPanel();
-        newsletterObserver.disconnect();
-      }
-    },
-    { threshold: 0.3 }
-  );
-  newsletterObserver.observe(newsletterSection);
+// ── Auto-open design panel on first visit when user reaches page bottom ──
+if (!localStorage.getItem("gcoat-panel-shown")) {
+  const footer = document.querySelector(".site-footer");
+  if (footer && panel) {
+    const footerObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          openPanel();
+          localStorage.setItem("gcoat-panel-shown", "1");
+          footerObserver.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    footerObserver.observe(footer);
+  }
 }
 
 // ── Accessibility ──

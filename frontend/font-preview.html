@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Font Preview — GCOAT</title>
+
+  <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+
+  <!-- Google Fonts — preconnect + defaults -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Default pairing -->
+  <link id="google-fonts-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aldrich&family=Inter:wght@400;500;600;700&display=swap">
+  <!-- Top 6 picks — preloaded for instant switching -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aldrich&family=Tektur:wght@400;500;600;700&family=Days+One&family=Jockey+One&family=Farro:wght@400;500;700&family=Reddit+Mono:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+
+  <style>
+    /* ── Font Preview Layout ── */
+    body { overflow-x: hidden; }
+
+    .fp {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .fp__sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 320px;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: var(--spacing-lg);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .fp__sidebar-title {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .fp__sidebar-subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* Search */
+    .fp__search {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: var(--font-size-sm);
+    }
+    .fp__search:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px hsla(var(--hue-primary), var(--sat-primary), var(--light-primary), 0.25);
+    }
+    .fp__search::placeholder { color: var(--color-text-muted); }
+
+    /* Revert button */
+    .fp__revert {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      font-family: var(--font-body);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      width: 100%;
+      justify-content: center;
+    }
+    .fp__revert:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* Active font label */
+    .fp__active-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      padding: var(--spacing-xs) 0;
+    }
+    .fp__active-label strong {
+      color: var(--color-primary);
+    }
+
+    /* Font sections */
+    .fp__section-label {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: var(--spacing-sm) 0 var(--spacing-xs);
+      padding-bottom: var(--spacing-xs);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .fp__font-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Font button */
+    .fp__font-btn {
+      display: block;
+      width: 100%;
+      padding: 10px var(--spacing-md);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-size: var(--font-size-base);
+      text-align: left;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      line-height: 1.4;
+    }
+    .fp__font-btn:hover {
+      background: hsla(var(--hue-primary), var(--sat-primary), var(--light-primary), 0.08);
+      border-color: hsla(var(--hue-primary), var(--sat-primary), var(--light-primary), 0.2);
+    }
+    .fp__font-btn.is-active {
+      background: hsla(var(--hue-primary), var(--sat-primary), var(--light-primary), 0.15);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+    }
+    .fp__font-btn.is-loading {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .fp__font-btn-star {
+      color: hsl(45, 90%, 50%);
+      margin-right: 4px;
+      font-size: var(--font-size-sm);
+    }
+
+    /* ── Preview Area ── */
+    .fp__preview {
+      grid-column: 2;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* Override header to not be fixed so it scrolls with preview */
+    .fp__preview .site-header {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Hero simplified — no canvas, just bg + content */
+    .fp__preview .hero {
+      position: relative;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .fp__preview .hero__bg {
+      position: absolute;
+      inset: 0;
+    }
+    .fp__preview .hero__inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .fp__preview .hero__glass {
+      padding: var(--spacing-2xl);
+    }
+    .fp__preview .hero__canvas,
+    .fp__preview .hero__bg-fallback,
+    .fp__preview .hero__grain,
+    .fp__preview .hero__fireflies,
+    .fp__preview .hero__scroll {
+      display: none;
+    }
+
+    /* Brand mark showcase */
+    .fp__brand-showcase {
+      padding: var(--spacing-3xl) var(--spacing-xl);
+      text-align: center;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .fp__brand-showcase-label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: var(--spacing-lg);
+    }
+    .fp__brand-variants {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--spacing-2xl);
+      align-items: baseline;
+    }
+    .fp__brand-variant {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    .fp__brand-large {
+      font-family: var(--font-heading);
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: var(--font-weight-extrabold);
+      letter-spacing: 2px;
+      color: var(--color-text);
+      line-height: 1;
+    }
+    .fp__brand-code {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      line-height: 1;
+    }
+    .fp__brand-code .bracket {
+      color: var(--color-primary);
+    }
+    .fp__brand-small {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* About sample */
+    .fp__about-sample {
+      padding: var(--spacing-3xl) var(--spacing-xl);
+    }
+    .fp__about-sample .section__title {
+      margin-bottom: var(--spacing-lg);
+    }
+    .fp__about-body {
+      font-family: var(--font-body);
+      font-size: var(--font-size-md);
+      line-height: var(--line-height-base);
+      color: var(--color-text-secondary);
+      max-width: 680px;
+    }
+
+    /* Service card sample */
+    .fp__card-sample {
+      padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-3xl);
+      display: flex;
+      justify-content: center;
+    }
+    .fp__card-sample .service-card {
+      max-width: 360px;
+      width: 100%;
+    }
+
+    /* Type specimen */
+    .fp__specimen {
+      padding: var(--spacing-3xl) var(--spacing-xl);
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+    }
+    .fp__specimen-heading {
+      font-family: var(--font-heading);
+      color: var(--color-text);
+      margin-bottom: var(--spacing-sm);
+    }
+    .fp__specimen h1 { font-size: var(--font-size-4xl); }
+    .fp__specimen h2 { font-size: var(--font-size-3xl); }
+    .fp__specimen h3 { font-size: var(--font-size-2xl); }
+    .fp__specimen h4 { font-size: var(--font-size-xl); }
+    .fp__specimen p {
+      font-family: var(--font-body);
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-base);
+      color: var(--color-text-secondary);
+      max-width: 680px;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    /* ── Mobile: sidebar becomes top drawer ── */
+    @media (max-width: 768px) {
+      .fp {
+        grid-template-columns: 1fr;
+      }
+
+      .fp__sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .fp__sidebar.is-collapsed .fp__font-list,
+      .fp__sidebar.is-collapsed .fp__section-label,
+      .fp__sidebar.is-collapsed .fp__search {
+        display: none;
+      }
+
+      .fp__preview {
+        grid-column: 1;
+      }
+
+      .fp__toggle-sidebar {
+        display: flex;
+      }
+    }
+
+    .fp__toggle-sidebar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      font-family: var(--font-body);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* No-result message */
+    .fp__no-results {
+      padding: var(--spacing-md);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="fp">
+  <!-- ── Sidebar ── -->
+  <aside class="fp__sidebar" id="fp-sidebar">
+    <h1 class="fp__sidebar-title">Font Preview</h1>
+    <p class="fp__sidebar-subtitle">Click a font to apply it to headings &amp; brand</p>
+
+    <button class="fp__toggle-sidebar" id="fp-toggle" type="button">
+      <span id="fp-toggle-text">Hide Font List</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
+
+    <div class="fp__active-label" id="fp-active-label">
+      Active: <strong>Space Grotesk</strong> (default)
+    </div>
+
+    <button class="fp__revert" id="fp-revert" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+      Revert to Space Grotesk
+    </button>
+
+    <input class="fp__search" id="fp-search" type="text" placeholder="Search fonts…" autocomplete="off">
+
+    <!-- Top Picks -->
+    <div class="fp__section-label">★ Top Picks</div>
+    <div class="fp__font-list" id="fp-top-picks"></div>
+
+    <!-- All Heading Fonts -->
+    <div class="fp__section-label">All Heading Fonts</div>
+    <div class="fp__font-list" id="fp-all-fonts"></div>
+
+    <div class="fp__no-results" id="fp-no-results">No fonts match your search.</div>
+  </aside>
+
+  <!-- ── Preview Area ── -->
+  <main class="fp__preview">
+
+    <!-- Nav bar preview -->
+    <header class="site-header" role="banner">
+      <div class="container header__inner">
+        <a class="brand glitch glitch--hover" href="./index.html" data-text="GCOAT">GCOAT</a>
+        <nav class="nav" aria-label="Primary navigation">
+          <div class="nav__menu">
+            <a class="nav__link" href="#about">About</a>
+            <a class="nav__link" href="#services">Services</a>
+            <a class="nav__link" href="#portfolio">Portfolio</a>
+            <a class="nav__link" href="#process">Process</a>
+            <a class="nav__link" href="#contact">Contact</a>
+            <a class="nav__cta" href="./start.html">Start a Project</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero preview -->
+    <section class="hero" id="hero">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__orb hero__orb--1"></div>
+        <div class="hero__orb hero__orb--2"></div>
+        <div class="hero__orb hero__orb--3"></div>
+      </div>
+      <div class="container hero__inner">
+        <div class="hero__glass">
+          <h1 class="hero__title">Your Idea, Live and Running</h1>
+          <p class="hero__subtitle">We design, build, and ship your website — so you can get back to running your business.</p>
+          <div class="hero__stats" aria-label="Key metrics">
+            <div class="hero__stat">
+              <span class="hero__stat-number">10</span><span class="hero__stat-suffix">+</span>
+              <span class="hero__stat-label">Projects Built</span>
+            </div>
+            <div class="hero__stat-divider" aria-hidden="true"></div>
+            <div class="hero__stat">
+              <span class="hero__stat-number">100</span><span class="hero__stat-suffix">%</span>
+              <span class="hero__stat-label">Client Satisfaction</span>
+            </div>
+            <div class="hero__stat-divider" aria-hidden="true"></div>
+            <div class="hero__stat">
+              <span class="hero__stat-prefix">&lt;&nbsp;</span><span class="hero__stat-number">30</span>
+              <span class="hero__stat-label">Day Avg Delivery</span>
+            </div>
+          </div>
+          <div class="hero__actions">
+            <a class="btn btn--primary hero__cta" href="./start.html">Start Your Project</a>
+            <a class="btn btn--secondary hero__cta" href="#contact">Just Say Hi</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand mark showcase -->
+    <div class="fp__brand-showcase">
+      <div class="fp__brand-showcase-label">Brand Mark Preview</div>
+      <div class="fp__brand-variants">
+        <div class="fp__brand-variant">
+          <div class="fp__brand-large">GCOAT</div>
+          <div class="fp__brand-small">Wordmark</div>
+        </div>
+        <div class="fp__brand-variant">
+          <div class="fp__brand-code"><span class="bracket">&lt;</span>G<span class="bracket">/&gt;</span></div>
+          <div class="fp__brand-small">Code Mark</div>
+        </div>
+        <div class="fp__brand-variant">
+          <div class="fp__brand-large" style="font-size: clamp(1.5rem, 3vw, 2.5rem); letter-spacing: 6px;">GREATEST CODERS OF ALL TIME</div>
+          <div class="fp__brand-small">Full Name</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About section sample -->
+    <div class="fp__about-sample">
+      <h2 class="section__title gradient-text">About GCOAT</h2>
+      <p class="fp__about-body">You have an idea — a business, a product, a project that needs to exist online. GCOAT (Greatest Coders of All Time), founded by Amali Krigger, turns that idea into a fast, accessible, production-ready digital product.</p>
+    </div>
+
+    <!-- Service card sample -->
+    <div class="fp__card-sample">
+      <article class="card service-card">
+        <div class="service-card__icon-badge">
+          <svg class="service-card__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+            <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+          </svg>
+        </div>
+        <h3 class="card__title">Landing Pages</h3>
+        <p class="card__body">Lead capture, contact forms, and email notifications. High-converting pages that turn visitors into customers.</p>
+        <a class="service-card__cta" href="./start.html?service=landing-page">Get Started →</a>
+      </article>
+    </div>
+
+    <!-- Type specimen -->
+    <div class="fp__specimen">
+      <h1 class="fp__specimen-heading">Heading 1 — The quick brown fox</h1>
+      <h2 class="fp__specimen-heading">Heading 2 — jumps over the lazy dog</h2>
+      <h3 class="fp__specimen-heading">Heading 3 — Pack my box with five dozen</h3>
+      <h4 class="fp__specimen-heading">Heading 4 — liquor jugs, 0123456789</h4>
+      <p>Body text stays in Inter. This paragraph demonstrates how the heading font pairs with the body font. Good typography isn't just about picking a beautiful typeface — it's about contrast. The heading should command attention while the body remains invisible, letting the content breathe.</p>
+      <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%^&amp;*()_+-=[]{}|;:'",.&lt;&gt;?/</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── Font Data ──
+const TOP_PICKS = [
+  { name: "Aldrich", family: "Aldrich", note: "Geometric, techy, clean" },
+  { name: "Tektur", family: "Tektur", note: "Modern, angular, technical" },
+  { name: "Days One", family: "Days One", note: "Bold, rounded, confident" },
+  { name: "Jockey One", family: "Jockey One", note: "Compact and punchy" },
+  { name: "Farro", family: "Farro", note: "Clean geometric with personality" },
+  { name: "Reddit Mono", family: "Reddit Mono", note: "Monospace = code" },
+];
+
+const ALL_FONTS = [
+  "Allerta Stencil",
+  "Average Sans",
+  "Black Han Sans",
+  "Black Ops One",
+  "ByteSized",
+  "Cabin",
+  "Candal",
+  "Caveat Brush",
+  "Change One",
+  "Chonburi",
+  "Creepster",
+  "Crimson Pro",
+  "Estonia",
+  "Emblema One",
+  "Gideon Roman",
+  "Jaini",
+  "Jaini Purva",
+  "Jaro",
+  "Jersey 15",
+  "Jersey 25",
+  "Jim Nightshade",
+  "Momo Trust Display",
+  "Monofett",
+  "New Rocker",
+  "Orelega One",
+  "Ovo",
+  "Passion One",
+  "Piedra",
+  "Protest Revolution",
+  "PT Serif Caption",
+  "Risque",
+  "Rosario",
+  "Rubik Distressed",
+  "Rufina",
+].sort();
+
+const DEFAULT_FONT = "Space Grotesk";
+
+// Track loaded fonts to avoid duplicate <link> elements
+const loadedFonts = new Set([
+  "Aldrich", "Tektur", "Days One", "Jockey One", "Farro", "Reddit Mono", "Space Grotesk", "Inter"
+]);
+let activeFont = DEFAULT_FONT;
+
+// ── DOM ──
+const topPicksEl = document.getElementById("fp-top-picks");
+const allFontsEl = document.getElementById("fp-all-fonts");
+const searchEl = document.getElementById("fp-search");
+const revertBtn = document.getElementById("fp-revert");
+const activeLabelEl = document.getElementById("fp-active-label");
+const noResultsEl = document.getElementById("fp-no-results");
+const toggleBtn = document.getElementById("fp-toggle");
+const toggleText = document.getElementById("fp-toggle-text");
+const sidebar = document.getElementById("fp-sidebar");
+
+// ── Load a Google Font on demand ──
+function loadGoogleFont(fontName) {
+  if (loadedFonts.has(fontName)) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const encoded = fontName.replace(/ /g, "+");
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = `https://fonts.googleapis.com/css2?family=${encoded}:wght@400;500;600;700&display=swap`;
+    link.onload = () => {
+      loadedFonts.add(fontName);
+      resolve();
+    };
+    link.onerror = () => reject(new Error(`Failed to load ${fontName}`));
+    document.head.appendChild(link);
+  });
+}
+
+// ── Apply font to CSS variables ──
+function applyFont(fontName) {
+  const fallback = fontName === "Reddit Mono"
+    ? `"${fontName}", "SFMono-Regular", Consolas, monospace`
+    : `"${fontName}", system-ui, sans-serif`;
+
+  document.documentElement.style.setProperty("--font-heading", fallback);
+  activeFont = fontName;
+
+  // Update active label
+  const isDefault = fontName === DEFAULT_FONT;
+  activeLabelEl.innerHTML = `Active: <strong>${fontName}</strong>${isDefault ? " (default)" : ""}`;
+
+  // Update button states
+  document.querySelectorAll(".fp__font-btn").forEach(btn => {
+    btn.classList.toggle("is-active", btn.dataset.font === fontName);
+  });
+}
+
+// ── Handle font button click ──
+async function onFontClick(fontName, btn) {
+  btn.classList.add("is-loading");
+  try {
+    await loadGoogleFont(fontName);
+    applyFont(fontName);
+  } catch {
+    btn.style.color = "var(--color-error, #f44)";
+    setTimeout(() => { btn.style.color = ""; }, 2000);
+  }
+  btn.classList.remove("is-loading");
+}
+
+// ── Create a font button ──
+function createFontBtn(fontName, note, isStar) {
+  const btn = document.createElement("button");
+  btn.className = "fp__font-btn";
+  btn.type = "button";
+  btn.dataset.font = fontName;
+  btn.style.fontFamily = `"${fontName}", system-ui, sans-serif`;
+
+  const star = isStar ? `<span class="fp__font-btn-star">★</span>` : "";
+  const noteHtml = note ? ` <span style="font-family:var(--font-body);font-size:0.75rem;color:var(--color-text-muted)">— ${note}</span>` : "";
+  btn.innerHTML = `${star}${fontName}${noteHtml}`;
+
+  if (fontName === activeFont) btn.classList.add("is-active");
+
+  btn.addEventListener("click", () => onFontClick(fontName, btn));
+  return btn;
+}
+
+// ── Render font lists ──
+function renderFontLists() {
+  // Top picks
+  TOP_PICKS.forEach(fp => {
+    topPicksEl.appendChild(createFontBtn(fp.name, fp.note, true));
+  });
+
+  // All fonts (excluding top picks)
+  const topNames = new Set(TOP_PICKS.map(f => f.name));
+  ALL_FONTS.forEach(name => {
+    if (!topNames.has(name)) {
+      allFontsEl.appendChild(createFontBtn(name, "", false));
+    }
+  });
+}
+
+// ── Search filter ──
+searchEl.addEventListener("input", () => {
+  const q = searchEl.value.trim().toLowerCase();
+  let visible = 0;
+
+  document.querySelectorAll(".fp__font-btn").forEach(btn => {
+    const match = !q || btn.dataset.font.toLowerCase().includes(q);
+    btn.style.display = match ? "" : "none";
+    if (match) visible++;
+  });
+
+  // Show/hide section labels
+  document.querySelectorAll(".fp__section-label").forEach(label => {
+    const list = label.nextElementSibling;
+    if (!list) return;
+    const hasVisible = Array.from(list.children).some(c => c.style.display !== "none");
+    label.style.display = hasVisible ? "" : "none";
+  });
+
+  noResultsEl.style.display = visible === 0 ? "block" : "none";
+});
+
+// ── Revert ──
+revertBtn.addEventListener("click", () => {
+  document.documentElement.style.removeProperty("--font-heading");
+  activeFont = DEFAULT_FONT;
+  activeLabelEl.innerHTML = `Active: <strong>${DEFAULT_FONT}</strong> (default)`;
+  document.querySelectorAll(".fp__font-btn").forEach(btn => {
+    btn.classList.remove("is-active");
+  });
+  searchEl.value = "";
+  searchEl.dispatchEvent(new Event("input"));
+});
+
+// ── Mobile toggle ──
+toggleBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("is-collapsed");
+  const collapsed = sidebar.classList.contains("is-collapsed");
+  toggleText.textContent = collapsed ? "Show Font List" : "Hide Font List";
+});
+
+// ── Init ──
+renderFontLists();
+
+// Preload all remaining fonts lazily after page load
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    ALL_FONTS.forEach(name => {
+      if (!loadedFonts.has(name)) loadGoogleFont(name);
+    });
+  }, 2000);
+});
+</script>
+</body>
+</html>

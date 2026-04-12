@@ -1656,6 +1656,7 @@ textarea.chat__input {
 
 /* ── Brand Gradient + Shimmer ── */
 .brand {
+  font-family: var(--font-heading);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: 2px;
@@ -7220,6 +7221,10 @@ select.input {
   border: none;
   padding: 0;
   margin: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }
 
 .design-panel__font-option {

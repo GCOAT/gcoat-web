@@ -45,9 +45,9 @@ window.__jsModuleTimeout = setTimeout(function () {
     } catch (e) { /* invalid JSON — ignore */ }
   }
 
-  // Font pairing (tech / classic / geometric / mono / system)
+  // Font pairing (default / tech / classic / geometric / mono / system)
   var savedFont = localStorage.getItem("gcoat-font");
-  if (savedFont && savedFont !== "custom") {
+  if (savedFont && savedFont !== "custom" && savedFont !== "default") {
     root.setAttribute("data-font", savedFont);
   }
 

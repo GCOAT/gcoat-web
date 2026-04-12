@@ -24,7 +24,7 @@
   /* Scheme: forest — emerald / lime */
 
   /* Typography — updated by font changer */
-  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-heading: "Aldrich", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
@@ -250,10 +250,45 @@ body.theme-transitioning *::after {
 }
 
 /* ── Font Pairings ── */
-/* Default is "tech" — Space Grotesk + Inter, set in :root above */
+/* Default is Aldrich + Inter, set in :root above */
+[data-font="tech"] {
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+[data-font="tektur"] {
+  --font-heading: "Tektur", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+[data-font="days-one"] {
+  --font-heading: "Days One", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+[data-font="jockey-one"] {
+  --font-heading: "Jockey One", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+[data-font="farro"] {
+  --font-heading: "Farro", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+[data-font="reddit-mono"] {
+  --font-heading: "Reddit Mono", "SFMono-Regular", Consolas, monospace;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
 [data-font="classic"] {
   --font-heading: "Playfair Display", Georgia, serif;
   --font-body: "Source Sans 3", system-ui, sans-serif;
+}
+
+[data-font="crimson"] {
+  --font-heading: "Crimson Pro", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
 }
 
 [data-font="geometric"] {
