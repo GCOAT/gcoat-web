@@ -12,6 +12,7 @@ import logging
 import os
 
 import boto3
+from boto3.dynamodb.conditions import Attr, Key  # noqa: F401 — re-exported
 from botocore.exceptions import ClientError
 
 logger = logging.getLogger(__name__)

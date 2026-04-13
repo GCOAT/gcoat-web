@@ -13,11 +13,12 @@ async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
 
   const config = {
-    headers: { "Content-Type": "application/json", ...options.headers },
+    headers: { ...options.headers },
     ...options
   };
 
   if (config.body && typeof config.body === "object") {
+    config.headers["Content-Type"] = "application/json";
     config.body = JSON.stringify(config.body);
   }
 

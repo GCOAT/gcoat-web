@@ -1,7 +1,7 @@
 {
   "koreRepo": "/Users/amalikrigger/Developer/WebstormProjects/kore",
   "koreTemplate": "kore-starter-template-v2",
-  "lastSyncedAt": "2026-04-12T01:00:50Z",
+  "lastSyncedAt": "2026-04-13T17:38:37Z",
   "testImportPrefix": "src",
   "files": {
     "auto": {
@@ -22,8 +22,8 @@
         "projHash": "09c3bf6b3921ec9a4559eb0b1003c9d02a2c886a6275ce7d6959fe7e3e27b9e0"
       },
       "backend/src/db.py": {
-        "koreHash": "3125f878540d771247c76a9344a842b9f6a3f9e9dcb34139d237a943e6ff02da",
-        "projHash": "3125f878540d771247c76a9344a842b9f6a3f9e9dcb34139d237a943e6ff02da"
+        "koreHash": "1f6a8f977a3f52a3b31c1e8abbd538cd2f26934268333f25a0ad87f4e47c2fa2",
+        "projHash": "1f6a8f977a3f52a3b31c1e8abbd538cd2f26934268333f25a0ad87f4e47c2fa2"
       },
       "backend/requirements.txt": {
         "koreHash": "3088da1389770d6a2e056d0b13d2a8b3d4a0726dfc9212020c74f24e56e9aea7",
@@ -66,8 +66,8 @@
         "projHash": "7575df7383985e96e8b39971c98489d0c01672d52e310aa380d0560347c5abe2"
       },
       "docs/kore-runbook-local-dev.md": {
-        "koreHash": "b69126e6f04646274b865d4910a3786cf880208e61e8c348f9320f27f1571aa9",
-        "projHash": "b69126e6f04646274b865d4910a3786cf880208e61e8c348f9320f27f1571aa9"
+        "koreHash": "f0de40fc6e75d7f41ce7198caf56115349c2191b0e56a59901a7e0f7359f3c7d",
+        "projHash": "f0de40fc6e75d7f41ce7198caf56115349c2191b0e56a59901a7e0f7359f3c7d"
       },
       "docs/kore-standards-backend.md": {
         "koreHash": "3e5644f0279e3bc552579f1527013e7b940edea79fdb407e18a924bcd122db26",
@@ -88,23 +88,27 @@
       "docs/kore-what-we-are-building.md": {
         "koreHash": "c6ad8ed7c203ca62fe94f2ea0c7341a46d9f1736e1a913cc2cf41956b99f3474",
         "projHash": "c6ad8ed7c203ca62fe94f2ea0c7341a46d9f1736e1a913cc2cf41956b99f3474"
+      },
+      "docs/kore-directory-design.md": {
+        "koreHash": "3985955218f98dccdeb20ec401f4a0c34293f8760ce5004072b8e2216839e1f9",
+        "projHash": "3985955218f98dccdeb20ec401f4a0c34293f8760ce5004072b8e2216839e1f9"
       }
     },
     "merge": {
       "backend/src/app.py": {
-        "koreHash": "407f4371d1c8b8c8f4b917cbbd5a3add5b10c1ee42dd670cfe1f21f38457ce55",
+        "koreHash": "ebc0e54c363f24c10826d0b0ff8de3155ca56d9ed6d5649bcc84ffa711bdb31b",
         "projHash": "7b35778437c08cf445cd210f15880a05d7327bcb3f0e3d9e3d2a503ab92605c2"
       },
       "backend/template.yaml": {
-        "koreHash": "65e33565abbc11f3ca2e12e5ab972fc5b3f26947d1efe175b0006030c9efccf9",
+        "koreHash": "614a8dd2c9df50b7da18880365e678260fe66664e5776e7820d9dccd7afdc0f1",
         "projHash": "1c93a94bb597af7ede94ac72beae497df16e8f2ef10a3f3ca3711dac427b4e32"
       },
       "frontend/admin.html": {
-        "koreHash": "552c43a391ca3b3e5926739925749a56ee810b1328f19ab4c485a0f610783c15",
-        "projHash": "994aa2a8f4a11b8bba5fbf0a53eaf409ba04f306d584580e218eacc399689fe1"
+        "koreHash": "18a312c3262407caf900482f3ae576e0e2cdf6c45e8f960a6bc7fa1efb015398",
+        "projHash": "f8a43a5a6c32d92e2c3457ce3ffd5f0dbf3ad4cfddcc6a451c80907488950a0b"
       },
       "frontend/assets/js/admin.js": {
-        "koreHash": "a216596c6f138f20f2d7d60bfbd4b437b20ebc7120b242c856b2b419fadbdbf4",
+        "koreHash": "844d6a7a4fe126a610a81620bc4f8695849a526d76b7e6506f45395fcd22e498",
         "projHash": "78c996ed48c3684ccc7278a726c77e8104d6e8b9f0ed0b616a5c6390c542cb34"
       },
       "scripts/deploy.sh": {
@@ -120,20 +124,20 @@
         "projHash": "a986085b0017889dcbd0d4f56086ff2991c6ff021188788d35de2ff8bcfd719f"
       },
       "backend/local/env.local.json": {
-        "koreHash": "b4beed87aec851e966c06ac78eb836a3739d09bf8e21baa718f3890012e9b52e",
+        "koreHash": "f708725e070f7f5c2a1741c7b535880072b32ad149ce988084b34afd402555af",
         "projHash": "b150d97a32d3476475555f41a22d1a3347fd1bdadd3c9b6da2ff33b05b48fdea"
       },
       "backend/local/create_tables_and_seed.sh": {
-        "koreHash": "2c23f5653b06f948f6b84f36134c57f9853876e52f598c6f21847719ebbf3471",
+        "koreHash": "a60d94a74b80902902f6dd12ae3a2d384e38abcdf2db71b2718042dc3ee18e03",
         "projHash": "636b9ee12a93b68b2d8951d4b5f3d7b9f9cee74f81f854a33c8f0be7dacd3b79"
       },
       "frontend/blog.html": {
-        "koreHash": "4d0eda13c3c72a0a2da321897abc4ab07ad3e658a77935d91211ebf2d1d00ab6",
-        "projHash": "4668644f9ff455839bc9d81d595007a798d8ed1623eaea1cc7b7dcc585e1d13c"
+        "koreHash": "e761ea8e4f657b03d2f85d3b28bbb1ba5f14fc0ce9b872e168a013274e437ef9",
+        "projHash": "4e74b6c5b0bdb89ffa750e30ffc03ffbb903ab3849b8f5386a621b06c765fe08"
       },
       "frontend/post.html": {
-        "koreHash": "df8b8af5c46100cea49aed252c672a02fc9543f458b4eb7698d45d4d47195bbc",
-        "projHash": "10b3dce3a076945bde7b65b9f4bf836c84b4f9a057e3bff57043fa3895109bbc"
+        "koreHash": "08512eb39730b48bbf337b2403b02541551b5d52986319ce4fac9fe0b701e563",
+        "projHash": "dccbb87e5ab9f47bc577a84e2f5e0967fba130b873b5a6189530eac16fa600d9"
       },
       "frontend/404.html": {
         "koreHash": "de1e95b1365ccc7788f9225457b93e0e799febd2afc2b16ef1497cd912ac37ec",
@@ -144,7 +148,7 @@
         "projHash": "5debe56e44ee1b136450e4724fabe71103b3804fb7f5bab20da93089498f7a9b"
       },
       "backend/tests/conftest.py": {
-        "koreHash": "42a7666b08c192a2503eb317a0deb547ca5573213f0525cdece1ad2431d88769",
+        "koreHash": "baf36fdd6a6105a5a38cc0227f334329947c8d3c55e5ac649e3e29cf27a993a2",
         "projHash": "564d99a1f05f3298229dbc6c10e1eaa8b2ca9dba50e668618c09dd939f2eb1ec"
       },
       "backend/tests/test_blog.py": {
@@ -170,6 +174,10 @@
       "backend/tests/test_routing.py": {
         "koreHash": "05bd9ed7d370e9d9979d700626dcc769fe80a8b86ef0d6f240e1b1309912d0eb",
         "projHash": "feb8f1d59927851ead35c23dc3d221ce718753993ac785cdcd303c4ac27a180c"
+      },
+      "frontend/assets/js/api.js": {
+        "koreHash": "a4cffd5ea1d0e90a96834329c030f613c50826a770de798615e17b821de7b897",
+        "projHash": "360d59fd0ce2214ac2a2cae43642860f79ec6e27043815589a380305c8110ab2"
       }
     },
     "skip": [
