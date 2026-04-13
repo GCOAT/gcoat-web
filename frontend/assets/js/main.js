@@ -171,6 +171,7 @@ const heroScroll = document.querySelector(".hero__scroll");
 let shaderActive = false;
 
 async function initHero() {
+  if (!heroCanvas) return;
   // Skip Three.js shader entirely on mobile — use CSS gradient orbs fallback
   if (!isMobile) {
     try {
@@ -960,7 +961,6 @@ function collectFormData(form) {
     }
     data[key] = value;
   }
-  if (data.features) data.features = data.features.join(", ");
 
   // Branding: if "Other" radio selected (empty value), use the custom text input
   if (data.brandingStatus === "") {
