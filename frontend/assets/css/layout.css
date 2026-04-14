@@ -66,6 +66,21 @@
   font-size: var(--font-size-base);
 }
 
+.site-header.is-compact .brand__logo {
+  height: 32px;
+  width: 32px;
+}
+
+.site-header.is-compact .brand__text {
+  font-size: var(--font-size-base, 1rem);
+}
+
+.site-header.is-compact .nav__cta {
+  min-height: 28px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 [data-theme="light"] .site-header.is-scrolled {
   background: rgba(244, 245, 247, 0.88);
 }

@@ -430,6 +430,23 @@ navMenu?.querySelectorAll(".nav__link").forEach((link) => {
   });
 });
 
+// ── Nav Dropdown ──
+document.querySelectorAll(".nav__dropdown-toggle").forEach((toggle) => {
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const dropdown = toggle.closest(".nav__dropdown");
+    const isOpen = dropdown.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+});
+
+document.addEventListener("click", () => {
+  document.querySelectorAll(".nav__dropdown.is-open").forEach((d) => {
+    d.classList.remove("is-open");
+    d.querySelector(".nav__dropdown-toggle")?.setAttribute("aria-expanded", "false");
+  });
+});
+
 // ── Header Scroll State ──
 function updateHeaderScroll() {
   if (header) {

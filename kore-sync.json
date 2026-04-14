@@ -1,7 +1,7 @@
 {
   "koreRepo": "/Users/amalikrigger/Developer/WebstormProjects/kore",
   "koreTemplate": "kore-starter-template-v2",
-  "lastSyncedAt": "2026-04-13T17:38:37Z",
+  "lastSyncedAt": "2026-04-13T22:03:06Z",
   "testImportPrefix": "src",
   "files": {
     "auto": {
@@ -57,6 +57,10 @@
         "koreHash": "e24fef838b334be4ae2ef66f14b972537e74479f9676215c7b0bf3f585164d46",
         "projHash": "e24fef838b334be4ae2ef66f14b972537e74479f9676215c7b0bf3f585164d46"
       },
+      "docs/kore-directory-design.md": {
+        "koreHash": "3985955218f98dccdeb20ec401f4a0c34293f8760ce5004072b8e2216839e1f9",
+        "projHash": "3985955218f98dccdeb20ec401f4a0c34293f8760ce5004072b8e2216839e1f9"
+      },
       "docs/kore-frontend-coverage-checklist.md": {
         "koreHash": "20e0f52981fd6a760fa6e985b7396d761b91698a897c3a8b68aa96a332e3ebbf",
         "projHash": "20e0f52981fd6a760fa6e985b7396d761b91698a897c3a8b68aa96a332e3ebbf"
@@ -88,10 +92,6 @@
       "docs/kore-what-we-are-building.md": {
         "koreHash": "c6ad8ed7c203ca62fe94f2ea0c7341a46d9f1736e1a913cc2cf41956b99f3474",
         "projHash": "c6ad8ed7c203ca62fe94f2ea0c7341a46d9f1736e1a913cc2cf41956b99f3474"
-      },
-      "docs/kore-directory-design.md": {
-        "koreHash": "3985955218f98dccdeb20ec401f4a0c34293f8760ce5004072b8e2216839e1f9",
-        "projHash": "3985955218f98dccdeb20ec401f4a0c34293f8760ce5004072b8e2216839e1f9"
       }
     },
     "merge": {
@@ -110,6 +110,10 @@
       "frontend/assets/js/admin.js": {
         "koreHash": "844d6a7a4fe126a610a81620bc4f8695849a526d76b7e6506f45395fcd22e498",
         "projHash": "78c996ed48c3684ccc7278a726c77e8104d6e8b9f0ed0b616a5c6390c542cb34"
+      },
+      "frontend/assets/js/api.js": {
+        "koreHash": "a4cffd5ea1d0e90a96834329c030f613c50826a770de798615e17b821de7b897",
+        "projHash": "360d59fd0ce2214ac2a2cae43642860f79ec6e27043815589a380305c8110ab2"
       },
       "scripts/deploy.sh": {
         "koreHash": "844a8991fe04277d477469daaa00c6b42bb8f665cc981a785f0104aac0d91a24",
@@ -174,10 +178,6 @@
       "backend/tests/test_routing.py": {
         "koreHash": "05bd9ed7d370e9d9979d700626dcc769fe80a8b86ef0d6f240e1b1309912d0eb",
         "projHash": "feb8f1d59927851ead35c23dc3d221ce718753993ac785cdcd303c4ac27a180c"
-      },
-      "frontend/assets/js/api.js": {
-        "koreHash": "a4cffd5ea1d0e90a96834329c030f613c50826a770de798615e17b821de7b897",
-        "projHash": "360d59fd0ce2214ac2a2cae43642860f79ec6e27043815589a380305c8110ab2"
       }
     },
     "skip": [
