@@ -152,7 +152,7 @@ function renderPost(post) {
   }
 
   // Update page meta
-  document.title = `${post.title} — GCOAT`;
+  document.title = `${post.title} | GCOAT`;
   setMeta("description", post.excerpt || post.title);
   setMeta("og:title", post.title);
   setMeta("og:description", post.excerpt || post.title);
