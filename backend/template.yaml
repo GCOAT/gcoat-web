@@ -67,7 +67,7 @@ Globals:
     Runtime: python3.13
     Architectures: [arm64]
     Timeout: 15
-    MemorySize: 256
+    MemorySize: 512
     Environment:
       Variables:
         ALLOWED_ORIGIN: !Ref AllowedOrigin

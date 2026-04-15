@@ -2,7 +2,9 @@
 
 > **This is the single source of truth for the GCOAT website.**
 > Weeks 1-2: Build, polish, launch. Weeks 3-4: Evolve into a self-running business.
-> Last updated: 2026-04-04
+> Launch date: **Monday, April 20, 2026**
+> See also: `LAUNCH_PLAN.md` for the full 6-day launch sprint plan.
+> Last updated: 2026-04-14
 
 ---
 
@@ -242,8 +244,8 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 - [x] **7.18** Replace all `gcoat.github.io/gcoat-web` URLs with custom domain — all URLs now point to `https://gcoat.io`
 
 ### Pre-Launch: Brand & Business Setup
-- [ ] **7.19** Create GCOAT logo — primary wordmark + square icon for favicon/social avatars
-- [ ] **7.20** Generate favicon set from logo (favicon.ico, apple-touch-icon, etc.)
+- [x] **7.19** Create GCOAT logo — chrome G logo mark (`frontend/assets/images/logos/gcoat-logo.png`), "COAT" text with Aldrich font, silver gradient, deployed across all 7 pages
+- [x] **7.20** Generate favicon set from logo — `favicon.ico` (32×32) + `apple-touch-icon.png` (180×180) via Pillow, deployed to all pages
 - [ ] **7.21** Set up gcoat.io email addresses (e.g. hello@gcoat.io, support@gcoat.io) — configure on Hostinger or Google Workspace
 - [ ] **7.22** Verify gcoat.io sender identity in AWS SES — update `SenderEmail` parameter in template.yaml deploy
 - [ ] **7.23** Create social media pages:
@@ -257,42 +259,56 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 - [ ] **7.26** Create OG image using final logo (1200×630px) — replaces placeholder from 7.13
 - [ ] **7.27** Update OG image with hero section screenshot (1200×630px, professional state without liquid effect) — final version right before launch
 
-### Final Pre-Launch Push (Apr 10–13)
+### Final Pre-Launch Push (Apr 14–20)
 
-**Day 1–2: Brand Identity (you)**
-- [ ] Design GCOAT logo — wordmark + square icon (Canva, Figma, or hire)
-- [ ] Export: SVG wordmark, square PNG (512×512), favicon sizes (16, 32, 180, 192, 512)
+**Brand Identity — DONE**
+- [x] Chrome G logo created + deployed across all 7 pages
+- [x] Favicon set generated (favicon.ico 32×32, apple-touch-icon 180×180)
+- [x] "More" dropdown with glassmorphism animation
+- [x] Theme toggle hidden
 
-**Day 2: Favicon + OG Image (you + Claude)**
-- [ ] Generate favicon set from logo (favicon.ico, apple-touch-icon.png, etc.)
-- [ ] Replace `frontend/assets/images/icons/favicon.svg` + `apple-touch-icon.png`
-- [ ] Screenshot hero section at 1200×630px → save as `og-image.jpg`
-- [ ] Push — Claude verifies favicon renders + OG image previews correctly (7.9)
+**Day 1–2 (Apr 14–15): AWS Security + Copy Review**
+- [ ] Add security response headers to `_json()` in app.py (X-Content-Type-Options, X-Frame-Options, HSTS)
+- [ ] Increase Lambda memory 256→512 in template.yaml
+- [ ] Lock down dev CORS in kore.config.json (`"*"` → `"http://localhost:8080"`)
+- [ ] Redeploy backend + run full test suite
+- [ ] Full copy review across all pages — tighten, add Technical Consulting service card
 
-**Day 2: Email Setup (you)**
+**Day 2–3 (Apr 15–16): Legal Pages**
+- [ ] Create `frontend/terms.html` — Terms of Service
+- [ ] Create `frontend/privacy.html` — Privacy Policy
+- [ ] Cookie consent banner (vanilla JS + CSS, localStorage)
+- [ ] Add Terms + Privacy links to footer on all pages
+- [ ] Regenerate sitemap
+
+**Day 1 (Apr 14): Email + SES**
 - [x] Set up akrigger@gcoat.io on Hostinger (Starter Business Email — $0.39/mo)
 - [x] Verify akrigger@gcoat.io in AWS SES
+- [ ] Re-apply for SES production access (stronger use case description)
 - [ ] Create info@gcoat.io alias in Hostinger → forwards to akrigger@gcoat.io
 - [ ] Verify info@gcoat.io sender identity in AWS SES (needed so form emails come from info@)
 - [ ] Redeploy backend with `SenderEmail: info@gcoat.io`
 - [ ] Test: submit a form → confirm email arrives at akrigger@gcoat.io from info@gcoat.io
 
-**Day 2–3: Social Profiles (you)**
+**Day 4 (Apr 17): Social Profiles (you)**
 - [ ] Instagram — create @gcoatvi or @gcoat.io, add logo + bio + link
 - [ ] LinkedIn — create GCOAT company page
 - [ ] Fiverr — create GCOAT freelancer profile
 - [ ] Upwork — create GCOAT freelancer profile
 - [ ] GitHub org — update bio/avatar/links on existing org
 
-**Day 3: Final Code Updates (Claude)**
+**Day 4 (Apr 17): Social Profiles**
+- [ ] Instagram — create @gcoatvi, add chrome G logo, write bio, link to gcoat.io
+- [ ] LinkedIn — GCOAT, LLC company page, add logo, description, link
+- [ ] Update social link URLs on site (footer + contact) with real profile URLs
+
+**Day 5–6 (Apr 18–19): Final Code + Smoke Test**
 - [x] Update site email from gcoatllc@gmail.com → akrigger@gcoat.io (all pages + kore.config.json)
 - [ ] Swap site-facing email to info@gcoat.io once alias is live
 - [ ] Update footer + contact social links with final profile URLs (7.25)
 - [ ] Final `seo.sh validate` → 0 errors
 - [ ] Final content review — no stale placeholders
 - [ ] Push + deploy
-
-**Day 3: Launch Verification**
 - [ ] Visit gcoat.io on phone + desktop — full smoke test (7.12)
 - [ ] Verify GA4 Realtime showing visits + events (7.10)
 - [ ] Submit a test form → confirm DynamoDB + email flow

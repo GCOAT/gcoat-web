@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Blog — Insights on Tech, Business & Building | GCOAT</title>
-  <meta name="description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT — a software consultancy in the US Virgin Islands.">
+  <title>Blog | Insights on Tech, Business & Building | GCOAT</title>
+  <meta name="description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.">
   <link rel="canonical" href="https://gcoat.io/blog.html">
 
   <link rel="icon" href="assets/images/logos/favicon.ico" type="image/x-icon">
 
-  <meta property="og:title" content="Blog — Insights on Tech, Business & Building | GCOAT">
-  <meta property="og:description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT — a software consultancy in the US Virgin Islands.">
+  <meta property="og:title" content="Blog | Insights on Tech, Business & Building | GCOAT">
+  <meta property="og:description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.">
   <meta property="og:image" content="https://gcoat.io/assets/images/og-image.jpg">
   <meta property="og:url" content="https://gcoat.io/blog.html">
   <meta property="og:type" content="website">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Blog — Insights on Tech, Business & Building | GCOAT">
-  <meta name="twitter:description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT — a software consultancy in the US Virgin Islands.">
+  <meta name="twitter:title" content="Blog | Insights on Tech, Business & Building | GCOAT">
+  <meta name="twitter:description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.">
   <meta name="twitter:image" content="https://gcoat.io/assets/images/og-image.jpg">
 
   <!-- RSS feed link (JS sets href from config) -->
@@ -38,7 +38,7 @@
     "@context": "https://schema.org",
     "@type": "Blog",
     "name": "GCOAT Blog",
-    "description": "Web development tips, small business website guides, and digital strategy insights from GCOAT — a software consultancy in the US Virgin Islands.",
+    "description": "Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.",
     "inLanguage": "en",
     "url": "https://gcoat.io/blog.html",
     "publisher": {
@@ -65,10 +65,6 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
   <link rel="stylesheet" href="assets/css/components.css">
-
-  <!-- GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QX6KHWBC4N"></script>
-  <script src="assets/js/gtag.js"></script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -219,7 +215,14 @@
         </ul>
       </nav>
 
-      <div class="footer__social">
+      <nav class="footer__nav" aria-label="Legal">
+        <h3 class="footer__heading">Legal</h3>
+        <ul class="footer__links" role="list">
+          <li><a href="./terms.html">Terms of Service</a></li>
+          <li><a href="./privacy.html">Privacy Policy</a></li>
+          <li><button class="footer__cookie-manage js-cookie-manage" type="button">Manage Cookies</button></li>
+        </ul>
+      </nav>
         <h3 class="footer__heading">Connect</h3>
         <div class="footer__social-links">
           <a href="https://github.com/amalikrigger" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -246,6 +249,18 @@
     </div>
   </footer>
 
+  <!-- Cookie Consent Banner -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie consent" hidden>
+    <div class="cookie-banner__inner">
+      <p class="cookie-banner__text">We use cookies to analyze site traffic and improve your experience.</p>
+      <div class="cookie-banner__actions">
+        <button class="cookie-banner__accept js-cookie-accept" type="button">Accept Cookies</button>
+        <button class="cookie-banner__decline js-cookie-decline" type="button">Decline</button>
+      </div>
+      <a class="cookie-banner__learn" href="./privacy.html">Learn more about our privacy policy</a>
+    </div>
+  </div>
+
   <div id="status-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
   <noscript>
@@ -255,5 +270,6 @@
   <script src="assets/js/config.js"></script>
   <script type="module" src="assets/js/blog-ambient.js"></script>
   <script type="module" src="assets/js/blog.js"></script>
+  <script src="assets/js/cookie-consent.js"></script>
 </body>
 </html>

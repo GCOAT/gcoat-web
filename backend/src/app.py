@@ -94,15 +94,20 @@ def _set_origin_for_request(event):
     _current_origin = origin if origin in _ALLOWED_ORIGINS else os.environ.get("ALLOWED_ORIGIN", "")
 
 def _json(status, payload, *, cache=None):
+    headers = {
+        "Content-Type": "application/json",
+        "Cache-Control": cache if cache else "no-store",
+        "Access-Control-Allow-Origin": _current_origin,
+        "Access-Control-Allow-Headers": "Content-Type,x-admin-token",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+    }
+    if os.environ.get("STAGE") == "prod":
+        headers["Strict-Transport-Security"] = "max-age=31536000"
     return {
         "statusCode": status,
-        "headers": {
-            "Content-Type": "application/json",
-            "Cache-Control": cache if cache else "no-store",
-            "Access-Control-Allow-Origin": _current_origin,
-            "Access-Control-Allow-Headers": "Content-Type,x-admin-token",
-            "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-        },
+        "headers": headers,
         "body": json.dumps(payload),
     }
 
