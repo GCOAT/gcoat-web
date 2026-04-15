@@ -9,7 +9,8 @@ function getGreeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
   if (h < 17) return "Good afternoon";
-  return "Good evening";
+  if (h < 21) return "Good evening";
+  return "Good night";
 }
 
 const DRAFT_KEY = "gcoat-intake-draft";
@@ -109,7 +110,7 @@ const PLACEHOLDER_EXAMPLES = [
 const ENCOURAGEMENT = {
   message: "Great picks!",
   references: "Love the vision!",
-  budget: "Almost there — just a couple more details!",
+  budget: "Almost there. Just a couple more details!",
 };
 
 // ── Chat Step Definitions ──
@@ -159,7 +160,7 @@ const STEPS = [
   },
   {
     id: "email",
-    question: (a) => `Nice to meet you, ${a.name}! Best email to reach you?`,
+    question: (a) => `Pleasure to meet you, ${a.name}! What is the best email to reach you?`,
     type: "email",
     placeholder: "you@example.com",
     required: true,
@@ -196,7 +197,7 @@ const STEPS = [
   {
     id: "message",
     question: () =>
-      "Tell me a bit more — what's the vision? Pages, vibe, anything that helps us nail it.",
+      "Paint the picture for us. What do you want this to look and feel like?",
     type: "textarea",
     placeholder: "Describe your project…",
     required: true,
@@ -206,7 +207,7 @@ const STEPS = [
   {
     id: "references",
     question: () =>
-      "Got any websites you love the look of? Drop a link or two — or hit Send to skip.",
+      "Any sites that inspire you? Drop a link to a site that catches your eye.",
     type: "text",
     placeholder: "e.g. https://stripe.com, https://linear.app",
     required: false,
@@ -216,7 +217,7 @@ const STEPS = [
   {
     id: "budget",
     question: () =>
-      "What's your budget range? No pressure — helps us scope the right package.",
+      "What's your budget range? No pressure, just helps us scope the right package.",
     type: "choice",
     options: [
       "$500–$1K",
@@ -230,7 +231,7 @@ const STEPS = [
   },
   {
     id: "timeline",
-    question: () => "And when do you need it done?",
+    question: () => "What's your timeline looking like?",
     type: "choice",
     options: ["ASAP", "2 weeks", "1 month", "Flexible"],
     required: true,
@@ -278,7 +279,7 @@ export function processAnswer(step, answer) {
     return { valid: true, value: "" };
   }
   if (!trimmed && s.required) {
-    return { valid: false, error: "This one's required — give it a go!" };
+    return { valid: false, error: "This one's required - give it a go!" };
   }
   if (s.type === "email" && !EMAIL_RE.test(trimmed)) {
     return {
@@ -434,7 +435,7 @@ export function initIntakeChat() {
     if (STEPS[currentStep]?.id === "projectType" && prefilledType) {
       answers.projectType = prefilledType;
       addBotMessage(
-        `Since you're looking for a ${prefilledType} — great choice!`
+        `Since you're looking for a ${prefilledType} - great choice!`
       );
       currentStep++;
       await delay(600);
@@ -841,7 +842,7 @@ export function initIntakeChat() {
     const confirmBtn = document.createElement("button");
     confirmBtn.className = "btn btn--primary chat__confirm-btn";
     confirmBtn.type = "button";
-    confirmBtn.textContent = "Looks great — send it!";
+    confirmBtn.textContent = "Looks great - send it!";
 
     actions.appendChild(confirmBtn);
     inputArea.appendChild(actions);
@@ -1083,7 +1084,7 @@ export function initIntakeChat() {
       inputArea.innerHTML = "";
       showSuccess();
     } catch {
-      addBotMessage("Oops — something went wrong. Let me try again…");
+      addBotMessage("Oops, something went wrong. Let me try again.");
       renderRetryAction();
     }
   }

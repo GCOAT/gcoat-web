@@ -165,6 +165,9 @@
   </main>
 
   <footer class="site-footer" role="contentinfo">
+    <div class="footer__aurora" aria-hidden="true">
+      <div class="footer__aurora-band footer__aurora-band--1"></div>
+    </div>
     <div class="container footer__grid">
       <div class="footer__brand">
         <span class="brand"><span class="brand__gradient">GCOAT</span></span>
@@ -186,6 +189,24 @@
         </ul>
       </nav>
 
+      <div class="footer__newsletter">
+        <h3 class="footer__heading">Stay Updated</h3>
+        <p class="footer__newsletter-text">Get notified about new services and projects.</p>
+        <form id="signup-form" class="footer__signup-form" novalidate>
+          <div class="hp" aria-hidden="true">
+            <label for="signup-website">Website</label>
+            <input id="signup-website" name="website" type="text" autocomplete="off" tabindex="-1">
+          </div>
+          <div class="footer__signup-row">
+            <label class="sr-only" for="signup-email">Email address</label>
+            <input class="input input--sm" id="signup-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com" aria-describedby="signup-email-error">
+            <button class="btn btn--primary btn--sm" type="submit">Subscribe</button>
+          </div>
+          <span id="signup-email-error" class="form-error" role="alert" hidden></span>
+          <div id="signup-status" class="form-status" role="status" hidden></div>
+        </form>
+      </div>
+
       <nav class="footer__nav" aria-label="Legal">
         <h3 class="footer__heading">Legal</h3>
         <ul class="footer__links" role="list">
@@ -194,6 +215,8 @@
           <li><button class="footer__cookie-manage js-cookie-manage" type="button">Manage Cookies</button></li>
         </ul>
       </nav>
+
+      <div class="footer__social">
         <h3 class="footer__heading">Connect</h3>
         <div class="footer__social-links">
           <a href="https://github.com/amalikrigger" target="_blank" rel="noopener noreferrer" aria-label="GitHub">

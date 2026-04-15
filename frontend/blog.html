@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Blog | Insights on Tech, Business & Building | GCOAT</title>
-  <meta name="description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.">
+  <title>Blog | Tech, Business & Culture | GCOAT</title>
+  <meta name="description" content="Tech, business, culture, and the journey in between. Insights and ideas from GCOAT, a software consultancy in the US Virgin Islands.">
   <link rel="canonical" href="https://gcoat.io/blog.html">
 
   <link rel="icon" href="assets/images/logos/favicon.ico" type="image/x-icon">
 
-  <meta property="og:title" content="Blog | Insights on Tech, Business & Building | GCOAT">
-  <meta property="og:description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.">
+  <meta property="og:title" content="Blog | Tech, Business & Culture | GCOAT">
+  <meta property="og:description" content="Tech, business, culture, and the journey in between. Insights and ideas from GCOAT, a software consultancy in the US Virgin Islands.">
   <meta property="og:image" content="https://gcoat.io/assets/images/og-image.jpg">
   <meta property="og:url" content="https://gcoat.io/blog.html">
   <meta property="og:type" content="website">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Blog | Insights on Tech, Business & Building | GCOAT">
-  <meta name="twitter:description" content="Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.">
+  <meta name="twitter:title" content="Blog | Tech, Business & Culture | GCOAT">
+  <meta name="twitter:description" content="Tech, business, culture, and the journey in between. Insights and ideas from GCOAT, a software consultancy in the US Virgin Islands.">
   <meta name="twitter:image" content="https://gcoat.io/assets/images/og-image.jpg">
 
   <!-- RSS feed link (JS sets href from config) -->
@@ -38,7 +38,7 @@
     "@context": "https://schema.org",
     "@type": "Blog",
     "name": "GCOAT Blog",
-    "description": "Web development tips, small business website guides, and digital strategy insights from GCOAT, a software consultancy in the US Virgin Islands.",
+    "description": "Tech, business, culture, and the journey in between. Insights and ideas from GCOAT, a software consultancy in the US Virgin Islands.",
     "inLanguage": "en",
     "url": "https://gcoat.io/blog.html",
     "publisher": {
@@ -147,7 +147,7 @@
 
     <section class="section container">
       <h1 class="section__title reveal">Deh GCOAT Blog</h1>
-      <p class="section__subtitle reveal">Insights on web development, small business websites, and digital strategy.</p>
+      <p class="section__subtitle reveal">Tech, business, culture, and the journey in between.</p>
 
       <!-- Tag filter bar -->
       <div class="blog-tags" id="blog-tags" role="navigation" aria-label="Filter by tag" hidden>
@@ -171,7 +171,7 @@
       </div>
 
       <!-- Empty state -->
-      <p class="blog-empty" id="blog-empty" hidden>No posts yet. Check back soon!</p>
+      <p class="blog-empty" id="blog-empty" hidden>Nothing here yet. We're cooking something up.</p>
 
       <!-- Load more -->
       <div class="blog-pagination" id="blog-pagination" hidden>
@@ -181,7 +181,7 @@
 
     <!-- Newsletter subscribe -->
     <section class="blog-subscribe container" id="blog-subscribe">
-      <h2 class="blog-subscribe__title">Get new articles in your inbox</h2>
+      <h2 class="blog-subscribe__title">Dropping gems, straight in your inbox</h2>
       <p class="blog-subscribe__text">Subscribe to stay up to date with the latest posts from GCOAT.</p>
       <form class="blog-subscribe__form" id="subscribe-form" novalidate>
         <div class="blog-subscribe__row">
@@ -194,6 +194,9 @@
   </main>
 
   <footer class="site-footer" role="contentinfo">
+    <div class="footer__aurora" aria-hidden="true">
+      <div class="footer__aurora-band footer__aurora-band--1"></div>
+    </div>
     <div class="container footer__grid">
       <div class="footer__brand">
         <span class="brand"><span class="brand__gradient">GCOAT</span></span>
@@ -215,6 +218,24 @@
         </ul>
       </nav>
 
+      <div class="footer__newsletter">
+        <h3 class="footer__heading">Stay Updated</h3>
+        <p class="footer__newsletter-text">Get notified about new services and projects.</p>
+        <form id="signup-form" class="footer__signup-form" novalidate>
+          <div class="hp" aria-hidden="true">
+            <label for="signup-website">Website</label>
+            <input id="signup-website" name="website" type="text" autocomplete="off" tabindex="-1">
+          </div>
+          <div class="footer__signup-row">
+            <label class="sr-only" for="signup-email">Email address</label>
+            <input class="input input--sm" id="signup-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com" aria-describedby="signup-email-error">
+            <button class="btn btn--primary btn--sm" type="submit">Subscribe</button>
+          </div>
+          <span id="signup-email-error" class="form-error" role="alert" hidden></span>
+          <div id="signup-status" class="form-status" role="status" hidden></div>
+        </form>
+      </div>
+
       <nav class="footer__nav" aria-label="Legal">
         <h3 class="footer__heading">Legal</h3>
         <ul class="footer__links" role="list">
@@ -223,6 +244,8 @@
           <li><button class="footer__cookie-manage js-cookie-manage" type="button">Manage Cookies</button></li>
         </ul>
       </nav>
+
+      <div class="footer__social">
         <h3 class="footer__heading">Connect</h3>
         <div class="footer__social-links">
           <a href="https://github.com/amalikrigger" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
