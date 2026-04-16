@@ -74,7 +74,7 @@
 .dashboard-sidebar__brand {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 0;
   padding: var(--spacing-lg) var(--spacing-lg);
   text-decoration: none;
   color: #ffffff;
@@ -86,7 +86,19 @@
 .dashboard-sidebar__brand-logo {
   width: 32px;
   height: 32px;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.dashboard-sidebar__brand-text {
+  font-family: var(--font-heading, "Aldrich", sans-serif);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  background: linear-gradient(180deg, #e8e8ec 0%, #a8a8b0 50%, #c0c0c8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .dashboard-sidebar__brand-label {
@@ -94,7 +106,7 @@
   color: var(--dash-sidebar-text);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-left: auto;
+  margin-left: var(--spacing-sm);
 }
 
 .dashboard-sidebar__nav {

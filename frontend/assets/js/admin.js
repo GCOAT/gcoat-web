@@ -383,9 +383,9 @@ async function switchView(viewName) {
 
   // Trigger view-specific actions
   if (viewName === "overview") renderOverview();
-  if (viewName === "leads" && allLeads.length) filterLeads();
+  if (viewName === "leads") filterLeads();
   if (viewName === "blog") onBlogActivate();
-  if (viewName === "media" && allMedia.length) renderMedia();
+  if (viewName === "media") renderMedia();
 }
 
 function toggleSidebar() {
@@ -623,7 +623,7 @@ function renderGreeting() {
   let greeting = "Good evening";
   if (hour < 12) greeting = "Good morning";
   else if (hour < 17) greeting = "Good afternoon";
-  greetingText.textContent = `${greeting} — here's your site at a glance`;
+  greetingText.textContent = `${greeting}, here's your site at a glance`;
   if (greetingDate) {
     greetingDate.textContent = new Date().toLocaleDateString("en-US", {
       weekday: "long", year: "numeric", month: "long", day: "numeric",
