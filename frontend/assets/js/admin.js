@@ -98,9 +98,15 @@ if (adminToken) {
   wrapper.hidden = true;
 }
 
-loginBtn?.addEventListener("click", handleLogin);
-tokenInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") handleLogin();
+const loginForm = document.getElementById("admin-auth");
+const gateError = document.getElementById("admin-gate-error");
+const gateCard = document.querySelector(".admin-gate__card");
+const btnText = document.querySelector(".admin-gate__btn-text");
+const btnSpinner = document.querySelector(".admin-gate__btn-spinner");
+
+loginForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  handleLogin();
 });
 
 // Sidebar mobile toggle
@@ -261,10 +267,55 @@ document.getElementById("qa-upload-media")?.addEventListener("click", () => {
 
 function handleLogin() {
   const token = tokenInput?.value?.trim();
-  if (!token) return;
-  adminToken = token;
-  sessionStorage.setItem("adminToken", token);
-  showPanel();
+  if (!token) {
+    showGateError("Please enter your admin token");
+    return;
+  }
+  // Show loading state
+  loginBtn.disabled = true;
+  if (btnText) btnText.textContent = "Signing in…";
+  if (btnSpinner) btnSpinner.hidden = false;
+  clearGateError();
+
+  // Validate token by making a lightweight API call
+  const url = `${API_BASE}/leads`;
+  fetch(url, { headers: { "Content-Type": "application/json", "x-admin-token": token } })
+    .then((resp) => {
+      if (!resp.ok) throw new Error(resp.status);
+      adminToken = token;
+      sessionStorage.setItem("adminToken", token);
+      showPanel();
+    })
+    .catch((err) => {
+      const status = parseInt(err.message, 10);
+      if (status === 401 || status === 403) {
+        showGateError("Invalid token — please check and try again");
+      } else if (!navigator.onLine || isNaN(status)) {
+        showGateError("Can't reach the server — check your connection");
+      } else {
+        showGateError("Something went wrong — please try again");
+      }
+      loginBtn.disabled = false;
+      if (btnText) btnText.textContent = "Sign In";
+      if (btnSpinner) btnSpinner.hidden = true;
+      // Shake card
+      gateCard?.classList.remove("is-shake");
+      void gateCard?.offsetWidth; // force reflow
+      gateCard?.classList.add("is-shake");
+      tokenInput?.focus();
+    });
+}
+
+function showGateError(msg) {
+  if (!gateError) return;
+  gateError.textContent = msg;
+  gateError.hidden = false;
+  tokenInput?.classList.add("is-error");
+}
+
+function clearGateError() {
+  if (gateError) gateError.hidden = true;
+  tokenInput?.classList.remove("is-error");
 }
 
 function showPanel() {
@@ -287,8 +338,21 @@ document.getElementById("admin-logout")?.addEventListener("click", () => {
 // VIEW SWITCHING
 // ═══════════════════════════════════════════════════════════════════════════
 
-function switchView(viewName) {
+async function switchView(viewName) {
   if (activeView === viewName) return;
+
+  // Guard against navigating away from unsaved editor
+  if (activeView === "blog" && hasUnsavedChanges()) {
+    const ok = await showConfirmModal({
+      title: "Discard unsaved changes?",
+      message: "You have unsaved changes in the editor. Leaving will discard them.",
+      confirmText: "Discard",
+      variant: "warning",
+    });
+    if (!ok) return;
+    clearDirty();
+  }
+
   activeView = viewName;
 
   // Update sidebar active state
@@ -296,9 +360,16 @@ function switchView(viewName) {
     btn.classList.toggle("is-active", btn.dataset.view === viewName);
   });
 
-  // Show/hide view sections
-  document.querySelectorAll(".dashboard-view").forEach((section) => {
-    section.classList.toggle("is-active", section.dataset.view === viewName);
+  // Fade transition between views
+  const allViews = document.querySelectorAll(".dashboard-view");
+  allViews.forEach((section) => {
+    if (section.dataset.view === viewName) {
+      section.classList.add("is-active");
+      section.style.animation = "dashFadeSlideIn 0.25s ease-out both";
+    } else {
+      section.classList.remove("is-active");
+      section.style.animation = "";
+    }
   });
 
   // Update topbar title
@@ -322,9 +393,38 @@ function toggleSidebar() {
   sidebarBackdrop.classList.toggle("is-visible");
 }
 
+function getFriendlyError(err) {
+  if (!navigator.onLine) return "You appear to be offline — check your connection and try again";
+  const msg = err?.message || "";
+  const status = parseInt(msg, 10);
+  if (status === 401 || status === 403) return "Your session has expired — please sign in again";
+  if (status >= 500) return "The server encountered an error — please try again shortly";
+  if (status === 404) return "The requested resource was not found";
+  if (status === 429) return "Too many requests — please wait a moment and retry";
+  if (msg.includes("Failed to fetch") || msg.includes("NetworkError")) return "Can't reach the server — check your connection";
+  return "Something went wrong — please try again";
+}
+
 function closeSidebar() {
   sidebar.classList.remove("is-open");
   sidebarBackdrop.classList.remove("is-visible");
+}
+
+function updateSidebarBadges() {
+  const badges = {
+    leads: { el: document.getElementById("nav-badge-leads"), count: allLeads.length },
+    blog: { el: document.getElementById("nav-badge-blog"), count: allPosts.length },
+    media: { el: document.getElementById("nav-badge-media"), count: allMedia.length },
+  };
+  Object.values(badges).forEach(({ el, count }) => {
+    if (!el) return;
+    if (count > 0) {
+      el.textContent = count > 99 ? "99+" : count;
+      el.hidden = false;
+    } else {
+      el.hidden = true;
+    }
+  });
 }
 
 function announce(text) {
@@ -336,8 +436,13 @@ function announce(text) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function loadAllData() {
-  // Show skeleton states
+  // Show skeleton states for all views
   renderStatSkeletons();
+  renderTableSkeleton(leadsTbody, 6);
+  renderTableSkeleton(blogTbody, 5);
+  renderChartSkeletons();
+  renderActivitySkeleton();
+  renderMediaSkeleton();
 
   try {
     const [leadsResult, pubResult, draftsResult, mediaResult] = await Promise.all([
@@ -371,11 +476,22 @@ async function loadAllData() {
 
     // Render current view
     renderOverview();
+    updateSidebarBadges();
     if (activeView === "leads") filterLeads();
     if (activeView === "blog") renderBlogPosts();
     if (activeView === "media") renderMedia();
   } catch (err) {
-    showToast(`Failed to load data: ${err.message}`, "error");
+    const friendlyMsg = getFriendlyError(err);
+    showToast(friendlyMsg, "error");
+    // Show inline error states in tables
+    renderErrorState(leadsTbody, {
+      icon: "error", title: "Couldn't load leads", message: friendlyMsg,
+      btnText: "Retry", btnAction: loadAllData, isTableCell: true, colSpan: 6,
+    });
+    renderErrorState(blogTbody, {
+      icon: "error", title: "Couldn't load posts", message: friendlyMsg,
+      btnText: "Retry", btnAction: loadAllData, isTableCell: true, colSpan: 5,
+    });
   }
 }
 
@@ -414,27 +530,129 @@ function renderStatSkeletons() {
   }
 }
 
+function renderTableSkeleton(tbody, cols, rows = 5) {
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  for (let r = 0; r < rows; r++) {
+    const tr = document.createElement("tr");
+    for (let c = 0; c < cols; c++) {
+      const td = document.createElement("td");
+      const bar = document.createElement("div");
+      bar.className = "dashboard-skeleton dashboard-skeleton--text";
+      bar.style.width = `${50 + Math.random() * 40}%`;
+      td.appendChild(bar);
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+}
+
+function renderChartSkeletons() {
+  const charts = document.getElementById("overview-charts");
+  if (!charts) return;
+  charts.querySelectorAll(".dashboard-chart-card").forEach((card) => {
+    const canvas = card.querySelector("canvas");
+    if (canvas) canvas.style.display = "none";
+    const existing = card.querySelector(".dashboard-skeleton");
+    if (!existing) {
+      const skel = document.createElement("div");
+      skel.className = "dashboard-skeleton dashboard-skeleton--chart";
+      card.appendChild(skel);
+    }
+  });
+}
+
+function removeChartSkeletons() {
+  const charts = document.getElementById("overview-charts");
+  if (!charts) return;
+  charts.querySelectorAll(".dashboard-skeleton--chart").forEach((s) => s.remove());
+  charts.querySelectorAll("canvas").forEach((c) => { c.style.display = ""; });
+}
+
+function renderActivitySkeleton() {
+  if (!activityList) return;
+  activityList.innerHTML = "";
+  for (let i = 0; i < 4; i++) {
+    const li = document.createElement("li");
+    li.className = "dashboard-activity__item";
+    li.innerHTML = `
+      <span class="dashboard-skeleton dashboard-skeleton--circle"></span>
+      <span class="dashboard-skeleton dashboard-skeleton--text" style="flex:1"></span>
+      <span class="dashboard-skeleton dashboard-skeleton--text" style="width:48px"></span>
+    `;
+    activityList.appendChild(li);
+  }
+}
+
+function renderMediaSkeleton() {
+  if (!mediaGrid) return;
+  mediaGrid.innerHTML = "";
+  for (let i = 0; i < 6; i++) {
+    const div = document.createElement("div");
+    div.className = "dashboard-skeleton dashboard-skeleton--media";
+    mediaGrid.appendChild(div);
+  }
+}
+
+function setButtonLoading(btn, loading, originalText) {
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.dataset.originalText = btn.textContent;
+    btn.innerHTML = '<span class="dashboard-btn__spinner"></span>' + (originalText || "");
+    btn.classList.add("is-loading");
+  } else {
+    btn.disabled = false;
+    btn.textContent = btn.dataset.originalText || originalText || btn.textContent;
+    btn.classList.remove("is-loading");
+  }
+}
+
 function renderOverview() {
+  renderGreeting();
   renderStatCards();
   renderCharts();
   renderActivityFeed();
 }
 
+function renderGreeting() {
+  const greetingText = document.getElementById("greeting-text");
+  const greetingDate = document.getElementById("greeting-date");
+  if (!greetingText) return;
+  const hour = new Date().getHours();
+  let greeting = "Good evening";
+  if (hour < 12) greeting = "Good morning";
+  else if (hour < 17) greeting = "Good afternoon";
+  greetingText.textContent = `${greeting} — here's your site at a glance`;
+  if (greetingDate) {
+    greetingDate.textContent = new Date().toLocaleDateString("en-US", {
+      weekday: "long", year: "numeric", month: "long", day: "numeric",
+    });
+  }
+}
+
 function renderStatCards() {
   if (!overviewStats) return;
   const publishedCount = allPosts.filter((p) => (p.status || p.GSI1PK) === "published").length;
+  const draftCount = allPosts.length - publishedCount;
+
+  // Count leads this month
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const leadsThisMonth = allLeads.filter((l) => (l.createdAt || "") >= monthStart).length;
 
   const stats = [
-    { label: "Total Leads", value: allLeads.length, icon: "leads", view: "leads" },
-    { label: "Blog Posts", value: allPosts.length, icon: "posts", view: "blog" },
-    { label: "Published", value: publishedCount, icon: "published", view: "blog" },
-    { label: "Media Files", value: allMedia.length, icon: "media", view: "media" },
+    { label: "Total Leads", sub: leadsThisMonth ? `${leadsThisMonth} this month` : "all time", value: allLeads.length, icon: "leads", view: "leads" },
+    { label: "Blog Posts", sub: draftCount ? `${draftCount} draft${draftCount !== 1 ? "s" : ""}` : "all published", value: allPosts.length, icon: "posts", view: "blog" },
+    { label: "Published", sub: "live on site", value: publishedCount, icon: "published", view: "blog" },
+    { label: "Media Files", sub: "uploaded", value: allMedia.length, icon: "media", view: "media" },
   ];
 
   overviewStats.innerHTML = "";
-  stats.forEach((stat) => {
+  stats.forEach((stat, index) => {
     const card = document.createElement("div");
     card.className = "dashboard-stat-card";
+    card.style.setProperty("--stagger", index);
     card.setAttribute("role", "button");
     card.setAttribute("tabindex", "0");
     card.addEventListener("click", () => switchView(stat.view));
@@ -460,12 +678,17 @@ function renderStatCards() {
     info.className = "dashboard-stat-card__info";
     const valEl = document.createElement("span");
     valEl.className = "dashboard-stat-card__value";
-    valEl.textContent = stat.value;
+    valEl.textContent = "0";
+    animateCountUp(valEl, stat.value);
     const labelEl = document.createElement("span");
     labelEl.className = "dashboard-stat-card__label";
     labelEl.textContent = stat.label;
+    const subEl = document.createElement("span");
+    subEl.className = "dashboard-stat-card__sub";
+    subEl.textContent = stat.sub;
     info.appendChild(valEl);
     info.appendChild(labelEl);
+    info.appendChild(subEl);
 
     card.appendChild(iconWrap);
     card.appendChild(info);
@@ -473,12 +696,58 @@ function renderStatCards() {
   });
 }
 
+function animateCountUp(el, target) {
+  if (!el || target === 0) { el.textContent = "0"; return; }
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) { el.textContent = target.toLocaleString(); return; }
+  const duration = 600;
+  const start = performance.now();
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(eased * target).toLocaleString();
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
 function renderCharts() {
+  removeChartSkeletons();
   if (typeof Chart === "undefined") return;
 
   // Leads by Source — Doughnut
   const sourceCanvas = document.getElementById("chart-leads-source");
+  if (sourceCanvas && !allLeads.length) {
+    const card = sourceCanvas.closest(".dashboard-chart-card");
+    if (card) {
+      sourceCanvas.style.display = "none";
+      if (!card.querySelector(".dashboard-chart-nodata")) {
+        const nd = document.createElement("div");
+        nd.className = "dashboard-chart-nodata";
+        nd.innerHTML = `<div class="dashboard-empty-state__icon">${EMPTY_ICONS.chart}</div><p>Not enough data to display</p>`;
+        card.appendChild(nd);
+      }
+    }
+  }
+  const timeCanvas = document.getElementById("chart-leads-time");
+  if (timeCanvas && !allLeads.length) {
+    const card = timeCanvas.closest(".dashboard-chart-card");
+    if (card) {
+      timeCanvas.style.display = "none";
+      if (!card.querySelector(".dashboard-chart-nodata")) {
+        const nd = document.createElement("div");
+        nd.className = "dashboard-chart-nodata";
+        nd.innerHTML = `<div class="dashboard-empty-state__icon">${EMPTY_ICONS.chart}</div><p>Not enough data to display</p>`;
+        card.appendChild(nd);
+      }
+    }
+  }
+
   if (sourceCanvas && allLeads.length) {
+    // Remove any no-data placeholder
+    sourceCanvas.closest(".dashboard-chart-card")?.querySelector(".dashboard-chart-nodata")?.remove();
+    sourceCanvas.style.display = "";
     const sourceCounts = {};
     allLeads.forEach((l) => {
       const src = l.source || "other";
@@ -514,8 +783,9 @@ function renderCharts() {
   }
 
   // Leads over Time — Bar
-  const timeCanvas = document.getElementById("chart-leads-time");
   if (timeCanvas && allLeads.length) {
+    timeCanvas.closest(".dashboard-chart-card")?.querySelector(".dashboard-chart-nodata")?.remove();
+    timeCanvas.style.display = "";
     const monthCounts = {};
     allLeads.forEach((l) => {
       const month = (l.createdAt || "").slice(0, 7); // YYYY-MM
@@ -581,13 +851,10 @@ function renderActivityFeed() {
   const recent = items.slice(0, 8);
 
   if (recent.length === 0) {
-    const li = document.createElement("li");
-    li.className = "dashboard-activity__item";
-    const textEl = document.createElement("span");
-    textEl.className = "dashboard-activity__text";
-    textEl.textContent = "No recent activity";
-    li.appendChild(textEl);
-    activityList.appendChild(li);
+    renderEmptyState(activityList, {
+      icon: "activity", title: "All quiet for now",
+      message: "Recent leads and posts will show here as they come in.",
+    });
     return;
   }
 
@@ -649,7 +916,10 @@ async function loadLeadsList() {
     }
     filterLeads();
   } catch (err) {
-    leadsTbody.innerHTML = `<tr><td colspan="6" class="dashboard-table__empty">Failed to load: ${esc(err.message)}</td></tr>`;
+    renderErrorState(leadsTbody, {
+      icon: "error", title: "Couldn't load leads", message: getFriendlyError(err),
+      btnText: "Retry", btnAction: loadLeadsList, isTableCell: true, colSpan: 6,
+    });
   }
 }
 
@@ -698,7 +968,22 @@ function filterLeads() {
 
 function renderLeads(leads) {
   if (leads.length === 0) {
-    leadsTbody.innerHTML = '<tr><td colspan="6" class="dashboard-table__empty">No leads found.</td></tr>';
+    const query = (leadsSearch?.value || "").trim();
+    if (query || leadsSourceFilter?.value || leadsDateRange !== "all") {
+      renderEmptyState(leadsTbody, {
+        icon: "search", title: "No results found",
+        message: query ? `No leads matching "${query}"` : "No leads match the current filters",
+        btnText: "Clear Filters", btnAction: () => { if (leadsSearch) leadsSearch.value = ""; if (leadsSourceFilter) leadsSourceFilter.value = ""; leadsDateRange = "all"; document.querySelectorAll("#leads-date-filters .dashboard-pill-filter").forEach((b,i) => b.classList.toggle("is-active", i === 0)); filterLeads(); },
+        isTableCell: true, colSpan: 6,
+      });
+    } else {
+      renderEmptyState(leadsTbody, {
+        icon: "leads", title: "No leads yet",
+        message: "When visitors fill out your intake form, their info will appear here.",
+        btnText: "View Your Site", btnAction: () => window.open("./index.html", "_blank"),
+        isTableCell: true, colSpan: 6,
+      });
+    }
     return;
   }
 
@@ -722,7 +1007,8 @@ function renderLeads(leads) {
     tdSource.appendChild(badge);
 
     const tdDate = document.createElement("td");
-    tdDate.textContent = (lead.createdAt || "").split("T")[0];
+    tdDate.textContent = formatDate(lead.createdAt);
+    tdDate.title = lead.createdAt || "";
 
     const tdMsg = document.createElement("td");
     tdMsg.className = "dashboard-table__msg-cell";
@@ -740,7 +1026,7 @@ function renderLeads(leads) {
     });
     const delBtn = document.createElement("button");
     delBtn.className = "dashboard-btn dashboard-btn--sm dashboard-btn--danger";
-    delBtn.textContent = "Del";
+    delBtn.textContent = "Delete";
     delBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       deleteLead(lead);
@@ -833,16 +1119,22 @@ function closeLeadModal() {
 }
 
 async function deleteLead(lead) {
-  if (!confirm(`Delete lead "${lead.name || lead.email}"?`)) return;
+  const confirmed = await showConfirmModal({
+    title: "Delete this lead?",
+    message: `"${lead.name || lead.email}" will be permanently removed. This action cannot be undone.`,
+    confirmText: "Delete Lead",
+  });
+  if (!confirmed) return;
   try {
     await apiFetch(`/leads/${encodeURIComponent(lead.sk)}`, { method: "DELETE" });
     allLeads = allLeads.filter((l) => l.sk !== lead.sk);
     filterLeads();
     closeLeadModal();
     renderOverview();
-    showToast("Lead deleted", "success");
+    updateSidebarBadges();
+    showToast("Lead removed successfully", "success");
   } catch (err) {
-    showToast(`Delete failed: ${err.message}`, "error");
+    showToast(getFriendlyError(err), "error");
   }
 }
 
@@ -875,7 +1167,7 @@ function exportLeadsCSV() {
   link.download = `leads-${new Date().toISOString().split("T")[0]}.csv`;
   link.click();
   URL.revokeObjectURL(link.href);
-  showToast("CSV exported", "success");
+  showToast("Leads exported to CSV", "success");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -920,7 +1212,10 @@ async function loadPostsList() {
     allPosts.sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
     renderBlogPosts();
   } catch (err) {
-    blogTbody.innerHTML = `<tr><td colspan="5" class="dashboard-table__empty">Failed to load: ${esc(err.message)}</td></tr>`;
+    renderErrorState(blogTbody, {
+      icon: "error", title: "Couldn't load posts", message: getFriendlyError(err),
+      btnText: "Retry", btnAction: loadPostsList, isTableCell: true, colSpan: 5,
+    });
   }
 }
 
@@ -935,7 +1230,20 @@ function renderBlogPosts() {
   }
 
   if (posts.length === 0) {
-    blogTbody.innerHTML = '<tr><td colspan="5" class="dashboard-table__empty">No posts found.</td></tr>';
+    if (blogStatusFilter !== "all") {
+      renderEmptyState(blogTbody, {
+        icon: "search", title: `No ${blogStatusFilter} posts`,
+        message: `You don't have any ${blogStatusFilter} posts yet.`,
+        isTableCell: true, colSpan: 5,
+      });
+    } else {
+      renderEmptyState(blogTbody, {
+        icon: "blog", title: "No posts yet",
+        message: "Share your expertise — create your first blog post.",
+        btnText: "Create Post", btnAction: showEditor,
+        isTableCell: true, colSpan: 5,
+      });
+    }
     return;
   }
 
@@ -943,7 +1251,7 @@ function renderBlogPosts() {
   posts.forEach((post) => {
     const tr = document.createElement("tr");
     const status = post.status || post.GSI1PK || "draft";
-    const date = (post.updatedAt || post.createdAt || "").split("T")[0];
+    const date = formatDate(post.updatedAt || post.createdAt);
 
     const tdTitle = document.createElement("td");
     tdTitle.textContent = post.title;
@@ -995,9 +1303,10 @@ async function quickToggleStatus(post) {
     post.status = newStatus;
     renderBlogPosts();
     renderOverview();
-    showToast(`Post ${newStatus === "published" ? "published" : "unpublished"}`, "success");
+    updateSidebarBadges();
+    showToast(newStatus === "published" ? "Post published successfully" : "Post moved to drafts", "success");
   } catch (err) {
-    showToast(`Failed: ${err.message}`, "error");
+    showToast(getFriendlyError(err), "error");
   }
 }
 
@@ -1017,7 +1326,17 @@ function showEditor() {
   lastSavedState = getFormState();
 }
 
-function showList() {
+async function showList() {
+  if (hasUnsavedChanges()) {
+    const ok = await showConfirmModal({
+      title: "Discard unsaved changes?",
+      message: "You have unsaved changes in the editor. Going back will discard them.",
+      confirmText: "Discard",
+      variant: "warning",
+    });
+    if (!ok) return;
+  }
+  clearDirty();
   editorView.hidden = true;
   listView.hidden = false;
   loadPostsList();
@@ -1049,7 +1368,7 @@ async function editPost(slug) {
     lastSavedState = getFormState();
     clearDirty();
   } catch (err) {
-    showToast(`Failed to load post: ${err.message}`, "error");
+    showToast("Couldn't load post — please try again", "error");
   }
 }
 
@@ -1058,11 +1377,11 @@ async function savePost(status) {
   const content = quill.root.innerHTML.trim();
 
   if (!title) {
-    showToast("Title is required", "error");
+    showToast("Please add a title before saving", "error");
     return;
   }
   if (!content || content === "<p><br></p>") {
-    showToast("Content is required", "error");
+    showToast("Please add some content before saving", "error");
     return;
   }
 
@@ -1075,6 +1394,9 @@ async function savePost(status) {
     tags: currentTags.length ? currentTags : undefined,
     featuredImage: fFeaturedImage.value.trim() || undefined,
   };
+
+  const actionBtn = status === "published" ? btnPublish : btnSaveDraft;
+  setButtonLoading(actionBtn, true, status === "published" ? "Publishing…" : "Saving…");
 
   try {
     if (editingSlug) {
@@ -1089,33 +1411,40 @@ async function savePost(status) {
         method: "POST", body: payload,
       });
       editingSlug = result.data?.slug || payload.slug;
-      editorHeading.textContent = "Edit Post";
+      editorHeading.textContent = `Editing: ${title}`;
       btnDelete.hidden = false;
     }
     lastSavedState = getFormState();
     showSavedIndicator();
-    showToast(`Post ${status === "published" ? "published" : "saved as draft"}`, "success");
-    // Refresh posts cache
+    showToast(status === "published" ? "Post published successfully" : "Draft saved", "success");
     loadPostsList();
     renderOverview();
   } catch (err) {
-    showToast(err.message, "error");
+    showToast(getFriendlyError(err), "error");
+  } finally {
+    setButtonLoading(actionBtn, false);
   }
 }
 
 async function handleDelete() {
   if (!editingSlug) return;
-  if (!confirm(`Delete "${fTitle.value}"? This cannot be undone.`)) return;
+  const confirmed = await showConfirmModal({
+    title: "Delete this post?",
+    message: `"${fTitle.value}" will be permanently deleted. This action cannot be undone.`,
+    confirmText: "Delete Post",
+  });
+  if (!confirmed) return;
 
   try {
     await apiFetch(`/blog/posts/${encodeURIComponent(editingSlug)}`, {
       method: "DELETE",
     });
-    showToast("Post deleted", "success");
+    showToast("Post deleted successfully", "success");
     showList();
     renderOverview();
+    updateSidebarBadges();
   } catch (err) {
-    showToast(`Delete failed: ${err.message}`, "error");
+    showToast(getFriendlyError(err), "error");
   }
 }
 
@@ -1197,6 +1526,18 @@ function clearDirty() {
   if (editorDirty) editorDirty.hidden = true;
 }
 
+function hasUnsavedChanges() {
+  if (!lastSavedState || editorView?.hidden) return false;
+  return getFormState() !== lastSavedState;
+}
+
+// Warn before leaving page with unsaved editor content
+window.addEventListener("beforeunload", (e) => {
+  if (hasUnsavedChanges()) {
+    e.preventDefault();
+  }
+});
+
 // ═══════════════════════════════════════════════════════════════════════════
 // MEDIA VIEW
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1207,7 +1548,10 @@ async function loadMediaList() {
     allMedia = result.data?.files || [];
     renderMedia();
   } catch (err) {
-    mediaGrid.innerHTML = `<p class="dashboard-table__empty">Failed to load: ${esc(err.message)}</p>`;
+    renderErrorState(mediaGrid, {
+      icon: "error", title: "Couldn't load media", message: getFriendlyError(err),
+      btnText: "Retry", btnAction: loadMediaList,
+    });
   }
 }
 
@@ -1233,7 +1577,20 @@ function renderMedia() {
   }
 
   if (files.length === 0) {
-    mediaGrid.innerHTML = '<p class="dashboard-table__empty">No media files found.</p>';
+    const typeFilter = mediaTypeFilter?.value || "";
+    if (typeFilter) {
+      renderEmptyState(mediaGrid, {
+        icon: "search", title: `No ${typeFilter} files`,
+        message: `No ${typeFilter} files match the current filter.`,
+        btnText: "Show All", btnAction: () => { if (mediaTypeFilter) mediaTypeFilter.value = ""; renderMedia(); },
+      });
+    } else {
+      renderEmptyState(mediaGrid, {
+        icon: "media", title: "Your media library is empty",
+        message: "Upload images and files to use in your blog posts and pages.",
+        btnText: "Upload Files", btnAction: () => mediaFileInput?.click(),
+      });
+    }
     return;
   }
 
@@ -1274,13 +1631,13 @@ function renderMedia() {
     copyBtn.textContent = "Copy URL";
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(publicUrl).then(() => {
-        showToast("URL copied!", "success");
+        showToast("URL copied to clipboard", "success");
       });
     });
 
     const delBtn = document.createElement("button");
     delBtn.className = "dashboard-btn dashboard-btn--sm dashboard-btn--danger";
-    delBtn.textContent = "Del";
+    delBtn.textContent = "Delete";
     delBtn.addEventListener("click", () => deleteMedia(file.key));
 
     actions.appendChild(copyBtn);
@@ -1350,19 +1707,26 @@ async function handleMediaUpload() {
         statusEl.textContent = `✗ ${err.message}`;
         statusEl.className = "dashboard-upload-item__status dashboard-upload-item__status--fail";
       }
-      showToast(`Failed to upload ${file.name}`, "error");
+      showToast(`Upload failed for ${file.name}`, "error");
     }
   }
 
-  showToast("Upload complete!", "success");
+  showToast("Files uploaded successfully", "success");
   mediaFileInput.value = "";
   setTimeout(() => { uploadQueue.hidden = true; }, 3000);
   loadMediaList();
   renderOverview();
+  updateSidebarBadges();
 }
 
 async function deleteMedia(key) {
-  if (!confirm(`Delete "${key.split("/").pop()}"?`)) return;
+  const fileName = key.split("/").pop();
+  const confirmed = await showConfirmModal({
+    title: "Delete this file?",
+    message: `"${fileName}" will be permanently removed from your media library.`,
+    confirmText: "Delete File",
+  });
+  if (!confirmed) return;
   try {
     await apiFetch(`/media/delete?key=${encodeURIComponent(key)}`, {
       method: "DELETE",
@@ -1370,10 +1734,132 @@ async function deleteMedia(key) {
     allMedia = allMedia.filter((f) => f.key !== key);
     renderMedia();
     renderOverview();
-    showToast("File deleted", "success");
+    updateSidebarBadges();
+    showToast("File removed from library", "success");
   } catch (err) {
-    showToast(`Delete failed: ${err.message}`, "error");
+    showToast(getFriendlyError(err), "error");
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EMPTY STATES
+// ═══════════════════════════════════════════════════════════════════════════
+
+const EMPTY_ICONS = {
+  leads: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  blog: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+  media: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+  activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+  chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+};
+
+function renderEmptyState(container, { icon, title, message, btnText, btnAction, isTableCell, colSpan }) {
+  if (!container) return;
+  if (isTableCell) {
+    container.innerHTML = "";
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = colSpan || 6;
+    td.innerHTML = `
+      <div class="dashboard-empty-state">
+        <div class="dashboard-empty-state__icon">${EMPTY_ICONS[icon] || EMPTY_ICONS.search}</div>
+        <p class="dashboard-empty-state__title">${esc(title)}</p>
+        <p class="dashboard-empty-state__message">${esc(message)}</p>
+        ${btnText ? `<button class="dashboard-btn dashboard-btn--primary dashboard-btn--sm js-empty-cta" type="button">${esc(btnText)}</button>` : ""}
+      </div>
+    `;
+    tr.appendChild(td);
+    container.appendChild(tr);
+    if (btnAction) td.querySelector(".js-empty-cta")?.addEventListener("click", btnAction);
+    return;
+  }
+  container.innerHTML = `
+    <div class="dashboard-empty-state">
+      <div class="dashboard-empty-state__icon">${EMPTY_ICONS[icon] || EMPTY_ICONS.search}</div>
+      <p class="dashboard-empty-state__title">${esc(title)}</p>
+      <p class="dashboard-empty-state__message">${esc(message)}</p>
+      ${btnText ? `<button class="dashboard-btn dashboard-btn--primary dashboard-btn--sm js-empty-cta" type="button">${esc(btnText)}</button>` : ""}
+    </div>
+  `;
+  if (btnAction) container.querySelector(".js-empty-cta")?.addEventListener("click", btnAction);
+}
+
+function renderErrorState(container, { message, retryFn, isTableCell, colSpan }) {
+  const title = "Something went wrong";
+  if (!container) return;
+  if (isTableCell) {
+    container.innerHTML = "";
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = colSpan || 6;
+    td.innerHTML = `
+      <div class="dashboard-error-state">
+        <div class="dashboard-error-state__icon">${EMPTY_ICONS.error}</div>
+        <p class="dashboard-error-state__title">${esc(title)}</p>
+        <p class="dashboard-error-state__message">${esc(message)}</p>
+        ${retryFn ? '<button class="dashboard-btn dashboard-btn--sm js-retry-cta" type="button">Try Again</button>' : ""}
+      </div>
+    `;
+    tr.appendChild(td);
+    container.appendChild(tr);
+    if (retryFn) td.querySelector(".js-retry-cta")?.addEventListener("click", retryFn);
+    return;
+  }
+  container.innerHTML = `
+    <div class="dashboard-error-state">
+      <div class="dashboard-error-state__icon">${EMPTY_ICONS.error}</div>
+      <p class="dashboard-error-state__title">${esc(title)}</p>
+      <p class="dashboard-error-state__message">${esc(message)}</p>
+      ${retryFn ? '<button class="dashboard-btn dashboard-btn--sm js-retry-cta" type="button">Try Again</button>' : ""}
+    </div>
+  `;
+  if (retryFn) container.querySelector(".js-retry-cta")?.addEventListener("click", retryFn);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIRMATION MODAL
+// ═══════════════════════════════════════════════════════════════════════════
+
+const confirmModal = document.getElementById("confirm-modal");
+const confirmIcon = document.getElementById("confirm-modal-icon");
+const confirmTitle = document.getElementById("confirm-modal-title");
+const confirmMsg = document.getElementById("confirm-modal-msg");
+const confirmOk = document.getElementById("confirm-modal-ok");
+const confirmCancel = document.getElementById("confirm-modal-cancel");
+
+function showConfirmModal({ title, message, confirmText = "Delete", variant = "danger" }) {
+  return new Promise((resolve) => {
+    if (!confirmModal) { resolve(false); return; }
+    const dangerSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+    const warningSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    confirmIcon.innerHTML = variant === "danger" ? dangerSvg : warningSvg;
+    confirmIcon.className = `dashboard-confirm-modal__icon dashboard-confirm-modal__icon--${variant}`;
+    confirmTitle.textContent = title;
+    confirmMsg.textContent = message;
+    confirmOk.textContent = confirmText;
+    confirmOk.className = variant === "danger" ? "dashboard-btn dashboard-btn--danger" : "dashboard-btn dashboard-btn--primary";
+    confirmModal.hidden = false;
+    confirmOk.focus();
+
+    function cleanup(result) {
+      confirmModal.hidden = true;
+      confirmOk.removeEventListener("click", onOk);
+      confirmCancel.removeEventListener("click", onCancel);
+      confirmModal.querySelector(".dashboard-modal__backdrop")?.removeEventListener("click", onCancel);
+      document.removeEventListener("keydown", onKey);
+      resolve(result);
+    }
+    function onOk() { cleanup(true); }
+    function onCancel() { cleanup(false); }
+    function onKey(e) { if (e.key === "Escape") onCancel(); }
+
+    confirmOk.addEventListener("click", onOk);
+    confirmCancel.addEventListener("click", onCancel);
+    confirmModal.querySelector(".dashboard-modal__backdrop")?.addEventListener("click", onCancel);
+    document.addEventListener("keydown", onKey);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1457,5 +1943,12 @@ function relativeTime(dateStr) {
   if (days < 30) return `${days}d ago`;
   const months = Math.floor(days / 30);
   return `${months}mo ago`;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "—";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  } catch { return dateStr.split("T")[0]; }
 }
 

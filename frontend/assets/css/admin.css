@@ -23,6 +23,25 @@
   --dash-info: #2563eb;
 }
 
+/* ── Greeting ── */
+.dashboard-greeting {
+  margin-bottom: var(--spacing-lg);
+}
+
+.dashboard-greeting__text {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--dash-text);
+  font-family: var(--font-heading, "Aldrich", system-ui, sans-serif);
+}
+
+.dashboard-greeting__date {
+  margin: var(--spacing-xs) 0 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--dash-text-muted);
+}
+
 /* ── Wrapper Grid ── */
 #dashboard-wrapper[hidden] {
   display: none;
@@ -127,6 +146,26 @@
 
 .dashboard-sidebar__link.is-active .dashboard-sidebar__link-icon {
   opacity: 1;
+}
+
+/* Sidebar count badges */
+.dashboard-sidebar__badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--dash-sidebar-active-border, var(--dash-accent));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+
+.dashboard-sidebar__link:not(.is-active) .dashboard-sidebar__badge {
+  background: hsl(0 0% 100% / 0.15);
+  color: var(--dash-sidebar-text);
 }
 
 .dashboard-sidebar__footer {
@@ -325,6 +364,12 @@
   font-size: var(--font-size-sm);
   color: var(--dash-text-muted);
   margin-top: 2px;
+}
+
+.dashboard-stat-card__sub {
+  font-size: var(--font-size-xs);
+  color: var(--dash-text-muted);
+  opacity: 0.7;
 }
 
 /* ── Chart Section ── */
@@ -1268,7 +1313,8 @@
 }
 
 .dashboard-skeleton--chart {
-  height: 320px;
+  height: 280px;
+  margin-top: var(--spacing-md);
 }
 
 .dashboard-skeleton--row {
@@ -1276,7 +1322,123 @@
   margin-bottom: var(--spacing-xs);
 }
 
+.dashboard-skeleton--text {
+  height: 14px;
+  border-radius: var(--radius-sm);
+  min-width: 40px;
+}
+
+.dashboard-skeleton--circle {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.dashboard-skeleton--media {
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+}
+
+/* ── Button Loading State ── */
+.dashboard-btn.is-loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.dashboard-btn__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid hsl(0 0% 100% / 0.3);
+  border-top-color: currentColor;
+  border-radius: var(--radius-full);
+  animation: spin 0.6s linear infinite;
+  margin-right: var(--spacing-xs);
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Empty & Error States ── */
+.dashboard-empty-state,
+.dashboard-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  min-height: 160px;
+}
+
+.dashboard-empty-state__icon,
+.dashboard-error-state__icon {
+  margin-bottom: var(--spacing-md);
+}
+
+.dashboard-empty-state__icon svg {
+  width: 48px;
+  height: 48px;
+  color: var(--dash-text-muted);
+  opacity: 0.3;
+}
+
+.dashboard-error-state__icon svg {
+  width: 48px;
+  height: 48px;
+  color: var(--dash-error);
+  opacity: 0.5;
+}
+
+.dashboard-empty-state__title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--dash-text);
+}
+
+.dashboard-error-state__title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--dash-error);
+}
+
+.dashboard-empty-state__message,
+.dashboard-error-state__message {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-sm);
+  color: var(--dash-text-muted);
+  max-width: 320px;
+}
+
+.dashboard-chart-nodata {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  color: var(--dash-text-muted);
+  text-align: center;
+  min-height: 200px;
+}
+
+.dashboard-chart-nodata svg {
+  width: 40px;
+  height: 40px;
+  opacity: 0.25;
+  margin-bottom: var(--spacing-sm);
+}
+
+.dashboard-chart-nodata p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+/* Legacy empty/error (keep for compatibility) */
 .dashboard-empty {
   text-align: center;
   padding: var(--spacing-2xl) var(--spacing-lg);
@@ -1302,6 +1464,54 @@
   font-size: var(--font-size-sm);
 }
 
+/* ── Confirmation Modal ── */
+.dashboard-confirm-modal__card {
+  max-width: 400px;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+}
+
+.dashboard-confirm-modal__icon {
+  margin-bottom: var(--spacing-md);
+}
+
+.dashboard-confirm-modal__icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.dashboard-confirm-modal__icon--danger svg {
+  color: var(--dash-error);
+}
+
+.dashboard-confirm-modal__icon--warning svg {
+  color: var(--dash-warning, #f59e0b);
+}
+
+.dashboard-confirm-modal__title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--dash-text);
+}
+
+.dashboard-confirm-modal__message {
+  margin: 0 0 var(--spacing-xl) 0;
+  font-size: var(--font-size-sm);
+  color: var(--dash-text-muted);
+  line-height: 1.5;
+}
+
+.dashboard-confirm-modal__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.dashboard-confirm-modal__actions .dashboard-btn {
+  min-width: 100px;
+}
+
 /* ── Screen Reader Only ── */
 .dashboard-sr-only {
   position: absolute;
@@ -1313,6 +1523,46 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ── View Transition Animations ── */
+@keyframes dashFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dashScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stat card stagger entrance */
+.dashboard-stat-card {
+  animation: dashFadeSlideIn 0.3s ease-out both;
+  animation-delay: calc(var(--stagger, 0) * 60ms);
+}
+
+/* Modal entrance */
+.dashboard-modal:not([hidden]) .dashboard-modal__card,
+.dashboard-modal:not([hidden]) .dashboard-confirm-modal__card {
+  animation: dashScaleIn 0.2s ease-out both;
+}
+
+/* Toast entrance enhancement */
+.dashboard-toast {
+  animation: dashFadeSlideIn 0.3s ease-out both;
 }
 
 /* ── Reduced Motion ── */
@@ -1330,8 +1580,21 @@
     animation: none;
   }
 
+  .dashboard-stat-card {
+    animation: none;
+  }
+
   .dashboard-stat-card:hover {
     transform: none;
+  }
+
+  .dashboard-view.is-active {
+    animation: none !important;
+  }
+
+  .dashboard-modal__card,
+  .dashboard-confirm-modal__card {
+    animation: none !important;
   }
 }
 

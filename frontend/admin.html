@@ -27,11 +27,22 @@
 <body>
   <!-- Auth gate (shown when not authenticated) -->
   <div id="admin-gate" class="admin-gate">
-    <div class="admin-auth" id="admin-auth">
-      <input type="password" class="input" id="admin-token" placeholder="Admin token" style="max-width:220px">
-      <button class="btn btn--primary" id="admin-login-btn">Login</button>
+    <div class="admin-gate__card">
+      <img class="admin-gate__logo" src="assets/images/logos/gcoat-logo.png" alt="GCOAT" width="56" height="56">
+      <h1 class="admin-gate__heading">Welcome back</h1>
+      <p class="admin-gate__subtext">Sign in to manage your site</p>
+      <form class="admin-gate__form" id="admin-auth" autocomplete="off">
+        <div class="admin-gate__field">
+          <svg class="admin-gate__field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" class="admin-gate__input" id="admin-token" placeholder="Enter admin token" required>
+        </div>
+        <p class="admin-gate__error" id="admin-gate-error" hidden></p>
+        <button type="submit" class="admin-gate__btn" id="admin-login-btn">
+          <span class="admin-gate__btn-text">Sign In</span>
+          <span class="admin-gate__btn-spinner" hidden></span>
+        </button>
+      </form>
     </div>
-    <p>Enter your admin token to continue.</p>
   </div>
 
   <!-- Dashboard (hidden until authed) -->
@@ -56,18 +67,21 @@
             <button class="dashboard-sidebar__link js-nav-link" data-view="leads" type="button">
               <svg class="dashboard-sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               Leads
+              <span class="dashboard-sidebar__badge" id="nav-badge-leads" hidden></span>
             </button>
           </li>
           <li>
             <button class="dashboard-sidebar__link js-nav-link" data-view="blog" type="button">
               <svg class="dashboard-sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               Blog
+              <span class="dashboard-sidebar__badge" id="nav-badge-blog" hidden></span>
             </button>
           </li>
           <li>
             <button class="dashboard-sidebar__link js-nav-link" data-view="media" type="button">
               <svg class="dashboard-sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               Media
+              <span class="dashboard-sidebar__badge" id="nav-badge-media" hidden></span>
             </button>
           </li>
         </ul>
@@ -109,6 +123,11 @@
 
         <!-- ═══ Overview View ═══ -->
         <section class="dashboard-view is-active" data-view="overview">
+          <div class="dashboard-greeting" id="dashboard-greeting">
+            <h2 class="dashboard-greeting__text" id="greeting-text"></h2>
+            <p class="dashboard-greeting__date" id="greeting-date"></p>
+          </div>
+
           <div class="dashboard-stats" id="overview-stats">
             <!-- Stat cards injected by JS -->
           </div>
@@ -326,6 +345,20 @@
       <div class="dashboard-modal__footer">
         <button class="dashboard-btn dashboard-btn--danger" id="modal-delete-lead" type="button">Delete Lead</button>
         <button class="dashboard-btn" data-close-modal type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div class="dashboard-modal dashboard-confirm-modal" id="confirm-modal" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-msg">
+    <div class="dashboard-modal__backdrop"></div>
+    <div class="dashboard-modal__card dashboard-confirm-modal__card">
+      <div class="dashboard-confirm-modal__icon" id="confirm-modal-icon"></div>
+      <h3 class="dashboard-confirm-modal__title" id="confirm-modal-title"></h3>
+      <p class="dashboard-confirm-modal__message" id="confirm-modal-msg"></p>
+      <div class="dashboard-confirm-modal__actions">
+        <button class="dashboard-btn" id="confirm-modal-cancel" type="button">Cancel</button>
+        <button class="dashboard-btn dashboard-btn--danger" id="confirm-modal-ok" type="button">Delete</button>
       </div>
     </div>
   </div>
