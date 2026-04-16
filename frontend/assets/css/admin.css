@@ -636,6 +636,14 @@
   padding: var(--spacing-xl) 0;
 }
 
+.dashboard-table td:last-child {
+  white-space: nowrap;
+}
+
+.dashboard-table td:last-child .dashboard-btn + .dashboard-btn {
+  margin-left: var(--spacing-xs);
+}
+
 .dashboard-table__msg-cell {
   max-width: 200px;
   overflow: hidden;
