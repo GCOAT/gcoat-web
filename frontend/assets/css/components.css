@@ -10957,42 +10957,73 @@ select.input:focus-visible {
   min-height: 100vh;
   min-height: 100dvh;
   background:
-    radial-gradient(ellipse at 20% 50%, hsl(215, 28%, 14%) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, hsl(220, 30%, 12%) 0%, transparent 50%),
-    hsl(215, 28%, 10%);
+    radial-gradient(ellipse at 30% 40%, hsl(217 91% 55% / 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 70%, hsl(250 60% 50% / 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, hsl(215 28% 16%) 0%, transparent 60%),
+    hsl(220, 25%, 8%);
   padding: var(--spacing-md);
 }
 
 .admin-gate__card {
   width: 100%;
-  max-width: 380px;
-  padding: var(--spacing-2xl) var(--spacing-xl);
-  background: hsl(215, 28%, 14%);
-  border: 1px solid hsl(0 0% 100% / 0.08);
-  border-radius: var(--radius-lg);
+  max-width: 400px;
+  padding: var(--spacing-3xl, 48px) var(--spacing-2xl);
+  background:
+    linear-gradient(135deg, hsl(215 28% 16%) 0%, hsl(220 25% 12%) 100%);
+  border: 1px solid hsl(0 0% 100% / 0.06);
+  border-radius: var(--radius-xl, 16px);
   text-align: center;
-  box-shadow: 0 25px 50px -12px hsl(0 0% 0% / 0.5);
+  box-shadow:
+    0 0 0 1px hsl(0 0% 0% / 0.1),
+    0 25px 50px -12px hsl(0 0% 0% / 0.5),
+    0 0 80px -20px hsl(217 91% 55% / 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-.admin-gate__logo {
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-  margin-bottom: var(--spacing-md);
+.admin-gate__brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: var(--spacing-lg);
+}
+
+.admin-gate__brand-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 12px hsl(217 91% 55% / 0.2));
+}
+
+.admin-gate__brand-text {
+  font-family: var(--font-heading, "Aldrich", sans-serif);
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  margin-top: 4px;
+  background: linear-gradient(180deg, #e8e8ec 0%, #a8a8b0 50%, #c0c0c8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .admin-gate__heading {
   margin: 0 0 var(--spacing-xs) 0;
   font-family: var(--font-heading, "Aldrich", system-ui, sans-serif);
-  font-size: var(--font-size-xl);
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
   font-weight: var(--font-weight-semibold, 600);
   color: #ffffff;
+  letter-spacing: 0.01em;
 }
 
 .admin-gate__subtext {
-  margin: 0 0 var(--spacing-lg) 0;
+  margin: 0 0 var(--spacing-xl) 0;
   font-size: var(--font-size-sm);
-  color: hsl(220, 20%, 60%);
+  color: hsl(220, 15%, 55%);
+  letter-spacing: 0.02em;
 }
 
 .admin-gate__form {
@@ -11023,15 +11054,16 @@ select.input:focus-visible {
 
 .admin-gate__input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 44px;
-  background: hsl(215, 28%, 18%);
-  border: 1px solid hsl(0 0% 100% / 0.1);
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 44px;
+  background: hsl(220, 25%, 10%);
+  border: 1px solid hsl(0 0% 100% / 0.08);
   border-radius: var(--radius-md);
   color: #ffffff;
   font-family: inherit;
   font-size: var(--font-size-sm);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   box-sizing: border-box;
+  min-height: 46px;
 }
 
 .admin-gate__input::placeholder {
@@ -11062,8 +11094,8 @@ select.input:focus-visible {
   justify-content: center;
   gap: var(--spacing-sm);
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background: hsl(217, 91%, 55%);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: linear-gradient(135deg, hsl(217, 91%, 55%) 0%, hsl(230, 80%, 55%) 100%);
   border: none;
   border-radius: var(--radius-md);
   color: #ffffff;
@@ -11071,12 +11103,15 @@ select.input:focus-visible {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold, 600);
   cursor: pointer;
-  transition: background var(--transition-fast), transform var(--transition-fast);
-  min-height: 42px;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  min-height: 46px;
+  box-shadow: 0 4px 12px hsl(217 91% 55% / 0.25);
+  letter-spacing: 0.02em;
 }
 
 .admin-gate__btn:hover:not(:disabled) {
-  background: hsl(217, 91%, 50%);
+  background: linear-gradient(135deg, hsl(217, 91%, 50%) 0%, hsl(230, 80%, 50%) 100%);
+  box-shadow: 0 6px 20px hsl(217 91% 55% / 0.35);
 }
 
 .admin-gate__btn:active:not(:disabled) {
@@ -11089,13 +11124,16 @@ select.input:focus-visible {
 }
 
 .admin-gate__btn-spinner {
-  display: inline-block;
   width: 16px;
   height: 16px;
   border: 2px solid hsl(0 0% 100% / 0.3);
   border-top-color: #ffffff;
   border-radius: var(--radius-full);
   animation: spin 0.6s linear infinite;
+}
+
+.admin-gate__btn-spinner[hidden] {
+  display: none;
 }
 
 .admin-gate__card.is-shake {
