@@ -10964,6 +10964,10 @@ select.input:focus-visible {
   padding: var(--spacing-md);
 }
 
+.admin-gate[hidden] {
+  display: none;
+}
+
 .admin-gate__card {
   width: 100%;
   max-width: 400px;
