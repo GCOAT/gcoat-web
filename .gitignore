@@ -32,7 +32,6 @@ logs/
 # Kore template internals (kept locally, not published)
 AI_INSTRUCTIONS.md
 CLAUDE.md
-KORE_FIXES.md
 SETUP.md
 .github/copilot-instructions.md
 kore.config.example.json
