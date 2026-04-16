@@ -7,6 +7,7 @@ import re
 import time
 import uuid
 from datetime import datetime, timezone
+from decimal import Decimal
 from email.utils import format_datetime
 
 import boto3
@@ -93,6 +94,11 @@ def _set_origin_for_request(event):
     origin = (event or {}).get("headers", {}).get("origin", "")
     _current_origin = origin if origin in _ALLOWED_ORIGINS else os.environ.get("ALLOWED_ORIGIN", "")
 
+def _json_default(obj):
+    if isinstance(obj, Decimal):
+        return int(obj) if obj == int(obj) else float(obj)
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
 def _json(status, payload, *, cache=None):
     headers = {
         "Content-Type": "application/json",
@@ -108,7 +114,7 @@ def _json(status, payload, *, cache=None):
     return {
         "statusCode": status,
         "headers": headers,
-        "body": json.dumps(payload),
+        "body": json.dumps(payload, default=_json_default),
     }
 
 def _route_key(event):
