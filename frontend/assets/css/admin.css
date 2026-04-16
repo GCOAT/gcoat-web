@@ -693,6 +693,32 @@
   color: var(--dash-warning);
 }
 
+/* Lead status badges */
+.dashboard-badge--new {
+  background: hsl(210 90% 93%);
+  color: hsl(210 80% 40%);
+}
+
+.dashboard-badge--contacted {
+  background: hsl(38 90% 93%);
+  color: hsl(38 80% 35%);
+}
+
+.dashboard-badge--proposal {
+  background: hsl(260 70% 93%);
+  color: hsl(260 60% 45%);
+}
+
+.dashboard-badge--won {
+  background: hsl(146 65% 93%);
+  color: var(--dash-success);
+}
+
+.dashboard-badge--lost {
+  background: hsl(0 60% 93%);
+  color: hsl(0 60% 45%);
+}
+
 /* ── Buttons (dashboard-scoped) ── */
 .dashboard-btn {
   display: inline-flex;
@@ -1195,10 +1221,33 @@
 
 .dashboard-modal__footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-lg);
   border-top: 1px solid var(--dash-border);
+}
+
+.dashboard-modal__footer-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.dashboard-modal__footer-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.dashboard-modal__status-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--dash-text-muted);
+}
+
+.dashboard-modal__status-select {
+  min-width: 120px;
 }
 
 /* ── Toast Notifications ── */

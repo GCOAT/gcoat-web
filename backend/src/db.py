@@ -49,6 +49,27 @@ def delete_item(table_name, key):
     _ddb().Table(table_name).delete_item(Key=key)
 
 
+def update_item(table_name, key, updates):
+    """Update specific attributes on an item. Returns the updated item."""
+    expr_parts = []
+    names = {}
+    values = {}
+    for i, (attr, val) in enumerate(updates.items()):
+        placeholder = f"#a{i}"
+        value_key = f":v{i}"
+        expr_parts.append(f"{placeholder} = {value_key}")
+        names[placeholder] = attr
+        values[value_key] = val
+    resp = _ddb().Table(table_name).update_item(
+        Key=key,
+        UpdateExpression="SET " + ", ".join(expr_parts),
+        ExpressionAttributeNames=names,
+        ExpressionAttributeValues=values,
+        ReturnValues="ALL_NEW",
+    )
+    return resp.get("Attributes")
+
+
 def query_items(table_name, key_condition, *, index_name=None,
                 scan_forward=True, limit=None, start_key=None,
                 filter_expression=None):

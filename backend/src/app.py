@@ -105,7 +105,7 @@ def _json(status, payload, *, cache=None):
         "Cache-Control": cache if cache else "no-store",
         "Access-Control-Allow-Origin": _current_origin,
         "Access-Control-Allow-Headers": "Content-Type,x-admin-token",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
     }
@@ -439,6 +439,8 @@ def handle_post_leads(event):
         "name": name,
         "message": message,
         "source": source,
+        "status": "new",
+        "statusUpdatedAt": created_at,
         "expiresAt": int(time.time()) + 365 * 86400,
     }
     # Add optional fields only if non-empty
@@ -582,6 +584,41 @@ def handle_delete_lead(event):
         return _json(200, {"ok": True, "data": {"deleted": True}})
     except ClientError:
         return _json(500, {"ok": False, "message": "Failed to delete lead", "code": "INTERNAL_ERROR"})
+
+
+_VALID_LEAD_STATUSES = {"new", "contacted", "proposal", "won", "lost"}
+
+
+def handle_patch_lead(event):
+    """PATCH /leads/{sk} — update lead status (admin only)."""
+    if not _require_admin(event):
+        return _json(401, {"ok": False, "message": "Unauthorized", "code": "AUTH_REQUIRED"})
+
+    table = os.environ.get("LEADS_TABLE_NAME") or ""
+    if not table:
+        return _json(500, {"ok": False, "message": "Server not configured", "code": "INTERNAL_ERROR"})
+
+    sk = _path_param(event, "sk", prefix="/leads/").strip()
+    if not sk:
+        return _json(400, {"ok": False, "message": "Missing lead ID", "code": "VALIDATION_ERROR"})
+
+    body = _body_json(event)
+    status = (body.get("status") or "").strip().lower() if body else ""
+    if status not in _VALID_LEAD_STATUSES:
+        return _json(400, {
+            "ok": False,
+            "message": f"Invalid status. Must be one of: {', '.join(sorted(_VALID_LEAD_STATUSES))}",
+            "code": "VALIDATION_ERROR",
+        })
+
+    try:
+        updated = db.update_item(
+            table, {"pk": "LEADS", "sk": sk},
+            {"status": status, "statusUpdatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")},
+        )
+        return _json(200, {"ok": True, "data": {"lead": updated}})
+    except ClientError:
+        return _json(500, {"ok": False, "message": "Failed to update lead", "code": "INTERNAL_ERROR"})
 
 
 # ---------------------------------------------------------------------------
@@ -1141,7 +1178,7 @@ def handle_get_blog_feed(event):
             "Cache-Control": "public, max-age=300",
             "Access-Control-Allow-Origin": _current_origin,
             "Access-Control-Allow-Headers": "Content-Type,x-admin-token",
-            "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+            "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
         },
         "body": xml_string,
     }
@@ -1163,6 +1200,8 @@ def lambda_handler(event, context):
             response = handle_get_leads(event)
         elif rk == "DELETE /leads/{sk}" or rk.startswith("DELETE /leads/"):
             response = handle_delete_lead(event)
+        elif rk == "PATCH /leads/{sk}" or rk.startswith("PATCH /leads/"):
+            response = handle_patch_lead(event)
         elif rk == "GET /content/{page}" or rk.startswith("GET /content/"):
             response = handle_get_content(event)
         elif rk == "POST /media/presign":

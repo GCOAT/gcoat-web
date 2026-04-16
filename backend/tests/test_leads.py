@@ -28,6 +28,8 @@ class TestPostLeads:
         assert body["ok"] is True
         assert "createdAt" in body["data"]
         mock_table.put_item.assert_called_once()
+        put_item_args = mock_table.put_item.call_args.kwargs["Item"]
+        assert put_item_args["status"] == "new"
 
     def test_valid_lead_signup_email_only(self, mock_ddb):
         """Signup with only email returns 200."""
@@ -810,6 +812,81 @@ class TestPostLeadsEmailEdgeCases:
             "email": "user@example",
             "source": "signup"
         })
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+
+
+class TestPatchLead:
+    """PATCH /leads/{sk} — update lead status."""
+
+    def test_update_status(self, mock_ddb, mock_ssm):
+        """Valid status update returns 200."""
+        mock_table, _ = mock_ddb
+        mock_table.update_item.return_value = {"Attributes": {"pk": "LEADS", "sk": "2026-01-01T00:00:00Z#abc", "status": "contacted"}}
+        event = make_event("PATCH", "/leads/2026-01-01T00:00:00Z%23abc",
+            body={"status": "contacted"},
+            headers={"x-admin-token": "test-admin-token-123"})
+        resp = lambda_handler(event, FakeContext())
+        body = json.loads(resp["body"])
+
+        assert resp["statusCode"] == 200
+        assert body["ok"] is True
+        assert body["data"]["lead"]["status"] == "contacted"
+
+    def test_all_valid_statuses(self, mock_ddb, mock_ssm):
+        """All valid statuses are accepted."""
+        mock_table, _ = mock_ddb
+        for status in ["new", "contacted", "proposal", "won", "lost"]:
+            mock_table.update_item.return_value = {"Attributes": {"status": status}}
+            event = make_event("PATCH", "/leads/2026-01-01T00:00:00Z%23abc",
+                body={"status": status},
+                headers={"x-admin-token": "test-admin-token-123"})
+            resp = lambda_handler(event, FakeContext())
+            assert resp["statusCode"] == 200
+
+    def test_invalid_status(self, mock_ddb, mock_ssm):
+        """Invalid status returns 400."""
+        event = make_event("PATCH", "/leads/2026-01-01T00:00:00Z%23abc",
+            body={"status": "invalid"},
+            headers={"x-admin-token": "test-admin-token-123"})
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+        body = json.loads(resp["body"])
+        assert body["code"] == "VALIDATION_ERROR"
+
+    def test_missing_status(self, mock_ddb, mock_ssm):
+        """Missing status field returns 400."""
+        event = make_event("PATCH", "/leads/2026-01-01T00:00:00Z%23abc",
+            body={},
+            headers={"x-admin-token": "test-admin-token-123"})
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 400
+
+    def test_no_auth(self, mock_ddb, mock_ssm):
+        """No auth token returns 401."""
+        event = make_event("PATCH", "/leads/2026-01-01T00:00:00Z%23abc",
+            body={"status": "contacted"})
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 401
+
+    def test_wrong_token(self, mock_ddb, mock_ssm):
+        """Wrong auth token returns 401."""
+        event = make_event("PATCH", "/leads/2026-01-01T00:00:00Z%23abc",
+            body={"status": "contacted"},
+            headers={"x-admin-token": "wrong-token"})
+        resp = lambda_handler(event, FakeContext())
+
+        assert resp["statusCode"] == 401
+
+    def test_missing_sk(self, mock_ddb, mock_ssm):
+        """Missing lead SK returns 400."""
+        event = make_event("PATCH", "/leads/",
+            body={"status": "contacted"},
+            headers={"x-admin-token": "test-admin-token-123"})
         resp = lambda_handler(event, FakeContext())
 
         assert resp["statusCode"] == 400

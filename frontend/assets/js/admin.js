@@ -24,10 +24,12 @@ const activityList = document.getElementById("activity-list");
 const leadsTbody = document.getElementById("leads-tbody");
 const leadsSearch = document.getElementById("leads-search");
 const leadsSourceFilter = document.getElementById("leads-source-filter");
+const leadsStatusFilter = document.getElementById("leads-status-filter");
 const leadsCountBadge = document.getElementById("leads-count-badge");
 const leadModal = document.getElementById("lead-modal");
 const leadModalTitle = document.getElementById("lead-modal-title");
 const leadModalBody = document.getElementById("lead-modal-body");
+const modalLeadStatus = document.getElementById("modal-lead-status");
 
 // ── DOM refs (blog) ──
 const blogTbody = document.getElementById("blog-posts-tbody");
@@ -127,6 +129,7 @@ window.addEventListener("hashchange", () => {
 // Leads event listeners
 leadsSearch?.addEventListener("input", filterLeads);
 leadsSourceFilter?.addEventListener("change", filterLeads);
+leadsStatusFilter?.addEventListener("change", filterLeads);
 document.getElementById("btn-export-leads")?.addEventListener("click", exportLeadsCSV);
 
 // Leads date range pills
@@ -438,7 +441,7 @@ function announce(text) {
 async function loadAllData() {
   // Show skeleton states for all views
   renderStatSkeletons();
-  renderTableSkeleton(leadsTbody, 6);
+  renderTableSkeleton(leadsTbody, 7);
   renderTableSkeleton(blogTbody, 5);
   renderChartSkeletons();
   renderActivitySkeleton();
@@ -486,7 +489,7 @@ async function loadAllData() {
     // Show inline error states in tables
     renderErrorState(leadsTbody, {
       icon: "error", title: "Couldn't load leads", message: friendlyMsg,
-      btnText: "Retry", btnAction: loadAllData, isTableCell: true, colSpan: 6,
+      btnText: "Retry", btnAction: loadAllData, isTableCell: true, colSpan: 7,
     });
     renderErrorState(blogTbody, {
       icon: "error", title: "Couldn't load posts", message: friendlyMsg,
@@ -918,7 +921,7 @@ async function loadLeadsList() {
   } catch (err) {
     renderErrorState(leadsTbody, {
       icon: "error", title: "Couldn't load leads", message: getFriendlyError(err),
-      btnText: "Retry", btnAction: loadLeadsList, isTableCell: true, colSpan: 6,
+      btnText: "Retry", btnAction: loadLeadsList, isTableCell: true, colSpan: 7,
     });
   }
 }
@@ -926,10 +929,12 @@ async function loadLeadsList() {
 function filterLeads() {
   const query = (leadsSearch?.value || "").toLowerCase();
   const source = leadsSourceFilter?.value || "";
+  const status = leadsStatusFilter?.value || "";
   const now = Date.now();
 
   let filtered = allLeads.filter((lead) => {
     if (source && lead.source !== source) return false;
+    if (status && (lead.status || "new") !== status) return false;
     if (query) {
       const haystack = `${lead.name || ""} ${lead.email || ""} ${lead.message || ""}`.toLowerCase();
       if (!haystack.includes(query)) return false;
@@ -951,6 +956,9 @@ function filterLeads() {
     } else if (leadsSortField === "source") {
       va = (a.source || "").toLowerCase();
       vb = (b.source || "").toLowerCase();
+    } else if (leadsSortField === "status") {
+      va = (a.status || "new").toLowerCase();
+      vb = (b.status || "new").toLowerCase();
     } else {
       va = a.createdAt || "";
       vb = b.createdAt || "";
@@ -969,19 +977,19 @@ function filterLeads() {
 function renderLeads(leads) {
   if (leads.length === 0) {
     const query = (leadsSearch?.value || "").trim();
-    if (query || leadsSourceFilter?.value || leadsDateRange !== "all") {
+    if (query || leadsSourceFilter?.value || leadsStatusFilter?.value || leadsDateRange !== "all") {
       renderEmptyState(leadsTbody, {
         icon: "search", title: "No results found",
         message: query ? `No leads matching "${query}"` : "No leads match the current filters",
-        btnText: "Clear Filters", btnAction: () => { if (leadsSearch) leadsSearch.value = ""; if (leadsSourceFilter) leadsSourceFilter.value = ""; leadsDateRange = "all"; document.querySelectorAll("#leads-date-filters .dashboard-pill-filter").forEach((b,i) => b.classList.toggle("is-active", i === 0)); filterLeads(); },
-        isTableCell: true, colSpan: 6,
+        btnText: "Clear Filters", btnAction: () => { if (leadsSearch) leadsSearch.value = ""; if (leadsSourceFilter) leadsSourceFilter.value = ""; if (leadsStatusFilter) leadsStatusFilter.value = ""; leadsDateRange = "all"; document.querySelectorAll("#leads-date-filters .dashboard-pill-filter").forEach((b,i) => b.classList.toggle("is-active", i === 0)); filterLeads(); },
+        isTableCell: true, colSpan: 7,
       });
     } else {
       renderEmptyState(leadsTbody, {
         icon: "leads", title: "No leads yet",
         message: "When visitors fill out your intake form, their info will appear here.",
         btnText: "View Your Site", btnAction: () => window.open("./index.html", "_blank"),
-        isTableCell: true, colSpan: 6,
+        isTableCell: true, colSpan: 7,
       });
     }
     return;
@@ -1005,6 +1013,13 @@ function renderLeads(leads) {
     badge.className = `dashboard-badge dashboard-badge--${srcClass}`;
     badge.textContent = src;
     tdSource.appendChild(badge);
+
+    const tdStatus = document.createElement("td");
+    const statusBadge = document.createElement("span");
+    const status = (lead.status || "new").toLowerCase();
+    statusBadge.className = `dashboard-badge dashboard-badge--${status}`;
+    statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    tdStatus.appendChild(statusBadge);
 
     const tdDate = document.createElement("td");
     tdDate.textContent = formatDate(lead.createdAt);
@@ -1037,6 +1052,7 @@ function renderLeads(leads) {
     tr.appendChild(tdName);
     tr.appendChild(tdEmail);
     tr.appendChild(tdSource);
+    tr.appendChild(tdStatus);
     tr.appendChild(tdDate);
     tr.appendChild(tdMsg);
     tr.appendChild(tdActions);
@@ -1050,6 +1066,10 @@ function showLeadDetail(lead, triggerEl) {
   modalTrigger = triggerEl || null;
   leadModal._currentLead = lead;
   leadModalTitle.textContent = lead.name || lead.email;
+  if (modalLeadStatus) {
+    modalLeadStatus.value = (lead.status || "new").toLowerCase();
+    modalLeadStatus.onchange = () => updateLeadStatus(lead, modalLeadStatus.value);
+  }
 
   const sections = [
     {
@@ -1068,6 +1088,7 @@ function showLeadDetail(lead, triggerEl) {
         ["Budget", lead.budgetRange],
         ["Timeline", lead.timeline],
         ["Source", lead.source],
+        ["Status", (lead.status || "new").charAt(0).toUpperCase() + (lead.status || "new").slice(1)],
         ["Date", lead.createdAt],
       ],
     },
@@ -1138,11 +1159,34 @@ async function deleteLead(lead) {
   }
 }
 
+async function updateLeadStatus(lead, nextStatus) {
+  const prevStatus = (lead.status || "new").toLowerCase();
+  const status = (nextStatus || "").toLowerCase();
+  if (!status || status === prevStatus) return;
+
+  try {
+    await apiFetch(`/leads/${encodeURIComponent(lead.sk)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+    lead.status = status;
+    filterLeads();
+    showToast(`Lead moved to ${status}`, "success");
+    showLeadDetail(lead, modalTrigger);
+  } catch (err) {
+    lead.status = prevStatus;
+    if (modalLeadStatus) modalLeadStatus.value = prevStatus;
+    showToast(getFriendlyError(err), "error");
+  }
+}
+
 function exportLeadsCSV() {
   const source = leadsSourceFilter?.value || "";
+  const status = leadsStatusFilter?.value || "";
   const query = (leadsSearch?.value || "").toLowerCase();
   const filtered = allLeads.filter((lead) => {
     if (source && lead.source !== source) return false;
+    if (status && (lead.status || "new") !== status) return false;
     if (query) {
       const haystack = `${lead.name || ""} ${lead.email || ""} ${lead.message || ""}`.toLowerCase();
       if (!haystack.includes(query)) return false;
@@ -1150,9 +1194,9 @@ function exportLeadsCSV() {
     return true;
   });
 
-  const headers = ["Name", "Email", "Source", "Date", "Message", "Phone", "Company"];
+  const headers = ["Name", "Email", "Source", "Status", "Date", "Message", "Phone", "Company"];
   const rows = filtered.map((l) => [
-    l.name || "", l.email || "", l.source || "",
+    l.name || "", l.email || "", l.source || "", l.status || "new",
     (l.createdAt || "").split("T")[0], l.message || "",
     l.phone || "", l.companyName || "",
   ]);

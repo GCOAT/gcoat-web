@@ -166,6 +166,14 @@
             <h2 class="dashboard-toolbar__title">Leads</h2>
             <div class="dashboard-toolbar__actions">
               <span class="dashboard-count-badge" id="leads-count-badge"></span>
+              <select class="dashboard-select" id="leads-status-filter">
+                <option value="">All statuses</option>
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="proposal">Proposal</option>
+                <option value="won">Won</option>
+                <option value="lost">Lost</option>
+              </select>
               <select class="dashboard-select" id="leads-source-filter">
                 <option value="">All sources</option>
               </select>
@@ -188,13 +196,14 @@
                   <th class="is-sortable" data-sort="name">Name <span class="sort-icon">↕</span></th>
                   <th>Email</th>
                   <th class="is-sortable" data-sort="source">Source <span class="sort-icon">↕</span></th>
+                  <th class="is-sortable" data-sort="status">Status <span class="sort-icon">↕</span></th>
                   <th class="is-sortable" data-sort="date">Date <span class="sort-icon">↕</span></th>
                   <th>Message</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="leads-tbody">
-                <tr><td colspan="6" class="dashboard-table__empty">Loading&hellip;</td></tr>
+                <tr><td colspan="7" class="dashboard-table__empty">Loading&hellip;</td></tr>
               </tbody>
             </table>
           </div>
@@ -346,8 +355,20 @@
       </div>
       <div class="dashboard-modal__body" id="lead-modal-body"></div>
       <div class="dashboard-modal__footer">
-        <button class="dashboard-btn dashboard-btn--danger" id="modal-delete-lead" type="button">Delete Lead</button>
-        <button class="dashboard-btn" data-close-modal type="button">Close</button>
+        <div class="dashboard-modal__footer-left">
+          <label class="dashboard-modal__status-label" for="modal-lead-status">Status</label>
+          <select class="dashboard-select dashboard-modal__status-select" id="modal-lead-status">
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="proposal">Proposal</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+        <div class="dashboard-modal__footer-right">
+          <button class="dashboard-btn dashboard-btn--danger" id="modal-delete-lead" type="button">Delete Lead</button>
+          <button class="dashboard-btn" data-close-modal type="button">Close</button>
+        </div>
       </div>
     </div>
   </div>
