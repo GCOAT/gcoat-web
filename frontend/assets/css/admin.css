@@ -1134,14 +1134,17 @@
 .dashboard-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: hsl(0 0% 0% / 0.5);
+  background: hsl(220 35% 8% / 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 .dashboard-modal__card {
   position: relative;
-  background: var(--dash-card-bg);
+  background: #ffffff;
+  border: 1px solid hsl(220 15% 84%);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 30px 70px -18px hsl(220 30% 10% / 0.45);
   max-width: 560px;
   width: 100%;
   max-height: 80vh;
@@ -1184,15 +1187,19 @@
 
 .dashboard-modal__body dl {
   margin: 0;
+  display: grid;
+  grid-template-columns: minmax(110px, 140px) minmax(0, 1fr);
+  column-gap: var(--spacing-md);
+  row-gap: var(--spacing-xs);
 }
 
 .dashboard-modal__body dt {
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--dash-text-muted);
+  color: hsl(220 14% 32%);
   font-size: var(--font-size-xs);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: var(--spacing-md);
+  letter-spacing: 0.4px;
+  margin-top: 0;
 }
 
 .dashboard-modal__body dt:first-child {
@@ -1200,9 +1207,11 @@
 }
 
 .dashboard-modal__body dd {
-  margin: var(--spacing-xs) 0 0 0;
+  margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--dash-text);
+  color: hsl(220 24% 16%);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.5;
   word-break: break-word;
 }
 
@@ -1210,9 +1219,9 @@
   margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--dash-text);
+  color: hsl(220 24% 16%);
   padding-bottom: var(--spacing-xs);
-  border-bottom: 1px solid var(--dash-border);
+  border-bottom: 1px solid hsl(220 14% 88%);
 }
 
 .dashboard-modal__section-title:first-child {
@@ -1248,6 +1257,28 @@
 
 .dashboard-modal__status-select {
   min-width: 120px;
+}
+
+@media (max-width: 640px) {
+  .dashboard-modal__body dl {
+    grid-template-columns: 1fr;
+    row-gap: 2px;
+  }
+
+  .dashboard-modal__body dt {
+    margin-top: var(--spacing-sm);
+  }
+
+  .dashboard-modal__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-modal__footer-left,
+  .dashboard-modal__footer-right {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 /* ── Toast Notifications ── */
