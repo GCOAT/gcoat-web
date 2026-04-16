@@ -19,13 +19,13 @@
 ---
 
 ## M1. SES Production Access (Mon Apr 14)
-- [ ] Re-apply for AWS SES production access (AWS Console → SES → Account Dashboard → Request Production Access)
-- [ ] Use case: "Transactional lead notification + confirmation emails for gcoat.io, a web development consultancy. Low volume (<100 emails/month). Unsubscribe mechanism planned. We do not send bulk or marketing email."
+- [x] Re-apply for AWS SES production access (AWS Console → SES → Account Dashboard → Request Production Access)
+- [x] Use case: "Transactional lead notification + confirmation emails for gcoat.io, a web development consultancy. Low volume (<100 emails/month). Unsubscribe mechanism planned. We do not send bulk or marketing email."
 - [ ] If still rejected by Friday: launch without email — leads save to DynamoDB, add email later
 
 ## M2. Email Alias (Mon Apr 14)
-- [ ] Create `info@gcoat.io` alias in Hostinger → forwards to `akrigger@gcoat.io`
-- [ ] Verify `info@gcoat.io` sender identity in AWS SES (sandbox verification is instant)
+- [x] Create `info@gcoat.io` alias in Hostinger → forwards to `akrigger@gcoat.io`
+- [x] Verify `info@gcoat.io` sender identity in AWS SES (sandbox verification is instant)
 
 ## M3. AWS Security Hardening (Mon–Tue Apr 14–15)
 - [x] **Add security response headers** in `backend/src/app.py` `_json()` function:
@@ -34,22 +34,22 @@
   - `Strict-Transport-Security: max-age=31536000` (prod only)
 - [x] **Increase Lambda memory** from 256MB → 512MB in `backend/template.yaml`
 - [x] **Lock down dev CORS** in `kore.config.json` — change `allowedOrigin: "*"` → `"http://localhost:8080"`
-- [ ] **Redeploy backend** with security fixes: `./scripts/deploy.sh prod`
+- [x] **Redeploy backend** with security fixes: `./scripts/deploy.sh prod` — deployed, stack up to date (259 tests pass)
 - [x] Run full test suite: `cd backend && python3 -m pytest tests/ -v`
 
 ## M4. Full Copy Review (Tue Apr 15)
-- [ ] Walk through every section — tighten wording, fix inconsistencies:
-  - [ ] Hero headline + subtitle
-  - [ ] About section (company story, pillar descriptions)
-  - [ ] Services section — add "Technical Consulting" as a service card
-  - [ ] Portfolio descriptions + tags
-  - [ ] Process step descriptions
-  - [ ] Testimonials — decide on attribution style
-  - [ ] CTA band text
-  - [ ] Contact section text + response time
-  - [ ] Footer tagline
-- [ ] Ensure "Software Development & Digital Consulting" positioning is consistent throughout
-- [ ] Update JSON-LD structured data if services change
+- [x] Walk through every section — tighten wording, fix inconsistencies:
+  - [x] Hero headline + subtitle
+  - [x] About section (company story, pillar descriptions)
+  - [x] Services section — add "Technical Consulting" as a service card
+  - [x] Portfolio descriptions + tags
+  - [x] Process step descriptions
+  - [x] Testimonials — decide on attribution style
+  - [x] CTA band text
+  - [x] Contact section text + response time
+  - [x] Footer tagline
+- [x] Ensure "Software Development & Digital Consulting" positioning is consistent throughout
+- [x] Update JSON-LD structured data if services change
 
 ## M5. Terms of Service Page (Tue–Wed Apr 15–16)
 - [x] Create `frontend/terms.html` with shared header/footer
@@ -79,8 +79,8 @@
 - [ ] Update social link URLs on site (footer + contact section) across all pages — replace placeholder URLs with real ones, then commit + push
 
 ## M10. Final Deploy + Smoke Test (Fri–Sat Apr 18–19)
-- [ ] Swap site-facing email to `info@gcoat.io` (if alias is live) across all HTML + config
-- [ ] If SES approved: set `EnableSES=true`, `SenderEmail=info@gcoat.io`, redeploy backend
+- [x] Swap site-facing email to `info@gcoat.io` (if alias is live) across all HTML + config — already done
+- [x] If SES approved: set `EnableSES=true`, `SenderEmail=info@gcoat.io`, redeploy backend — already configured + deployed
 - [ ] Final `./scripts/seo.sh validate` → 0 errors
 - [ ] Final content review — all pages, no stale placeholders
 - [ ] `git add . && git commit && git push origin main`
@@ -98,7 +98,7 @@
 ---
 
 ## S1. OG Image Refresh
-- [ ] Regenerate `frontend/assets/images/og-image.jpg` with real chrome G logo (1200×630px)
+- [ ] Regenerate `frontend/assets/images/og-image.png` with real chrome G logo (1200×630px)
 - [ ] Push + deploy
 
 ## S2. Blog Posts (Claude Drafts, You Personalize)

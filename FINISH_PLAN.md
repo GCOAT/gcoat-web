@@ -246,8 +246,8 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 ### Pre-Launch: Brand & Business Setup
 - [x] **7.19** Create GCOAT logo — chrome G logo mark (`frontend/assets/images/logos/gcoat-logo.png`), "COAT" text with Aldrich font, silver gradient, deployed across all 7 pages
 - [x] **7.20** Generate favicon set from logo — `favicon.ico` (32×32) + `apple-touch-icon.png` (180×180) via Pillow, deployed to all pages
-- [ ] **7.21** Set up gcoat.io email addresses (e.g. hello@gcoat.io, support@gcoat.io) — configure on Hostinger or Google Workspace
-- [ ] **7.22** Verify gcoat.io sender identity in AWS SES — update `SenderEmail` parameter in template.yaml deploy
+- [x] **7.21** Set up gcoat.io email addresses (e.g. hello@gcoat.io, support@gcoat.io) — akrigger@gcoat.io + info@gcoat.io alias configured on Hostinger
+- [x] **7.22** Verify gcoat.io sender identity in AWS SES — info@gcoat.io verified, SenderEmail deployed
 - [ ] **7.23** Create social media pages:
   - [ ] Instagram — @gcoatvi or @gcoat.io
   - [ ] LinkedIn — GCOAT company page
@@ -268,26 +268,26 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 - [x] Theme toggle hidden
 
 **Day 1–2 (Apr 14–15): AWS Security + Copy Review**
-- [ ] Add security response headers to `_json()` in app.py (X-Content-Type-Options, X-Frame-Options, HSTS)
-- [ ] Increase Lambda memory 256→512 in template.yaml
-- [ ] Lock down dev CORS in kore.config.json (`"*"` → `"http://localhost:8080"`)
-- [ ] Redeploy backend + run full test suite
-- [ ] Full copy review across all pages — tighten, add Technical Consulting service card
+- [x] Add security response headers to `_json()` in app.py (X-Content-Type-Options, X-Frame-Options, HSTS)
+- [x] Increase Lambda memory 256→512 in template.yaml
+- [x] Lock down dev CORS in kore.config.json (`"*"` → `"http://localhost:8080"`)
+- [x] Redeploy backend + run full test suite — 259 tests pass, stack up to date
+- [x] Full copy review across all pages — tighten, add Technical Consulting service card
 
 **Day 2–3 (Apr 15–16): Legal Pages**
-- [ ] Create `frontend/terms.html` — Terms of Service
-- [ ] Create `frontend/privacy.html` — Privacy Policy
-- [ ] Cookie consent banner (vanilla JS + CSS, localStorage)
-- [ ] Add Terms + Privacy links to footer on all pages
-- [ ] Regenerate sitemap
+- [x] Create `frontend/terms.html` — Terms of Service
+- [x] Create `frontend/privacy.html` — Privacy Policy
+- [x] Cookie consent banner (vanilla JS + CSS, localStorage)
+- [x] Add Terms + Privacy links to footer on all pages
+- [x] Regenerate sitemap
 
 **Day 1 (Apr 14): Email + SES**
 - [x] Set up akrigger@gcoat.io on Hostinger (Starter Business Email — $0.39/mo)
 - [x] Verify akrigger@gcoat.io in AWS SES
-- [ ] Re-apply for SES production access (stronger use case description)
-- [ ] Create info@gcoat.io alias in Hostinger → forwards to akrigger@gcoat.io
-- [ ] Verify info@gcoat.io sender identity in AWS SES (needed so form emails come from info@)
-- [ ] Redeploy backend with `SenderEmail: info@gcoat.io`
+- [x] Re-apply for SES production access (stronger use case description)
+- [x] Create info@gcoat.io alias in Hostinger → forwards to akrigger@gcoat.io
+- [x] Verify info@gcoat.io sender identity in AWS SES (needed so form emails come from info@)
+- [x] Redeploy backend with `SenderEmail: info@gcoat.io` — config already set, stack deployed
 - [ ] Test: submit a form → confirm email arrives at akrigger@gcoat.io from info@gcoat.io
 
 **Day 4 (Apr 17): Social Profiles (you)**
@@ -304,7 +304,7 @@ Scripted chat flow on `/start.html`. Architected so Claude API replaces the scri
 
 **Day 5–6 (Apr 18–19): Final Code + Smoke Test**
 - [x] Update site email from gcoatllc@gmail.com → akrigger@gcoat.io (all pages + kore.config.json)
-- [ ] Swap site-facing email to info@gcoat.io once alias is live
+- [x] Swap site-facing email to info@gcoat.io once alias is live — already done, all pages use info@gcoat.io
 - [ ] Update footer + contact social links with final profile URLs (7.25)
 - [ ] Final `seo.sh validate` → 0 errors
 - [ ] Final content review — no stale placeholders

@@ -1,18 +1,37 @@
-// admin.js — ES module for multi-tab CMS dashboard (GCOAT)
+// admin.js — ES module for sidebar-navigated CMS dashboard (GCOAT)
 
 const API_BASE = window.APP_CONFIG?.API_BASE_URL || "";
 const FEATURES = window.APP_CONFIG?.FEATURES || {};
 
 // ── DOM refs (auth) ──
-const authSection = document.getElementById("admin-auth");
 const gate = document.getElementById("admin-gate");
-const panel = document.getElementById("admin-panel");
+const wrapper = document.getElementById("dashboard-wrapper");
 const tokenInput = document.getElementById("admin-token");
 const loginBtn = document.getElementById("admin-login-btn");
-const tablist = document.getElementById("admin-tablist");
+
+// ── DOM refs (sidebar + topbar) ──
+const sidebar = document.getElementById("dashboard-sidebar");
+const sidebarToggle = document.getElementById("sidebar-toggle");
+const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+const topbarTitle = document.getElementById("topbar-title");
+const announceRegion = document.getElementById("dashboard-announce");
+
+// ── DOM refs (overview) ──
+const overviewStats = document.getElementById("overview-stats");
+const activityList = document.getElementById("activity-list");
+
+// ── DOM refs (leads) ──
+const leadsTbody = document.getElementById("leads-tbody");
+const leadsSearch = document.getElementById("leads-search");
+const leadsSourceFilter = document.getElementById("leads-source-filter");
+const leadsCountBadge = document.getElementById("leads-count-badge");
+const leadModal = document.getElementById("lead-modal");
+const leadModalTitle = document.getElementById("lead-modal-title");
+const leadModalBody = document.getElementById("lead-modal-body");
 
 // ── DOM refs (blog) ──
-const tbody = document.getElementById("blog-posts-tbody");
+const blogTbody = document.getElementById("blog-posts-tbody");
+const blogCountBadge = document.getElementById("blog-count-badge");
 const listView = document.getElementById("blog-list-view");
 const editorView = document.getElementById("blog-editor-view");
 const editorHeading = document.getElementById("editor-heading");
@@ -22,92 +41,128 @@ const btnBackToList = document.getElementById("btn-back-to-list");
 const btnSaveDraft = document.getElementById("btn-save-draft");
 const btnPublish = document.getElementById("btn-publish");
 const btnDelete = document.getElementById("btn-delete-post");
-const editorStatus = document.getElementById("editor-status");
 const fTitle = document.getElementById("post-title");
 const fSlug = document.getElementById("post-slug");
 const fExcerpt = document.getElementById("post-excerpt");
-const fTags = document.getElementById("post-tags");
 const fFeaturedImage = document.getElementById("post-featured-image");
-
-// ── DOM refs (leads) ──
-const leadsTbody = document.getElementById("leads-tbody");
-const leadsSearch = document.getElementById("leads-search");
-const leadsSourceFilter = document.getElementById("leads-source-filter");
-const btnExportLeads = document.getElementById("btn-export-leads");
-const leadDetail = document.getElementById("lead-detail");
-const leadDetailTitle = document.getElementById("lead-detail-title");
-const leadDetailBody = document.getElementById("lead-detail-body");
+const slugPreview = document.getElementById("slug-preview");
+const imagePreview = document.getElementById("featured-image-preview");
+const editorDirty = document.getElementById("editor-dirty");
+const tagsContainer = document.getElementById("tags-container");
+const tagsInput = document.getElementById("post-tags-input");
 
 // ── DOM refs (media) ──
 const mediaGrid = document.getElementById("media-grid");
 const mediaFileInput = document.getElementById("media-file-input");
-const mediaUploadStatus = document.getElementById("media-upload-status");
+const mediaDropzone = document.getElementById("media-dropzone");
+const uploadQueue = document.getElementById("upload-queue");
+const mediaCountBadge = document.getElementById("media-count-badge");
+const mediaTypeFilter = document.getElementById("media-type-filter");
+const mediaSortSelect = document.getElementById("media-sort");
 
+// ── State ──
 let adminToken = sessionStorage.getItem("adminToken") || "";
+let activeView = null;
 let editingSlug = null;
 let quill = null;
 let allLeads = [];
-let activeTab = null;
+let allPosts = [];
+let allMedia = [];
+let currentTags = [];
+let leadsSortField = "date";
+let leadsSortDir = "desc";
+let leadsDateRange = "all";
+let blogStatusFilter = "all";
+let chartLeadsSource = null;
+let chartLeadsTime = null;
+let lastSavedState = null;
+let modalTrigger = null;
+let cachedDataReady = false;
 
-// ── Tab System ──
-const TAB_DEFS = [
-  { id: "leads", label: "Leads", feature: "CONTACT_FORM", onActivate: loadLeadsList },
-  { id: "blog", label: "Blog", feature: "BLOG", onActivate: onBlogActivate },
-  { id: "media", label: "Media", feature: "MEDIA", onActivate: loadMediaList },
-];
+// ── View Definitions ──
+const VIEW_TITLES = {
+  overview: "Overview",
+  leads: "Leads",
+  blog: "Blog",
+  media: "Media",
+};
 
-function buildTabs() {
-  const enabledTabs = TAB_DEFS.filter(t => FEATURES[t.feature]);
-  tablist.innerHTML = "";
-  enabledTabs.forEach((tab) => {
-    const btn = document.createElement("button");
-    btn.className = "admin-tab";
-    btn.role = "tab";
-    btn.id = `tab-${tab.id}`;
-    btn.setAttribute("aria-controls", `panel-${tab.id}`);
-    btn.setAttribute("aria-selected", "false");
-    btn.textContent = tab.label;
-    btn.addEventListener("click", () => switchTab(tab.id));
-    tablist.appendChild(btn);
-  });
-  // Hide panels for disabled features
-  TAB_DEFS.forEach(t => {
-    const section = document.getElementById(`panel-${t.id}`);
-    if (section && !FEATURES[t.feature]) {
-      section.remove();
-    }
-  });
-  if (enabledTabs.length > 0) {
-    switchTab(enabledTabs[0].id);
-  }
-}
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════
 
-function switchTab(tabId) {
-  if (activeTab === tabId) return;
-  activeTab = tabId;
-
-  tablist.querySelectorAll(".admin-tab").forEach(btn => {
-    const isActive = btn.id === `tab-${tabId}`;
-    btn.classList.toggle("is-active", isActive);
-    btn.setAttribute("aria-selected", isActive ? "true" : "false");
-  });
-
-  document.querySelectorAll(".admin-panel-section").forEach(section => {
-    section.hidden = section.id !== `panel-${tabId}`;
-  });
-
-  const def = TAB_DEFS.find(t => t.id === tabId);
-  if (def?.onActivate) def.onActivate();
-}
-
-// ── Init ──
 if (adminToken) {
   showPanel();
+} else {
+  gate.hidden = false;
+  wrapper.hidden = true;
 }
 
 loginBtn?.addEventListener("click", handleLogin);
 tokenInput?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleLogin();
+});
+
+// Sidebar mobile toggle
+sidebarToggle?.addEventListener("click", toggleSidebar);
+sidebarBackdrop?.addEventListener("click", closeSidebar);
+
+// Sidebar nav clicks
+document.querySelectorAll(".js-nav-link").forEach((btn) => {
+  btn.addEventListener("click", () => switchView(btn.dataset.view));
+});
+
+// Hash-based navigation
+window.addEventListener("hashchange", () => {
+  const hash = location.hash.replace("#", "");
+  if (hash && VIEW_TITLES[hash]) switchView(hash);
+});
+
+// Leads event listeners
+leadsSearch?.addEventListener("input", filterLeads);
+leadsSourceFilter?.addEventListener("change", filterLeads);
+document.getElementById("btn-export-leads")?.addEventListener("click", exportLeadsCSV);
+
+// Leads date range pills
+document.querySelectorAll("#leads-date-filters .dashboard-pill-filter").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#leads-date-filters .dashboard-pill-filter").forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    leadsDateRange = btn.dataset.range;
+    filterLeads();
+  });
+});
+
+// Leads table sort
+document.querySelectorAll("#leads-table th.is-sortable").forEach((th) => {
+  th.addEventListener("click", () => {
+    const field = th.dataset.sort;
+    if (leadsSortField === field) {
+      leadsSortDir = leadsSortDir === "asc" ? "desc" : "asc";
+    } else {
+      leadsSortField = field;
+      leadsSortDir = field === "date" ? "desc" : "asc";
+    }
+    // Update visual state
+    document.querySelectorAll("#leads-table th.is-sortable").forEach((h) => {
+      h.classList.remove("is-sorted-asc", "is-sorted-desc");
+    });
+    th.classList.add(leadsSortDir === "asc" ? "is-sorted-asc" : "is-sorted-desc");
+    filterLeads();
+  });
+});
+
+// Lead modal close
+leadModal?.querySelectorAll("[data-close-modal]").forEach((el) => {
+  el.addEventListener("click", closeLeadModal);
+});
+document.getElementById("modal-delete-lead")?.addEventListener("click", () => {
+  const lead = leadModal._currentLead;
+  if (lead) deleteLead(lead);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !leadModal.hidden) closeLeadModal();
+  if (e.key === "Escape" && sidebar.classList.contains("is-open")) closeSidebar();
 });
 
 // Blog event listeners
@@ -123,20 +178,87 @@ fTitle?.addEventListener("input", () => {
   if (!editingSlug) {
     fSlug.value = autoSlug(fTitle.value);
   }
+  updateSlugPreview();
+  markDirty();
+});
+fSlug?.addEventListener("input", () => {
+  updateSlugPreview();
+  markDirty();
+});
+fExcerpt?.addEventListener("input", markDirty);
+fFeaturedImage?.addEventListener("input", () => {
+  updateImagePreview();
+  markDirty();
 });
 
-// Leads event listeners
-leadsSearch?.addEventListener("input", filterLeads);
-leadsSourceFilter?.addEventListener("change", filterLeads);
-btnExportLeads?.addEventListener("click", exportLeadsCSV);
-document.getElementById("btn-close-lead-detail")?.addEventListener("click", () => {
-  leadDetail.hidden = true;
+// Blog status filter pills
+document.querySelectorAll("#blog-status-filters .dashboard-pill-filter").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#blog-status-filters .dashboard-pill-filter").forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    blogStatusFilter = btn.dataset.status;
+    renderBlogPosts();
+  });
 });
+
+// Tags input
+tagsInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === ",") {
+    e.preventDefault();
+    const tag = tagsInput.value.trim().toLowerCase().replace(/,/g, "");
+    if (tag && !currentTags.includes(tag)) {
+      currentTags.push(tag);
+      renderTags();
+      markDirty();
+    }
+    tagsInput.value = "";
+  } else if (e.key === "Backspace" && !tagsInput.value && currentTags.length) {
+    currentTags.pop();
+    renderTags();
+    markDirty();
+  }
+});
+tagsContainer?.addEventListener("click", () => tagsInput?.focus());
 
 // Media event listeners
 mediaFileInput?.addEventListener("change", handleMediaUpload);
+mediaDropzone?.addEventListener("click", () => mediaFileInput?.click());
+mediaDropzone?.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  mediaDropzone.classList.add("is-dragover");
+});
+mediaDropzone?.addEventListener("dragleave", () => {
+  mediaDropzone.classList.remove("is-dragover");
+});
+mediaDropzone?.addEventListener("drop", (e) => {
+  e.preventDefault();
+  mediaDropzone.classList.remove("is-dragover");
+  if (e.dataTransfer.files.length) {
+    mediaFileInput.files = e.dataTransfer.files;
+    handleMediaUpload();
+  }
+});
+mediaTypeFilter?.addEventListener("change", renderMedia);
+mediaSortSelect?.addEventListener("change", renderMedia);
 
-// ── Auth ──
+// Quick actions
+document.getElementById("qa-new-post")?.addEventListener("click", () => {
+  switchView("blog");
+  setTimeout(showEditor, 100);
+});
+document.getElementById("qa-export-leads")?.addEventListener("click", () => {
+  if (allLeads.length) exportLeadsCSV();
+  else showToast("No leads data to export", "info");
+});
+document.getElementById("qa-upload-media")?.addEventListener("click", () => {
+  switchView("media");
+  setTimeout(() => mediaFileInput?.click(), 100);
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════════════════════
+
 function handleLogin() {
   const token = tokenInput?.value?.trim();
   if (!token) return;
@@ -147,14 +269,114 @@ function handleLogin() {
 
 function showPanel() {
   gate.hidden = true;
-  panel.hidden = false;
+  wrapper.hidden = false;
   tokenInput.value = "";
-  authSection.innerHTML = `<button class="btn" id="admin-logout">Logout</button>`;
-  document.getElementById("admin-logout")?.addEventListener("click", () => {
-    sessionStorage.removeItem("adminToken");
-    window.location.reload();
+  // Read hash or default to overview
+  const hash = location.hash.replace("#", "");
+  switchView(VIEW_TITLES[hash] ? hash : "overview");
+  // Load all data
+  if (!cachedDataReady) loadAllData();
+}
+
+document.getElementById("admin-logout")?.addEventListener("click", () => {
+  sessionStorage.removeItem("adminToken");
+  window.location.reload();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VIEW SWITCHING
+// ═══════════════════════════════════════════════════════════════════════════
+
+function switchView(viewName) {
+  if (activeView === viewName) return;
+  activeView = viewName;
+
+  // Update sidebar active state
+  document.querySelectorAll(".js-nav-link").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.view === viewName);
   });
-  buildTabs();
+
+  // Show/hide view sections
+  document.querySelectorAll(".dashboard-view").forEach((section) => {
+    section.classList.toggle("is-active", section.dataset.view === viewName);
+  });
+
+  // Update topbar title
+  topbarTitle.textContent = VIEW_TITLES[viewName] || viewName;
+  // Update hash
+  history.replaceState(null, "", `#${viewName}`);
+  // Announce for screen readers
+  announce(`${VIEW_TITLES[viewName]} view`);
+  // Close mobile sidebar
+  closeSidebar();
+
+  // Trigger view-specific actions
+  if (viewName === "overview") renderOverview();
+  if (viewName === "leads" && allLeads.length) filterLeads();
+  if (viewName === "blog") onBlogActivate();
+  if (viewName === "media" && allMedia.length) renderMedia();
+}
+
+function toggleSidebar() {
+  sidebar.classList.toggle("is-open");
+  sidebarBackdrop.classList.toggle("is-visible");
+}
+
+function closeSidebar() {
+  sidebar.classList.remove("is-open");
+  sidebarBackdrop.classList.remove("is-visible");
+}
+
+function announce(text) {
+  if (announceRegion) announceRegion.textContent = text;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DATA LOADING
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function loadAllData() {
+  // Show skeleton states
+  renderStatSkeletons();
+
+  try {
+    const [leadsResult, pubResult, draftsResult, mediaResult] = await Promise.all([
+      FEATURES.CONTACT_FORM ? apiFetch("/leads") : Promise.resolve({ data: { leads: [] } }),
+      FEATURES.BLOG ? apiFetch("/blog/posts?status=published&limit=50") : Promise.resolve({ data: { posts: [] } }),
+      FEATURES.BLOG ? apiFetch("/blog/posts?status=draft&limit=50") : Promise.resolve({ data: { posts: [] } }),
+      FEATURES.MEDIA ? apiFetch("/media/list") : Promise.resolve({ data: { files: [] } }),
+    ]);
+
+    allLeads = leadsResult.data?.leads || [];
+    allLeads.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+
+    allPosts = [...(pubResult.data?.posts || []), ...(draftsResult.data?.posts || [])];
+    allPosts.sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+
+    allMedia = mediaResult.data?.files || [];
+
+    cachedDataReady = true;
+
+    // Populate source filter dropdown
+    const sources = [...new Set(allLeads.map((l) => l.source).filter(Boolean))];
+    if (leadsSourceFilter) {
+      leadsSourceFilter.innerHTML = '<option value="">All sources</option>';
+      sources.forEach((s) => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = s;
+        leadsSourceFilter.appendChild(opt);
+      });
+    }
+
+    // Render current view
+    renderOverview();
+    if (activeView === "leads") filterLeads();
+    if (activeView === "blog") renderBlogPosts();
+    if (activeView === "media") renderMedia();
+  } catch (err) {
+    showToast(`Failed to load data: ${err.message}`, "error");
+  }
 }
 
 // ── API helpers ──
@@ -179,128 +401,455 @@ async function apiFetch(endpoint, options = {}) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// LEADS TAB
+// OVERVIEW VIEW
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderStatSkeletons() {
+  if (!overviewStats) return;
+  overviewStats.innerHTML = "";
+  for (let i = 0; i < 4; i++) {
+    const div = document.createElement("div");
+    div.className = "dashboard-skeleton dashboard-skeleton--stat";
+    overviewStats.appendChild(div);
+  }
+}
+
+function renderOverview() {
+  renderStatCards();
+  renderCharts();
+  renderActivityFeed();
+}
+
+function renderStatCards() {
+  if (!overviewStats) return;
+  const publishedCount = allPosts.filter((p) => (p.status || p.GSI1PK) === "published").length;
+
+  const stats = [
+    { label: "Total Leads", value: allLeads.length, icon: "leads", view: "leads" },
+    { label: "Blog Posts", value: allPosts.length, icon: "posts", view: "blog" },
+    { label: "Published", value: publishedCount, icon: "published", view: "blog" },
+    { label: "Media Files", value: allMedia.length, icon: "media", view: "media" },
+  ];
+
+  overviewStats.innerHTML = "";
+  stats.forEach((stat) => {
+    const card = document.createElement("div");
+    card.className = "dashboard-stat-card";
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.addEventListener("click", () => switchView(stat.view));
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        switchView(stat.view);
+      }
+    });
+
+    const iconSvgs = {
+      leads: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      posts: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+      published: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      media: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+    };
+
+    const iconWrap = document.createElement("div");
+    iconWrap.className = `dashboard-stat-card__icon dashboard-stat-card__icon--${stat.icon}`;
+    iconWrap.innerHTML = iconSvgs[stat.icon];
+
+    const info = document.createElement("div");
+    info.className = "dashboard-stat-card__info";
+    const valEl = document.createElement("span");
+    valEl.className = "dashboard-stat-card__value";
+    valEl.textContent = stat.value;
+    const labelEl = document.createElement("span");
+    labelEl.className = "dashboard-stat-card__label";
+    labelEl.textContent = stat.label;
+    info.appendChild(valEl);
+    info.appendChild(labelEl);
+
+    card.appendChild(iconWrap);
+    card.appendChild(info);
+    overviewStats.appendChild(card);
+  });
+}
+
+function renderCharts() {
+  if (typeof Chart === "undefined") return;
+
+  // Leads by Source — Doughnut
+  const sourceCanvas = document.getElementById("chart-leads-source");
+  if (sourceCanvas && allLeads.length) {
+    const sourceCounts = {};
+    allLeads.forEach((l) => {
+      const src = l.source || "other";
+      sourceCounts[src] = (sourceCounts[src] || 0) + 1;
+    });
+
+    const sourceLabels = Object.keys(sourceCounts);
+    const sourceData = Object.values(sourceCounts);
+    const sourceColors = sourceLabels.map((s) => {
+      const map = { intake: "#3b82f6", contact: "#22c55e", signup: "#f59e0b", "blog-subscribe": "#8b5cf6" };
+      return map[s] || "#94a3b8";
+    });
+
+    if (chartLeadsSource) chartLeadsSource.destroy();
+    chartLeadsSource = new Chart(sourceCanvas, {
+      type: "doughnut",
+      data: {
+        labels: sourceLabels,
+        datasets: [{
+          data: sourceData,
+          backgroundColor: sourceColors,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: "bottom", labels: { padding: 16, usePointStyle: true } },
+        },
+      },
+    });
+  }
+
+  // Leads over Time — Bar
+  const timeCanvas = document.getElementById("chart-leads-time");
+  if (timeCanvas && allLeads.length) {
+    const monthCounts = {};
+    allLeads.forEach((l) => {
+      const month = (l.createdAt || "").slice(0, 7); // YYYY-MM
+      if (month) monthCounts[month] = (monthCounts[month] || 0) + 1;
+    });
+
+    const sortedMonths = Object.keys(monthCounts).sort();
+    const last6 = sortedMonths.slice(-6);
+
+    if (chartLeadsTime) chartLeadsTime.destroy();
+    chartLeadsTime = new Chart(timeCanvas, {
+      type: "bar",
+      data: {
+        labels: last6.map((m) => {
+          const [y, mo] = m.split("-");
+          return new Date(y, mo - 1).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+        }),
+        datasets: [{
+          label: "Leads",
+          data: last6.map((m) => monthCounts[m]),
+          backgroundColor: "#3b82f6",
+          borderRadius: 4,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
+          x: { grid: { display: false } },
+        },
+      },
+    });
+  }
+}
+
+function renderActivityFeed() {
+  if (!activityList) return;
+  activityList.innerHTML = "";
+
+  const items = [];
+
+  allLeads.slice(0, 5).forEach((lead) => {
+    items.push({
+      type: "lead",
+      text: `${lead.name || lead.email} submitted via ${lead.source || "unknown"}`,
+      date: lead.createdAt || "",
+      data: lead,
+    });
+  });
+
+  allPosts.slice(0, 5).forEach((post) => {
+    items.push({
+      type: "post",
+      text: `${post.title} — ${post.status || "draft"}`,
+      date: post.updatedAt || post.createdAt || "",
+      data: post,
+    });
+  });
+
+  items.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  const recent = items.slice(0, 8);
+
+  if (recent.length === 0) {
+    const li = document.createElement("li");
+    li.className = "dashboard-activity__item";
+    const textEl = document.createElement("span");
+    textEl.className = "dashboard-activity__text";
+    textEl.textContent = "No recent activity";
+    li.appendChild(textEl);
+    activityList.appendChild(li);
+    return;
+  }
+
+  recent.forEach((item) => {
+    const li = document.createElement("li");
+    li.className = "dashboard-activity__item";
+
+    const iconEl = document.createElement("span");
+    iconEl.className = `dashboard-activity__icon dashboard-activity__icon--${item.type}`;
+    iconEl.innerHTML = item.type === "lead"
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+
+    const textEl = document.createElement("span");
+    textEl.className = "dashboard-activity__text";
+    textEl.textContent = item.text;
+
+    const timeEl = document.createElement("span");
+    timeEl.className = "dashboard-activity__time";
+    timeEl.textContent = relativeTime(item.date);
+
+    li.appendChild(iconEl);
+    li.appendChild(textEl);
+    li.appendChild(timeEl);
+
+    li.addEventListener("click", () => {
+      if (item.type === "lead") {
+        switchView("leads");
+        setTimeout(() => showLeadDetail(item.data), 150);
+      } else {
+        switchView("blog");
+        setTimeout(() => editPost(item.data.slug), 150);
+      }
+    });
+
+    activityList.appendChild(li);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEADS VIEW
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function loadLeadsList() {
-  leadsTbody.innerHTML = `<tr><td colspan="6" class="admin-table__empty">Loading&hellip;</td></tr>`;
-
   try {
     const result = await apiFetch("/leads");
     allLeads = result.data?.leads || [];
     allLeads.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
 
-    // Populate source filter dropdown
-    const sources = [...new Set(allLeads.map(l => l.source).filter(Boolean))];
-    leadsSourceFilter.innerHTML = `<option value="">All sources</option>`;
-    sources.forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s;
-      opt.textContent = s;
-      leadsSourceFilter.appendChild(opt);
-    });
-
-    renderLeads(allLeads);
+    const sources = [...new Set(allLeads.map((l) => l.source).filter(Boolean))];
+    if (leadsSourceFilter) {
+      leadsSourceFilter.innerHTML = '<option value="">All sources</option>';
+      sources.forEach((s) => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = s;
+        leadsSourceFilter.appendChild(opt);
+      });
+    }
+    filterLeads();
   } catch (err) {
-    leadsTbody.innerHTML = `<tr><td colspan="6" class="admin-table__empty">Failed to load: ${esc(err.message)}</td></tr>`;
+    leadsTbody.innerHTML = `<tr><td colspan="6" class="dashboard-table__empty">Failed to load: ${esc(err.message)}</td></tr>`;
   }
 }
 
 function filterLeads() {
   const query = (leadsSearch?.value || "").toLowerCase();
   const source = leadsSourceFilter?.value || "";
-  const filtered = allLeads.filter(lead => {
+  const now = Date.now();
+
+  let filtered = allLeads.filter((lead) => {
     if (source && lead.source !== source) return false;
     if (query) {
       const haystack = `${lead.name || ""} ${lead.email || ""} ${lead.message || ""}`.toLowerCase();
       if (!haystack.includes(query)) return false;
     }
+    if (leadsDateRange !== "all") {
+      const days = parseInt(leadsDateRange, 10);
+      const leadDate = new Date(lead.createdAt || 0).getTime();
+      if (now - leadDate > days * 86400000) return false;
+    }
     return true;
   });
+
+  // Sort
+  filtered.sort((a, b) => {
+    let va, vb;
+    if (leadsSortField === "name") {
+      va = (a.name || "").toLowerCase();
+      vb = (b.name || "").toLowerCase();
+    } else if (leadsSortField === "source") {
+      va = (a.source || "").toLowerCase();
+      vb = (b.source || "").toLowerCase();
+    } else {
+      va = a.createdAt || "";
+      vb = b.createdAt || "";
+    }
+    const cmp = va < vb ? -1 : va > vb ? 1 : 0;
+    return leadsSortDir === "asc" ? cmp : -cmp;
+  });
+
+  if (leadsCountBadge) {
+    leadsCountBadge.textContent = `Showing ${filtered.length} of ${allLeads.length}`;
+  }
+
   renderLeads(filtered);
 }
 
 function renderLeads(leads) {
   if (leads.length === 0) {
-    leadsTbody.innerHTML = `<tr><td colspan="6" class="admin-table__empty">No leads found.</td></tr>`;
+    leadsTbody.innerHTML = '<tr><td colspan="6" class="dashboard-table__empty">No leads found.</td></tr>';
     return;
   }
 
   leadsTbody.innerHTML = "";
-  leads.forEach(lead => {
+  leads.forEach((lead) => {
     const tr = document.createElement("tr");
-    tr.className = "admin-table__row--clickable";
-    const date = (lead.createdAt || "").split("T")[0];
-    const msgPreview = (lead.message || "").slice(0, 60) + ((lead.message || "").length > 60 ? "…" : "");
-    tr.innerHTML = `
-      <td>${esc(lead.name || "—")}</td>
-      <td>${esc(lead.email)}</td>
-      <td><span class="admin-badge admin-badge--source">${esc(lead.source || "—")}</span></td>
-      <td>${date}</td>
-      <td>${esc(msgPreview || "—")}</td>
-      <td>
-        <button class="btn btn--sm" data-action="view">View</button>
-        <button class="btn btn--sm" data-action="delete" style="color:var(--color-error)">Del</button>
-      </td>
-    `;
-    tr.querySelector("[data-action='view']")?.addEventListener("click", (e) => {
+    tr.className = "dashboard-table__row--clickable";
+
+    const tdName = document.createElement("td");
+    tdName.textContent = lead.name || "—";
+
+    const tdEmail = document.createElement("td");
+    tdEmail.textContent = lead.email;
+
+    const tdSource = document.createElement("td");
+    const badge = document.createElement("span");
+    const src = lead.source || "—";
+    const srcClass = { intake: "intake", contact: "contact", signup: "signup" }[src] || "source";
+    badge.className = `dashboard-badge dashboard-badge--${srcClass}`;
+    badge.textContent = src;
+    tdSource.appendChild(badge);
+
+    const tdDate = document.createElement("td");
+    tdDate.textContent = (lead.createdAt || "").split("T")[0];
+
+    const tdMsg = document.createElement("td");
+    tdMsg.className = "dashboard-table__msg-cell";
+    const msgText = lead.message || "—";
+    tdMsg.textContent = msgText.length > 60 ? msgText.slice(0, 60) + "…" : msgText;
+    tdMsg.title = msgText;
+
+    const tdActions = document.createElement("td");
+    const viewBtn = document.createElement("button");
+    viewBtn.className = "dashboard-btn dashboard-btn--sm";
+    viewBtn.textContent = "View";
+    viewBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      showLeadDetail(lead);
+      showLeadDetail(lead, viewBtn);
     });
-    tr.querySelector("[data-action='delete']")?.addEventListener("click", (e) => {
+    const delBtn = document.createElement("button");
+    delBtn.className = "dashboard-btn dashboard-btn--sm dashboard-btn--danger";
+    delBtn.textContent = "Del";
+    delBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       deleteLead(lead);
     });
-    tr.addEventListener("click", () => showLeadDetail(lead));
+    tdActions.appendChild(viewBtn);
+    tdActions.appendChild(delBtn);
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdEmail);
+    tr.appendChild(tdSource);
+    tr.appendChild(tdDate);
+    tr.appendChild(tdMsg);
+    tr.appendChild(tdActions);
+
+    tr.addEventListener("click", () => showLeadDetail(lead, tr));
     leadsTbody.appendChild(tr);
   });
 }
 
-function showLeadDetail(lead) {
-  leadDetailTitle.textContent = lead.name || lead.email;
-  const fields = [
-    ["Name", lead.name],
-    ["Email", lead.email],
-    ["Source", lead.source],
-    ["Date", lead.createdAt],
-    ["Phone", lead.phone],
-    ["Company", lead.companyName],
-    ["Project Type", lead.projectType],
-    ["Budget", lead.budgetRange],
-    ["Timeline", lead.timeline],
-    ["Features", lead.features],
-    ["Existing Website", lead.existingWebsite],
-    ["Inspiration", lead.inspirationLinks],
-    ["Branding", lead.brandingStatus],
-    ["Message", lead.message],
-  ].filter(([, v]) => v);
+function showLeadDetail(lead, triggerEl) {
+  modalTrigger = triggerEl || null;
+  leadModal._currentLead = lead;
+  leadModalTitle.textContent = lead.name || lead.email;
 
-  leadDetailBody.innerHTML = fields.map(([label, val]) => {
-    const display = Array.isArray(val) ? val.join(", ") : val;
-    return `<div class="admin-detail__row">
-      <span class="admin-detail__label">${esc(label)}</span>
-      <span class="admin-detail__value">${esc(display)}</span>
-    </div>`;
-  }).join("");
-  leadDetail.hidden = false;
+  const sections = [
+    {
+      title: "Contact",
+      fields: [
+        ["Name", lead.name],
+        ["Email", lead.email],
+        ["Phone", lead.phone],
+        ["Company", lead.companyName],
+      ],
+    },
+    {
+      title: "Project",
+      fields: [
+        ["Project Type", lead.projectType],
+        ["Budget", lead.budgetRange],
+        ["Timeline", lead.timeline],
+        ["Source", lead.source],
+        ["Date", lead.createdAt],
+      ],
+    },
+    {
+      title: "Additional",
+      fields: [
+        ["Features", lead.features],
+        ["Existing Website", lead.existingWebsite],
+        ["Inspiration", lead.inspirationLinks],
+        ["Branding", lead.brandingStatus],
+        ["Message", lead.message],
+      ],
+    },
+  ];
+
+  leadModalBody.innerHTML = "";
+  sections.forEach((section) => {
+    const filtered = section.fields.filter(([, v]) => v);
+    if (filtered.length === 0) return;
+
+    const heading = document.createElement("h4");
+    heading.className = "dashboard-modal__section-title";
+    heading.textContent = section.title;
+    leadModalBody.appendChild(heading);
+
+    const dl = document.createElement("dl");
+    filtered.forEach(([label, val]) => {
+      const dt = document.createElement("dt");
+      dt.textContent = label;
+      const dd = document.createElement("dd");
+      dd.textContent = Array.isArray(val) ? val.join(", ") : val;
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+    });
+    leadModalBody.appendChild(dl);
+  });
+
+  leadModal.hidden = false;
+  // Trap focus
+  leadModal.querySelector(".dashboard-modal__close")?.focus();
+}
+
+function closeLeadModal() {
+  leadModal.hidden = true;
+  if (modalTrigger) {
+    modalTrigger.focus();
+    modalTrigger = null;
+  }
 }
 
 async function deleteLead(lead) {
   if (!confirm(`Delete lead "${lead.name || lead.email}"?`)) return;
   try {
     await apiFetch(`/leads/${encodeURIComponent(lead.sk)}`, { method: "DELETE" });
-    allLeads = allLeads.filter(l => l.sk !== lead.sk);
+    allLeads = allLeads.filter((l) => l.sk !== lead.sk);
     filterLeads();
-    leadDetail.hidden = true;
+    closeLeadModal();
+    renderOverview();
+    showToast("Lead deleted", "success");
   } catch (err) {
-    alert(`Delete failed: ${err.message}`);
+    showToast(`Delete failed: ${err.message}`, "error");
   }
 }
 
 function exportLeadsCSV() {
   const source = leadsSourceFilter?.value || "";
   const query = (leadsSearch?.value || "").toLowerCase();
-  const filtered = allLeads.filter(lead => {
+  const filtered = allLeads.filter((lead) => {
     if (source && lead.source !== source) return false;
     if (query) {
       const haystack = `${lead.name || ""} ${lead.email || ""} ${lead.message || ""}`.toLowerCase();
@@ -310,14 +859,14 @@ function exportLeadsCSV() {
   });
 
   const headers = ["Name", "Email", "Source", "Date", "Message", "Phone", "Company"];
-  const rows = filtered.map(l => [
+  const rows = filtered.map((l) => [
     l.name || "", l.email || "", l.source || "",
     (l.createdAt || "").split("T")[0], l.message || "",
     l.phone || "", l.companyName || "",
   ]);
 
   const csvContent = [headers, ...rows]
-    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
     .join("\n");
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -326,15 +875,20 @@ function exportLeadsCSV() {
   link.download = `leads-${new Date().toISOString().split("T")[0]}.csv`;
   link.click();
   URL.revokeObjectURL(link.href);
+  showToast("CSV exported", "success");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// BLOG TAB
+// BLOG VIEW
 // ═══════════════════════════════════════════════════════════════════════════
 
 function onBlogActivate() {
   initQuill();
-  loadPostsList();
+  if (allPosts.length || cachedDataReady) {
+    renderBlogPosts();
+  } else {
+    loadPostsList();
+  }
 }
 
 function initQuill() {
@@ -353,45 +907,97 @@ function initQuill() {
       ],
     },
   });
+  quill.on("text-change", markDirty);
 }
 
 async function loadPostsList() {
-  tbody.innerHTML = `<tr><td colspan="5" class="admin-table__empty">Loading&hellip;</td></tr>`;
-
   try {
     const [pub, drafts] = await Promise.all([
       apiFetch("/blog/posts?status=published&limit=50"),
       apiFetch("/blog/posts?status=draft&limit=50"),
     ]);
-    const posts = [...(pub.data?.posts || []), ...(drafts.data?.posts || [])];
-    posts.sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
-
-    if (posts.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="admin-table__empty">No posts yet. Create your first post!</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = "";
-    posts.forEach((post) => {
-      const tr = document.createElement("tr");
-      const status = post.status || post.GSI1PK || "unknown";
-      const date = (post.updatedAt || post.createdAt || "").split("T")[0];
-      tr.innerHTML = `
-        <td>${esc(post.title)}</td>
-        <td><code>${esc(post.slug)}</code></td>
-        <td><span class="admin-badge admin-badge--${status}">${status}</span></td>
-        <td>${date}</td>
-        <td>
-          <button class="btn btn--sm" data-action="edit" data-slug="${esc(post.slug)}">Edit</button>
-        </td>
-      `;
-      tr.querySelector("[data-action='edit']")?.addEventListener("click", () => {
-        editPost(post.slug);
-      });
-      tbody.appendChild(tr);
-    });
+    allPosts = [...(pub.data?.posts || []), ...(drafts.data?.posts || [])];
+    allPosts.sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+    renderBlogPosts();
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="5" class="admin-table__empty">Failed to load: ${esc(err.message)}</td></tr>`;
+    blogTbody.innerHTML = `<tr><td colspan="5" class="dashboard-table__empty">Failed to load: ${esc(err.message)}</td></tr>`;
+  }
+}
+
+function renderBlogPosts() {
+  let posts = allPosts;
+  if (blogStatusFilter !== "all") {
+    posts = allPosts.filter((p) => (p.status || p.GSI1PK || "draft") === blogStatusFilter);
+  }
+
+  if (blogCountBadge) {
+    blogCountBadge.textContent = `${posts.length} post${posts.length !== 1 ? "s" : ""}`;
+  }
+
+  if (posts.length === 0) {
+    blogTbody.innerHTML = '<tr><td colspan="5" class="dashboard-table__empty">No posts found.</td></tr>';
+    return;
+  }
+
+  blogTbody.innerHTML = "";
+  posts.forEach((post) => {
+    const tr = document.createElement("tr");
+    const status = post.status || post.GSI1PK || "draft";
+    const date = (post.updatedAt || post.createdAt || "").split("T")[0];
+
+    const tdTitle = document.createElement("td");
+    tdTitle.textContent = post.title;
+
+    const tdSlug = document.createElement("td");
+    const code = document.createElement("code");
+    code.textContent = post.slug;
+    tdSlug.appendChild(code);
+
+    const tdStatus = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = `dashboard-badge dashboard-badge--${status}`;
+    badge.textContent = status;
+    tdStatus.appendChild(badge);
+
+    const tdDate = document.createElement("td");
+    tdDate.textContent = date;
+
+    const tdActions = document.createElement("td");
+    const editBtn = document.createElement("button");
+    editBtn.className = "dashboard-btn dashboard-btn--sm";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => editPost(post.slug));
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className = "dashboard-btn dashboard-btn--sm";
+    toggleBtn.textContent = status === "published" ? "Unpublish" : "Publish";
+    toggleBtn.addEventListener("click", () => quickToggleStatus(post));
+
+    tdActions.appendChild(editBtn);
+    tdActions.appendChild(toggleBtn);
+
+    tr.appendChild(tdTitle);
+    tr.appendChild(tdSlug);
+    tr.appendChild(tdStatus);
+    tr.appendChild(tdDate);
+    tr.appendChild(tdActions);
+    blogTbody.appendChild(tr);
+  });
+}
+
+async function quickToggleStatus(post) {
+  const newStatus = (post.status || post.GSI1PK) === "published" ? "draft" : "published";
+  try {
+    await apiFetch(`/blog/posts/${encodeURIComponent(post.slug)}`, {
+      method: "PUT",
+      body: { title: post.title, content: post.content || "", status: newStatus },
+    });
+    post.status = newStatus;
+    renderBlogPosts();
+    renderOverview();
+    showToast(`Post ${newStatus === "published" ? "published" : "unpublished"}`, "success");
+  } catch (err) {
+    showToast(`Failed: ${err.message}`, "error");
   }
 }
 
@@ -403,7 +1009,12 @@ function showEditor() {
   btnDelete.hidden = true;
   listView.hidden = true;
   editorView.hidden = false;
-  editorStatus.hidden = true;
+  currentTags = [];
+  renderTags();
+  updateSlugPreview();
+  updateImagePreview();
+  clearDirty();
+  lastSavedState = getFormState();
 }
 
 function showList() {
@@ -422,8 +1033,10 @@ async function editPost(slug) {
     fTitle.value = post.title || "";
     fSlug.value = post.slug || "";
     fExcerpt.value = post.excerpt || "";
-    fTags.value = (post.tags || []).join(", ");
+    currentTags = (post.tags || []).slice();
+    renderTags();
     fFeaturedImage.value = post.featuredImage || "";
+    updateImagePreview();
     quill.root.innerHTML = post.content || "";
     btnDelete.hidden = false;
 
@@ -432,9 +1045,11 @@ async function editPost(slug) {
 
     listView.hidden = true;
     editorView.hidden = false;
-    editorStatus.hidden = true;
+    updateSlugPreview();
+    lastSavedState = getFormState();
+    clearDirty();
   } catch (err) {
-    alert(`Failed to load post: ${err.message}`);
+    showToast(`Failed to load post: ${err.message}`, "error");
   }
 }
 
@@ -443,11 +1058,11 @@ async function savePost(status) {
   const content = quill.root.innerHTML.trim();
 
   if (!title) {
-    showStatusMsg(editorStatus, "error", "Title is required.");
+    showToast("Title is required", "error");
     return;
   }
   if (!content || content === "<p><br></p>") {
-    showStatusMsg(editorStatus, "error", "Content is required.");
+    showToast("Content is required", "error");
     return;
   }
 
@@ -457,7 +1072,7 @@ async function savePost(status) {
     status,
     slug: fSlug.value.trim() || undefined,
     excerpt: fExcerpt.value.trim() || undefined,
-    tags: fTags.value.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean),
+    tags: currentTags.length ? currentTags : undefined,
     featuredImage: fFeaturedImage.value.trim() || undefined,
   };
 
@@ -466,7 +1081,6 @@ async function savePost(status) {
       await apiFetch(`/blog/posts/${encodeURIComponent(editingSlug)}`, {
         method: "PUT", body: payload,
       });
-      showStatusMsg(editorStatus, "success", `Post ${status === "published" ? "published" : "saved as draft"}.`);
       if (payload.slug && payload.slug !== editingSlug) {
         editingSlug = payload.slug;
       }
@@ -477,10 +1091,15 @@ async function savePost(status) {
       editingSlug = result.data?.slug || payload.slug;
       editorHeading.textContent = "Edit Post";
       btnDelete.hidden = false;
-      showStatusMsg(editorStatus, "success", `Post created as ${status}.`);
     }
+    lastSavedState = getFormState();
+    showSavedIndicator();
+    showToast(`Post ${status === "published" ? "published" : "saved as draft"}`, "success");
+    // Refresh posts cache
+    loadPostsList();
+    renderOverview();
   } catch (err) {
-    showStatusMsg(editorStatus, "error", err.message);
+    showToast(err.message, "error");
   }
 }
 
@@ -492,80 +1111,228 @@ async function handleDelete() {
     await apiFetch(`/blog/posts/${encodeURIComponent(editingSlug)}`, {
       method: "DELETE",
     });
+    showToast("Post deleted", "success");
     showList();
+    renderOverview();
   } catch (err) {
-    showStatusMsg(editorStatus, "error", `Delete failed: ${err.message}`);
+    showToast(`Delete failed: ${err.message}`, "error");
   }
 }
 
+// ── Tags ──
+function renderTags() {
+  // Remove existing tag elements
+  tagsContainer?.querySelectorAll(".dashboard-tag").forEach((el) => el.remove());
+  currentTags.forEach((tag) => {
+    const span = document.createElement("span");
+    span.className = "dashboard-tag";
+    span.textContent = tag;
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "dashboard-tag__remove";
+    removeBtn.type = "button";
+    removeBtn.textContent = "×";
+    removeBtn.setAttribute("aria-label", `Remove ${tag}`);
+    removeBtn.addEventListener("click", () => {
+      currentTags = currentTags.filter((t) => t !== tag);
+      renderTags();
+      markDirty();
+    });
+    span.appendChild(removeBtn);
+    tagsContainer?.insertBefore(span, tagsInput);
+  });
+}
+
+// ── Slug preview ──
+function updateSlugPreview() {
+  if (!slugPreview) return;
+  const slug = fSlug.value.trim() || autoSlug(fTitle?.value || "");
+  slugPreview.textContent = slug ? `https://gcoat.io/post.html?slug=${slug}` : "";
+}
+
+// ── Image preview ──
+function updateImagePreview() {
+  if (!imagePreview) return;
+  const url = fFeaturedImage?.value?.trim();
+  if (url) {
+    imagePreview.src = url;
+    imagePreview.style.display = "block";
+    imagePreview.onerror = () => { imagePreview.style.display = "none"; };
+  } else {
+    imagePreview.style.display = "none";
+  }
+}
+
+// ── Dirty state tracking ──
+function getFormState() {
+  return JSON.stringify({
+    title: fTitle?.value || "",
+    slug: fSlug?.value || "",
+    excerpt: fExcerpt?.value || "",
+    tags: currentTags.slice(),
+    image: fFeaturedImage?.value || "",
+    content: quill?.root?.innerHTML || "",
+  });
+}
+
+function markDirty() {
+  if (!editorDirty || !lastSavedState) return;
+  if (getFormState() !== lastSavedState) {
+    editorDirty.textContent = "Unsaved changes";
+    editorDirty.className = "dashboard-form__dirty-indicator dashboard-form__dirty-indicator--unsaved";
+    editorDirty.hidden = false;
+  } else {
+    clearDirty();
+  }
+}
+
+function showSavedIndicator() {
+  if (!editorDirty) return;
+  editorDirty.textContent = "Saved";
+  editorDirty.className = "dashboard-form__dirty-indicator dashboard-form__dirty-indicator--saved";
+  editorDirty.hidden = false;
+  setTimeout(() => { editorDirty.hidden = true; }, 3000);
+}
+
+function clearDirty() {
+  if (editorDirty) editorDirty.hidden = true;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
-// MEDIA TAB
+// MEDIA VIEW
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function loadMediaList() {
-  mediaGrid.innerHTML = `<p class="admin-table__empty">Loading&hellip;</p>`;
-
   try {
     const result = await apiFetch("/media/list");
-    const files = result.data?.files || [];
+    allMedia = result.data?.files || [];
+    renderMedia();
+  } catch (err) {
+    mediaGrid.innerHTML = `<p class="dashboard-table__empty">Failed to load: ${esc(err.message)}</p>`;
+  }
+}
 
-    if (files.length === 0) {
-      mediaGrid.innerHTML = `<p class="admin-table__empty">No media uploaded yet.</p>`;
-      return;
+function renderMedia() {
+  let files = allMedia.slice();
+
+  // Type filter
+  const typeFilter = mediaTypeFilter?.value || "";
+  if (typeFilter === "image") {
+    files = files.filter((f) => /\.(png|jpe?g|webp|gif)$/i.test(f.key));
+  } else if (typeFilter === "audio") {
+    files = files.filter((f) => /\.(mp3|wav|ogg|m4a)$/i.test(f.key));
+  }
+
+  // Sort
+  const sortVal = mediaSortSelect?.value || "newest";
+  if (sortVal === "oldest") {
+    files.reverse();
+  }
+
+  if (mediaCountBadge) {
+    mediaCountBadge.textContent = `${files.length} file${files.length !== 1 ? "s" : ""}`;
+  }
+
+  if (files.length === 0) {
+    mediaGrid.innerHTML = '<p class="dashboard-table__empty">No media files found.</p>';
+    return;
+  }
+
+  mediaGrid.innerHTML = "";
+  files.forEach((file) => {
+    const card = document.createElement("div");
+    card.className = "dashboard-media-card";
+
+    const isImage = /\.(png|jpe?g|webp|gif)$/i.test(file.key);
+    const ext = (file.key.split(".").pop() || "").toUpperCase();
+    const publicUrl = file.url || "";
+
+    // Type badge
+    const typeBadge = document.createElement("span");
+    typeBadge.className = "dashboard-media-card__type-badge";
+    typeBadge.textContent = ext;
+    card.appendChild(typeBadge);
+
+    if (isImage) {
+      const img = document.createElement("img");
+      img.className = "dashboard-media-card__img";
+      img.src = publicUrl;
+      img.alt = file.key;
+      img.loading = "lazy";
+      card.appendChild(img);
+    } else {
+      const fileEl = document.createElement("div");
+      fileEl.className = "dashboard-media-card__file";
+      fileEl.textContent = file.key.split("/").pop();
+      card.appendChild(fileEl);
     }
 
-    mediaGrid.innerHTML = "";
-    files.forEach(file => {
-      const card = document.createElement("div");
-      card.className = "admin-media-card";
+    const actions = document.createElement("div");
+    actions.className = "dashboard-media-card__actions";
 
-      const isImage = /\.(png|jpe?g|webp|gif)$/i.test(file.key);
-      const publicUrl = file.url || "";
-
-      card.innerHTML = `
-        ${isImage
-          ? `<img class="admin-media-card__img" src="${esc(publicUrl)}" alt="${esc(file.key)}" loading="lazy">`
-          : `<div class="admin-media-card__file">${esc(file.key.split("/").pop())}</div>`
-        }
-        <div class="admin-media-card__actions">
-          <button class="btn btn--sm" data-action="copy" title="Copy URL">Copy URL</button>
-          <button class="btn btn--sm" data-action="delete" title="Delete" style="color:var(--color-error)">Del</button>
-        </div>
-      `;
-
-      card.querySelector("[data-action='copy']")?.addEventListener("click", () => {
-        navigator.clipboard.writeText(publicUrl).then(() => {
-          showStatusMsg(mediaUploadStatus, "success", "URL copied!");
-          setTimeout(() => { mediaUploadStatus.hidden = true; }, 2000);
-        });
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "dashboard-btn dashboard-btn--sm";
+    copyBtn.textContent = "Copy URL";
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(publicUrl).then(() => {
+        showToast("URL copied!", "success");
       });
-
-      card.querySelector("[data-action='delete']")?.addEventListener("click", () => {
-        deleteMedia(file.key);
-      });
-
-      mediaGrid.appendChild(card);
     });
-  } catch (err) {
-    mediaGrid.innerHTML = `<p class="admin-table__empty">Failed to load: ${esc(err.message)}</p>`;
-  }
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "dashboard-btn dashboard-btn--sm dashboard-btn--danger";
+    delBtn.textContent = "Del";
+    delBtn.addEventListener("click", () => deleteMedia(file.key));
+
+    actions.appendChild(copyBtn);
+    actions.appendChild(delBtn);
+    card.appendChild(actions);
+
+    mediaGrid.appendChild(card);
+  });
 }
 
 async function handleMediaUpload() {
   const files = mediaFileInput.files;
   if (!files || files.length === 0) return;
 
-  showStatusMsg(mediaUploadStatus, "success", `Uploading ${files.length} file(s)…`);
+  uploadQueue.hidden = false;
+  uploadQueue.innerHTML = "";
 
-  for (const file of files) {
+  const fileArr = Array.from(files);
+  fileArr.forEach((file) => {
+    const item = document.createElement("div");
+    item.className = "dashboard-upload-item";
+    item.id = `upload-${file.name.replace(/[^a-z0-9]/gi, "-")}`;
+
+    const name = document.createElement("span");
+    name.className = "dashboard-upload-item__name";
+    name.textContent = file.name;
+
+    const status = document.createElement("span");
+    status.className = "dashboard-upload-item__status dashboard-upload-item__status--pending";
+    status.textContent = "Pending";
+
+    item.appendChild(name);
+    item.appendChild(status);
+    uploadQueue.appendChild(item);
+  });
+
+  for (const file of fileArr) {
+    const itemId = `upload-${file.name.replace(/[^a-z0-9]/gi, "-")}`;
+    const statusEl = document.getElementById(itemId)?.querySelector(".dashboard-upload-item__status");
+
     try {
+      if (statusEl) {
+        statusEl.textContent = "Uploading…";
+        statusEl.className = "dashboard-upload-item__status dashboard-upload-item__status--pending";
+      }
+
       const presignResult = await apiFetch("/media/presign", {
         method: "POST",
         body: { filename: file.name, contentType: file.type },
       });
 
       const { uploadUrl } = presignResult.data;
-
       const uploadResp = await fetch(uploadUrl, {
         method: "PUT",
         headers: { "Content-Type": file.type },
@@ -573,16 +1340,25 @@ async function handleMediaUpload() {
       });
 
       if (!uploadResp.ok) throw new Error(`Upload failed (${uploadResp.status})`);
+
+      if (statusEl) {
+        statusEl.textContent = "✓ Done";
+        statusEl.className = "dashboard-upload-item__status dashboard-upload-item__status--done";
+      }
     } catch (err) {
-      showStatusMsg(mediaUploadStatus, "error", `Failed to upload ${file.name}: ${err.message}`);
-      return;
+      if (statusEl) {
+        statusEl.textContent = `✗ ${err.message}`;
+        statusEl.className = "dashboard-upload-item__status dashboard-upload-item__status--fail";
+      }
+      showToast(`Failed to upload ${file.name}`, "error");
     }
   }
 
-  showStatusMsg(mediaUploadStatus, "success", "Upload complete!");
+  showToast("Upload complete!", "success");
   mediaFileInput.value = "";
-  setTimeout(() => { mediaUploadStatus.hidden = true; }, 2000);
+  setTimeout(() => { uploadQueue.hidden = true; }, 3000);
   loadMediaList();
+  renderOverview();
 }
 
 async function deleteMedia(key) {
@@ -591,22 +1367,67 @@ async function deleteMedia(key) {
     await apiFetch(`/media/delete?key=${encodeURIComponent(key)}`, {
       method: "DELETE",
     });
-    loadMediaList();
+    allMedia = allMedia.filter((f) => f.key !== key);
+    renderMedia();
+    renderOverview();
+    showToast("File deleted", "success");
   } catch (err) {
-    showStatusMsg(mediaUploadStatus, "error", `Delete failed: ${err.message}`);
+    showToast(`Delete failed: ${err.message}`, "error");
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TOAST SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `dashboard-toast dashboard-toast--${type}`;
+
+  const icons = { success: "✓", error: "✗", info: "ℹ" };
+  const iconEl = document.createElement("span");
+  iconEl.className = "dashboard-toast__icon";
+  iconEl.textContent = icons[type] || "ℹ";
+
+  const msgEl = document.createElement("span");
+  msgEl.className = "dashboard-toast__message";
+  msgEl.textContent = message;
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "dashboard-toast__close";
+  closeBtn.type = "button";
+  closeBtn.textContent = "×";
+  closeBtn.setAttribute("aria-label", "Dismiss");
+  closeBtn.addEventListener("click", () => dismissToast(toast));
+
+  toast.appendChild(iconEl);
+  toast.appendChild(msgEl);
+  toast.appendChild(closeBtn);
+  container.appendChild(toast);
+
+  // Auto dismiss (success/info after 4s, errors stick)
+  if (type !== "error") {
+    setTimeout(() => dismissToast(toast), 4000);
+  }
+}
+
+function dismissToast(toast) {
+  if (!toast.parentNode) return;
+  toast.classList.add("is-exiting");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) {
+    toast.remove();
+  } else {
+    toast.addEventListener("animationend", () => toast.remove(), { once: true });
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
-
-function showStatusMsg(el, type, message) {
-  if (!el) return;
-  el.textContent = message;
-  el.className = `form-status form-status--${type}`;
-  el.hidden = false;
-}
 
 function autoSlug(title) {
   return title
@@ -623,3 +1444,18 @@ function esc(str) {
   div.textContent = str || "";
   return div.innerHTML;
 }
+
+function relativeTime(dateStr) {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  return `${months}mo ago`;
+}
+
