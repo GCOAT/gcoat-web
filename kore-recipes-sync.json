@@ -1,0 +1,891 @@
+{
+  "koreRepo": "/Users/amalikrigger/Developer/WebstormProjects/kore",
+  "recipesRoot": "kore-recipes",
+  "lastSyncedAt": "2026-04-18T19:22:24Z",
+  "metadata": {
+    "catalog.md": {
+      "koreHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46"
+    },
+    "catalog.json": {
+      "koreHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46"
+    },
+    "README.md": {
+      "koreHash": "60b5539da69c024e12fa5682986de736624b78b4b7452dbc08052f3826ed57a1"
+    },
+    "APPROVED_DEPS.md": {
+      "koreHash": "ba8275cf4f3727a9279d7a838ec24f5f21ce61cd74274eb677d14b8d8915e8d5"
+    },
+    "_tokens.css": {
+      "koreHash": "7cced86227b47e72b609849ed237aaa948458566e03d1ad955470903e75f5e68"
+    },
+    "_template.html": {
+      "koreHash": "94873a7347c72491d5a95de4bc800396c21a2a891b3abe9f1ec671297c4c55db"
+    }
+  },
+  "recipes": {
+    "animations/card-stack-preloader.html": {
+      "koreHash": "50462d3d5f74929448376aec9f9a50f35a990360803f7d1e6065441641584a57",
+      "projHash": "50462d3d5f74929448376aec9f9a50f35a990360803f7d1e6065441641584a57"
+    },
+    "animations/fade-slide-transition.html": {
+      "koreHash": "0a780f8fd9b00fba15beb7251dc00ff1aa0c14aaf85fac790816ad8894ad1713",
+      "projHash": "0a780f8fd9b00fba15beb7251dc00ff1aa0c14aaf85fac790816ad8894ad1713"
+    },
+    "animations/liquid-glass-animations.html": {
+      "koreHash": "1acaaa675f0fc0678b0fbe2aa9033382d43f76c21935b37240bc5a5acae2c11a",
+      "projHash": "1acaaa675f0fc0678b0fbe2aa9033382d43f76c21935b37240bc5a5acae2c11a"
+    },
+    "animations/pin-stack-scroll.html": {
+      "koreHash": "effe45c7428a330df99480e1ecd8008c79a48448e7784071e2e21b2a6a89335d",
+      "projHash": "effe45c7428a330df99480e1ecd8008c79a48448e7784071e2e21b2a6a89335d"
+    },
+    "animations/scroll-driven-sections.html": {
+      "koreHash": "fb967f838fd5a058d290719f7039f528002838a3e7345bc80c4177c4defa2b9f",
+      "projHash": "fb967f838fd5a058d290719f7039f528002838a3e7345bc80c4177c4defa2b9f"
+    },
+    "animations/spring-easing.html": {
+      "koreHash": "f5b396c11517583525f7c6ba9624d24194ddd035aea41b7f69a7edcc1557291d",
+      "projHash": "f5b396c11517583525f7c6ba9624d24194ddd035aea41b7f69a7edcc1557291d"
+    },
+    "backgrounds/animated-orbs.html": {
+      "koreHash": "9b7b6cc1f13aa0e67be8e113b6d58cc90bf0f21558745b788fa26e17734760d2",
+      "projHash": "9b7b6cc1f13aa0e67be8e113b6d58cc90bf0f21558745b788fa26e17734760d2"
+    },
+    "backgrounds/blog-ambient-canvas.html": {
+      "koreHash": "2bc3e40643f423ad5cad1ca1a0395bb3eed3ec26444b9aa7a64fa790fd747c09",
+      "projHash": "2bc3e40643f423ad5cad1ca1a0395bb3eed3ec26444b9aa7a64fa790fd747c09"
+    },
+    "backgrounds/canvas-matrix-rain.html": {
+      "koreHash": "ef47bf1213d99fb6ffaff24e35107469db2c89982769eafeb558f16a3695be6f",
+      "projHash": "ef47bf1213d99fb6ffaff24e35107469db2c89982769eafeb558f16a3695be6f"
+    },
+    "backgrounds/p5-breathing-waves.html": {
+      "koreHash": "f8741df77319c2ad2303be4552786281126169d1b5f03e88cda0b11d6ca1201c",
+      "projHash": "f8741df77319c2ad2303be4552786281126169d1b5f03e88cda0b11d6ca1201c"
+    },
+    "backgrounds/shape-wave.html": {
+      "koreHash": "240d95295d5627419e968ff3b62ac9b93632d46208fa4f1aefffffc7974d004b",
+      "projHash": "240d95295d5627419e968ff3b62ac9b93632d46208fa4f1aefffffc7974d004b"
+    },
+    "backgrounds/threejs-liquid-fluid.html": {
+      "koreHash": "20532ee788c82bfec6bd91eeee9772fb71f6f77c9793c7dd8f70af02cd0dcef5",
+      "projHash": "20532ee788c82bfec6bd91eeee9772fb71f6f77c9793c7dd8f70af02cd0dcef5"
+    },
+    "backgrounds/threejs-neural-network.html": {
+      "koreHash": "ec8e0df1216924c853418e8a4df29813e64b5bf872b1a084bacb50c034e54a43",
+      "projHash": "ec8e0df1216924c853418e8a4df29813e64b5bf872b1a084bacb50c034e54a43"
+    },
+    "backgrounds/threejs-wormhole-tunnel.html": {
+      "koreHash": "d5c35daaae1690dda8658c5aa0333fe05a4db2ff5a6dab6ba49294a12f45974b",
+      "projHash": "d5c35daaae1690dda8658c5aa0333fe05a4db2ff5a6dab6ba49294a12f45974b"
+    },
+    "backgrounds/webgl-sunny-shader.html": {
+      "koreHash": "8f56a88c9301f77abcc63d35ea6549725b0c89f790262b1ed618a238a648e42b",
+      "projHash": "8f56a88c9301f77abcc63d35ea6549725b0c89f790262b1ed618a238a648e42b"
+    },
+    "components/accessible-tabs.html": {
+      "koreHash": "a182221ca4d619ab2bcbb396dd1cb842e07171d7e74993de24bd0c41cbe03981",
+      "projHash": "a182221ca4d619ab2bcbb396dd1cb842e07171d7e74993de24bd0c41cbe03981"
+    },
+    "components/accordion-faq.html": {
+      "koreHash": "7ade624ccfe67c4ded433492f8edfe55c4f6584fb3bed5a582c423eaa39126a7",
+      "projHash": "7ade624ccfe67c4ded433492f8edfe55c4f6584fb3bed5a582c423eaa39126a7"
+    },
+    "components/alert-bars.html": {
+      "koreHash": "62f7daf62f33f0e50da4c9288592eb855d92bfd72a175b4da125b42924190358",
+      "projHash": "62f7daf62f33f0e50da4c9288592eb855d92bfd72a175b4da125b42924190358"
+    },
+    "components/animated-counters.html": {
+      "koreHash": "3c40d24efc62fbebc1aa3d8c29990cbe29551e769af9240fff11946f698b7e19",
+      "projHash": "3c40d24efc62fbebc1aa3d8c29990cbe29551e769af9240fff11946f698b7e19"
+    },
+    "components/before-after-slider.html": {
+      "koreHash": "09946c7d255a170aa1e2b68ed7b0b4c2679c117ce6c009a96c7a594d30d26ec9",
+      "projHash": "09946c7d255a170aa1e2b68ed7b0b4c2679c117ce6c009a96c7a594d30d26ec9"
+    },
+    "components/blog-card.html": {
+      "koreHash": "e9f6c099b7ebcb2258396f041bce4274ada9d87a04d1187c82b758c71c428ff9",
+      "projHash": "e9f6c099b7ebcb2258396f041bce4274ada9d87a04d1187c82b758c71c428ff9"
+    },
+    "components/blog-post-layout.html": {
+      "koreHash": "b8bf25f010eb8418b827ca1a88005550b3c9078cbc1f21e9c847aa715dc43978",
+      "projHash": "b8bf25f010eb8418b827ca1a88005550b3c9078cbc1f21e9c847aa715dc43978"
+    },
+    "components/browser-mockup-frame.html": {
+      "koreHash": "11d66d3627da9b17252223bdb3b424d797d738f9d795d990c92dda323226948f",
+      "projHash": "11d66d3627da9b17252223bdb3b424d797d738f9d795d990c92dda323226948f"
+    },
+    "components/chip-checkbox.html": {
+      "koreHash": "60a92f4fa57cbca69d423e8481f561d2aaf6ffbff835347a0b6af34580b802f8",
+      "projHash": "60a92f4fa57cbca69d423e8481f561d2aaf6ffbff835347a0b6af34580b802f8"
+    },
+    "components/circle-mask-slideshow.html": {
+      "koreHash": "2b0d4671488855d9ea2592133cbc226ccd7e5efff2d9763df316ce941efc7019",
+      "projHash": "2b0d4671488855d9ea2592133cbc226ccd7e5efff2d9763df316ce941efc7019"
+    },
+    "components/contact-form.html": {
+      "koreHash": "82aab3d59c31edda079b930a9f1371f0211cd4e1311aa94d052fef1335d52908",
+      "projHash": "82aab3d59c31edda079b930a9f1371f0211cd4e1311aa94d052fef1335d52908"
+    },
+    "components/countdown-timer.html": {
+      "koreHash": "3337921d3ce66aa188aa140131e642b5d444eedfcb6b7aa5bb6acfda70f57c7f",
+      "projHash": "3337921d3ce66aa188aa140131e642b5d444eedfcb6b7aa5bb6acfda70f57c7f"
+    },
+    "components/css-3d-carousel.html": {
+      "koreHash": "b9b88f5d4016b76d36fc8f9145c666a2e92bee7235dd0d4cacb0b3b8b3d9c14b",
+      "projHash": "b9b88f5d4016b76d36fc8f9145c666a2e92bee7235dd0d4cacb0b3b8b3d9c14b"
+    },
+    "components/css-tooltip.html": {
+      "koreHash": "0b01c56d20471db6d223afc26f74dbb4910830d8ab843cfcaf7e1d11a592cb38",
+      "projHash": "0b01c56d20471db6d223afc26f74dbb4910830d8ab843cfcaf7e1d11a592cb38"
+    },
+    "components/device-mockup.html": {
+      "koreHash": "d3eada3debd7b287e22c60d3aeaa6d5ba04becdd54fd357b5e95e0fe7cd2762a",
+      "projHash": "d3eada3debd7b287e22c60d3aeaa6d5ba04becdd54fd357b5e95e0fe7cd2762a"
+    },
+    "components/directory-filter-sidebar.html": {
+      "koreHash": "e90b896bdb835accf6a94178f27cca320b05f035ce4398a24f5ddd1e151933e8",
+      "projHash": "e90b896bdb835accf6a94178f27cca320b05f035ce4398a24f5ddd1e151933e8"
+    },
+    "components/drag-card-slider.html": {
+      "koreHash": "064670e808d35890970ae443c00757503c8db288d6ebda32599e49a5a77b9143",
+      "projHash": "064670e808d35890970ae443c00757503c8db288d6ebda32599e49a5a77b9143"
+    },
+    "components/feature-icon-grid.html": {
+      "koreHash": "77a9585f45dcafa4b7c4b71880563e5c232615ba77903ea188546baed1f11aaa",
+      "projHash": "77a9585f45dcafa4b7c4b71880563e5c232615ba77903ea188546baed1f11aaa"
+    },
+    "components/feature-list.html": {
+      "koreHash": "bfdfe821a6940059164a8af6d0fdb4c71d77632cc8d0d2fc45e06a0792c7b908",
+      "projHash": "bfdfe821a6940059164a8af6d0fdb4c71d77632cc8d0d2fc45e06a0792c7b908"
+    },
+    "components/filterable-grid.html": {
+      "koreHash": "94ba871f9ade969488cd3f741b2d6a866cd4a5ee166149e0fc987a1ffe99669b",
+      "projHash": "94ba871f9ade969488cd3f741b2d6a866cd4a5ee166149e0fc987a1ffe99669b"
+    },
+    "components/focus-gallery.html": {
+      "koreHash": "f7c0f0469dbd9cde4f9bc649a33f8ff6d0c2cd8f1ddffab33109a08d1720a407",
+      "projHash": "f7c0f0469dbd9cde4f9bc649a33f8ff6d0c2cd8f1ddffab33109a08d1720a407"
+    },
+    "components/gallery-tiles.html": {
+      "koreHash": "0f595d644b28b4fc4b06a266390a2684e02fe625688b35927e05c87b2bceb3e1",
+      "projHash": "0f595d644b28b4fc4b06a266390a2684e02fe625688b35927e05c87b2bceb3e1"
+    },
+    "components/glass-accordion.html": {
+      "koreHash": "cd87756efc6facecb485e36739f9df2f5f8f678725b492866f40b8bcee84cad3",
+      "projHash": "cd87756efc6facecb485e36739f9df2f5f8f678725b492866f40b8bcee84cad3"
+    },
+    "components/glass-avatar-group.html": {
+      "koreHash": "9efe5589098fd16eaffa2a2cc90cd3ec05a17ca5c868ca8d33e76d92ae6752d6",
+      "projHash": "9efe5589098fd16eaffa2a2cc90cd3ec05a17ca5c868ca8d33e76d92ae6752d6"
+    },
+    "components/glass-badges.html": {
+      "koreHash": "5586f33c4bf80811dfe7884d0f79649a85f27768e94924b9aa8f8e430c5c8a64",
+      "projHash": "5586f33c4bf80811dfe7884d0f79649a85f27768e94924b9aa8f8e430c5c8a64"
+    },
+    "components/glass-buttons.html": {
+      "koreHash": "4550901d2d829318969f84d8d3ab76f7957fce4ab93465c19307670fe6e2400b",
+      "projHash": "4550901d2d829318969f84d8d3ab76f7957fce4ab93465c19307670fe6e2400b"
+    },
+    "components/glass-card.html": {
+      "koreHash": "c467a061ca5dd8b7f947e52b55a4fbc57dbc7593b5ff0b01fa469b3ea487187d",
+      "projHash": "c467a061ca5dd8b7f947e52b55a4fbc57dbc7593b5ff0b01fa469b3ea487187d"
+    },
+    "components/glass-chips.html": {
+      "koreHash": "4cea1af0be25ba4e443ff219470d45d97a26fee8166fcc0c477e8f06fad43cc3",
+      "projHash": "4cea1af0be25ba4e443ff219470d45d97a26fee8166fcc0c477e8f06fad43cc3"
+    },
+    "components/glass-data-table.html": {
+      "koreHash": "ad1259dce08cf52085853efe862d3d8b6eff11d34b69555ce52785eb7ca0e5ec",
+      "projHash": "ad1259dce08cf52085853efe862d3d8b6eff11d34b69555ce52785eb7ca0e5ec"
+    },
+    "components/glass-dropdown.html": {
+      "koreHash": "a4ba81b86196f909d1ed62e9f5ced5d72afb5b85ec436b2abe2c01040c377352",
+      "projHash": "a4ba81b86196f909d1ed62e9f5ced5d72afb5b85ec436b2abe2c01040c377352"
+    },
+    "components/glass-form-controls.html": {
+      "koreHash": "2f0c83caaf6ca2d283b08443b96d96c5aaabcec42b93a6b27d299cd0fa850b79",
+      "projHash": "2f0c83caaf6ca2d283b08443b96d96c5aaabcec42b93a6b27d299cd0fa850b79"
+    },
+    "components/glass-modal.html": {
+      "koreHash": "0a4348fec6580319b255e247cfd0ce376d585a8adf2483cf6dc4e8ffabada4cd",
+      "projHash": "0a4348fec6580319b255e247cfd0ce376d585a8adf2483cf6dc4e8ffabada4cd"
+    },
+    "components/glass-stepper.html": {
+      "koreHash": "71d2a4bcfeac1170d3ceaeb267aad8d11069a2bee872936699a467fd8442e84d",
+      "projHash": "71d2a4bcfeac1170d3ceaeb267aad8d11069a2bee872936699a467fd8442e84d"
+    },
+    "components/gradient-cta-band.html": {
+      "koreHash": "f70a5f5989f632410d92a6e3b288623ac853c4697048cb4f4257c3a01f7e077b",
+      "projHash": "f70a5f5989f632410d92a6e3b288623ac853c4697048cb4f4257c3a01f7e077b"
+    },
+    "components/gsap-glitch-toggles.html": {
+      "koreHash": "334628a876c133c6e456934b5d14621b6438e22005bec576ba44442213400082",
+      "projHash": "334628a876c133c6e456934b5d14621b6438e22005bec576ba44442213400082"
+    },
+    "components/gsap-image-slider.html": {
+      "koreHash": "16fd9ce0beb6ea29d01d73867e389f39b5cc9c808e9c39fdb221a94317802570",
+      "projHash": "16fd9ce0beb6ea29d01d73867e389f39b5cc9c808e9c39fdb221a94317802570"
+    },
+    "components/hours-location-block.html": {
+      "koreHash": "476ce962e010ea64cfd88ac838628d5cf5e143ca06440c0f62bfe03e5688b326",
+      "projHash": "476ce962e010ea64cfd88ac838628d5cf5e143ca06440c0f62bfe03e5688b326"
+    },
+    "components/hue-ring-picker.html": {
+      "koreHash": "f53ebf66acd417ac226c461e601f51305391c2c37bcec02a53d49fdb9e3db8d5",
+      "projHash": "f53ebf66acd417ac226c461e601f51305391c2c37bcec02a53d49fdb9e3db8d5"
+    },
+    "components/icon-box-grid.html": {
+      "koreHash": "33047c7fc25364bf17e0231e51e22ed22c1c6ce0cb3e88a814f21ec4aaa12ff1",
+      "projHash": "33047c7fc25364bf17e0231e51e22ed22c1c6ce0cb3e88a814f21ec4aaa12ff1"
+    },
+    "components/image-gallery-grid.html": {
+      "koreHash": "d71ff4cfb4f0789eedb59467091e8f15fd35795c035390c09a76a288bc67865e",
+      "projHash": "d71ff4cfb4f0789eedb59467091e8f15fd35795c035390c09a76a288bc67865e"
+    },
+    "components/image-slideshow.html": {
+      "koreHash": "ba4e304eeff7c2dccbe552a3c7a3d758f52524c8a40c3d30dd34b7573f114f0c",
+      "projHash": "ba4e304eeff7c2dccbe552a3c7a3d758f52524c8a40c3d30dd34b7573f114f0c"
+    },
+    "components/infinite-marquee-anime.html": {
+      "koreHash": "409639e47d8ef9624672d97f90c438b7e9decb0b105b093dc8071935ed605b05",
+      "projHash": "409639e47d8ef9624672d97f90c438b7e9decb0b105b093dc8071935ed605b05"
+    },
+    "components/infinite-marquee.html": {
+      "koreHash": "69be6096c312dac8cdff46dd41e4de52a09b5b3c04d67333e2a28fb9e3eb7bbb",
+      "projHash": "69be6096c312dac8cdff46dd41e4de52a09b5b3c04d67333e2a28fb9e3eb7bbb"
+    },
+    "components/json-ld-local-business.html": {
+      "koreHash": "8ee300cf9eb83b046ce84548a518a689e29d760401cb32770bc0814413b13a0d",
+      "projHash": "8ee300cf9eb83b046ce84548a518a689e29d760401cb32770bc0814413b13a0d"
+    },
+    "components/lightbox-gallery.html": {
+      "koreHash": "4ecf6e815c06dde2895ccaba2efc3268f47a2a48c5224aedb56fe275d550db4f",
+      "projHash": "4ecf6e815c06dde2895ccaba2efc3268f47a2a48c5224aedb56fe275d550db4f"
+    },
+    "components/listing-card.html": {
+      "koreHash": "189e1eb34edcb777b8175f53e61f66b7f342fa3439293201b556280553aa82eb",
+      "projHash": "189e1eb34edcb777b8175f53e61f66b7f342fa3439293201b556280553aa82eb"
+    },
+    "components/loading-spinners.html": {
+      "koreHash": "3b65155e35ea3a02a8a15d611be9ce837974092b5f608116f27c695888c7e505",
+      "projHash": "46d9c78436ae4d41c6fdb45920531e6f2bfa48d6644a356cbc87f5372a481a88"
+    },
+    "components/login-form.html": {
+      "koreHash": "9b8db6623a813d4222109119f877859d922a03484762310f8447587259a1eae8",
+      "projHash": "9b8db6623a813d4222109119f877859d922a03484762310f8447587259a1eae8"
+    },
+    "components/masonry-gallery.html": {
+      "koreHash": "2fe001ea13a2c8ec71b7839092a099029c6e97fc6a3569d6b5ecf4eabcbc8668",
+      "projHash": "2fe001ea13a2c8ec71b7839092a099029c6e97fc6a3569d6b5ecf4eabcbc8668"
+    },
+    "components/modal-dialog.html": {
+      "koreHash": "34a5ffbb533de054c2c290ddca5a2edd3f236790b0f8c594ca6e72cdeb16676f",
+      "projHash": "34a5ffbb533de054c2c290ddca5a2edd3f236790b0f8c594ca6e72cdeb16676f"
+    },
+    "components/multi-step-form.html": {
+      "koreHash": "5033aea4b65af58754a52c5ffce89360fd671e1080ea7d69866391658f3a0b0a",
+      "projHash": "5033aea4b65af58754a52c5ffce89360fd671e1080ea7d69866391658f3a0b0a"
+    },
+    "components/neumorphism.html": {
+      "koreHash": "539ee05ccc5ed98e83168c1209a824ca21a046a42424a2045f348ce0e6350c2c",
+      "projHash": "76f902767a5d0ef840dd99f9c4b31067cc071aaee741a3b3937c154d627552dd"
+    },
+    "components/newsletter-form.html": {
+      "koreHash": "f23bf1127e92ef3ef579620b6013acc207989985978447b4da5ceea8bed628c7",
+      "projHash": "f23bf1127e92ef3ef579620b6013acc207989985978447b4da5ceea8bed628c7"
+    },
+    "components/pagination.html": {
+      "koreHash": "527d9521296605dbbd92c98e2e1199ed1829f9f5a919b03cfcfba16565ecf364",
+      "projHash": "527d9521296605dbbd92c98e2e1199ed1829f9f5a919b03cfcfba16565ecf364"
+    },
+    "components/pricing-tier-cards.html": {
+      "koreHash": "513ebabbe2ec2026eb1340b25a1a92aad3556d48310106e281d8a0108ebb0fdc",
+      "projHash": "513ebabbe2ec2026eb1340b25a1a92aad3556d48310106e281d8a0108ebb0fdc"
+    },
+    "components/process-steps.html": {
+      "koreHash": "828d403524352a5912deefe1aa1e7dd22ba1ac716ba600fb9333eebc93891187",
+      "projHash": "828d403524352a5912deefe1aa1e7dd22ba1ac716ba600fb9333eebc93891187"
+    },
+    "components/rainbow-button.html": {
+      "koreHash": "4f5addde7fdd1c0635b510e419cd1e77caa0e90a136891cb9c99900347e0959e",
+      "projHash": "4f5addde7fdd1c0635b510e419cd1e77caa0e90a136891cb9c99900347e0959e"
+    },
+    "components/restaurant-menu-card.html": {
+      "koreHash": "4585e023ecad1f8d7e7c5fb09baeea29404442dab780d48f7063e6316e490f7a",
+      "projHash": "4585e023ecad1f8d7e7c5fb09baeea29404442dab780d48f7063e6316e490f7a"
+    },
+    "components/scroll-cube-gallery.html": {
+      "koreHash": "9f5a33292654ea84a8afa27975048fe18010ee89efd1787a8539d0ae69a87853",
+      "projHash": "9f5a33292654ea84a8afa27975048fe18010ee89efd1787a8539d0ae69a87853"
+    },
+    "components/scroll-snap-carousel.html": {
+      "koreHash": "abb8f53c1ac54b8e3dd49c7c03f64bded97b2cfeb0d0877c0e5e38cc8c02a559",
+      "projHash": "abb8f53c1ac54b8e3dd49c7c03f64bded97b2cfeb0d0877c0e5e38cc8c02a559"
+    },
+    "components/scroll-to-top-anime.html": {
+      "koreHash": "6ec7f1ee4f254022975040eb21be62600db1379c9deb3e81fe4e066cdac89ed8",
+      "projHash": "6ec7f1ee4f254022975040eb21be62600db1379c9deb3e81fe4e066cdac89ed8"
+    },
+    "components/scroll-to-top.html": {
+      "koreHash": "0ab5d1252afd849f18e14381d4c0cd0a458bd578ed9536a8144e4db488f33cd7",
+      "projHash": "0ab5d1252afd849f18e14381d4c0cd0a458bd578ed9536a8144e4db488f33cd7"
+    },
+    "components/search-bar.html": {
+      "koreHash": "90a437e633fe951b29df39d42a2d9abda0fabc84469463257bf9cb55f199ff10",
+      "projHash": "90a437e633fe951b29df39d42a2d9abda0fabc84469463257bf9cb55f199ff10"
+    },
+    "components/seo-meta-tags.html": {
+      "koreHash": "c020400fe34373fec0dae4dca7efb3f1e78057f5715104befd16d579acaf5e84",
+      "projHash": "c020400fe34373fec0dae4dca7efb3f1e78057f5715104befd16d579acaf5e84"
+    },
+    "components/sidebar-filter.html": {
+      "koreHash": "08add39d6f22d3bacdabe364d23ec167b96e4631d2c091d5f2c17db9185c4669",
+      "projHash": "08add39d6f22d3bacdabe364d23ec167b96e4631d2c091d5f2c17db9185c4669"
+    },
+    "components/signup-form.html": {
+      "koreHash": "ed68fd0365e40b0128ab5051c0c19bdb84da51618d7911e2df0f532d870d8d1f",
+      "projHash": "ed68fd0365e40b0128ab5051c0c19bdb84da51618d7911e2df0f532d870d8d1f"
+    },
+    "components/skeleton-shimmer.html": {
+      "koreHash": "102211d829fa43848a0a1d4faad8fd62850e562c6c716ddffd56059139c1892d",
+      "projHash": "102211d829fa43848a0a1d4faad8fd62850e562c6c716ddffd56059139c1892d"
+    },
+    "components/skill-progress-bar-anime.html": {
+      "koreHash": "9a26e426ce210af77adeb541bc191eb1d3ade1ca9747abc0473ce82f1bb4c44a",
+      "projHash": "9a26e426ce210af77adeb541bc191eb1d3ade1ca9747abc0473ce82f1bb4c44a"
+    },
+    "components/skill-progress-bar.html": {
+      "koreHash": "82208e2dc1f91d81493c8e86efee3f185c46c9305a99472b5ad7354fa61e2e75",
+      "projHash": "82208e2dc1f91d81493c8e86efee3f185c46c9305a99472b5ad7354fa61e2e75"
+    },
+    "components/sparkline-stat-card-anime.html": {
+      "koreHash": "33de0ab6efeba866f2e1f724ce7f99953158b4eea7f95e9b9c2eef1b45c3ba64",
+      "projHash": "33de0ab6efeba866f2e1f724ce7f99953158b4eea7f95e9b9c2eef1b45c3ba64"
+    },
+    "components/sparkline-stat-card.html": {
+      "koreHash": "52ebe7dae6f5e4371a54285812d49528bb75b3cdc7a87d4c834cd903849649ed",
+      "projHash": "52ebe7dae6f5e4371a54285812d49528bb75b3cdc7a87d4c834cd903849649ed"
+    },
+    "components/star-rating.html": {
+      "koreHash": "5fd36bc602f953c2fffd88e698419d14ce1659bd4e06fcfa57f61c03ed381f95",
+      "projHash": "5fd36bc602f953c2fffd88e698419d14ce1659bd4e06fcfa57f61c03ed381f95"
+    },
+    "components/stat-cards.html": {
+      "koreHash": "dfdc769ecc8e056caa9289b8ead70b4c77c27c51948df32b64086febd2ece441",
+      "projHash": "dfdc769ecc8e056caa9289b8ead70b4c77c27c51948df32b64086febd2ece441"
+    },
+    "components/tag-chip.html": {
+      "koreHash": "32914313357bbb81c9ad2fbb307d1533ebaa3e3dc2390f131da8e19a5cdc4e2e",
+      "projHash": "32914313357bbb81c9ad2fbb307d1533ebaa3e3dc2390f131da8e19a5cdc4e2e"
+    },
+    "components/team-carousel.html": {
+      "koreHash": "0d1b9d1c101b4b8636baf85dbaf5c6ac00cb304b258cebfbbf3303e950789674",
+      "projHash": "0d1b9d1c101b4b8636baf85dbaf5c6ac00cb304b258cebfbbf3303e950789674"
+    },
+    "components/team-grid.html": {
+      "koreHash": "0d1239eed33dd50ad9a490f99141b0f8d0adb63711943236eb6ac9b2c201ac28",
+      "projHash": "0d1239eed33dd50ad9a490f99141b0f8d0adb63711943236eb6ac9b2c201ac28"
+    },
+    "components/testimonial-card.html": {
+      "koreHash": "0ec616513b70c019392d107245323c5a3ffb9105ca4c876e29561e29be73115f",
+      "projHash": "0ec616513b70c019392d107245323c5a3ffb9105ca4c876e29561e29be73115f"
+    },
+    "components/testimonial-cards.html": {
+      "koreHash": "1d218259c888e950eef5a441b87d63f48d4ec53f2c525cc1621db4140f088b88",
+      "projHash": "1d218259c888e950eef5a441b87d63f48d4ec53f2c525cc1621db4140f088b88"
+    },
+    "components/testimonial-carousel.html": {
+      "koreHash": "41ebb241fb15e8d5b59be91424a26a2715a6a667682191fa9ef7dca6a9e5fa02",
+      "projHash": "41ebb241fb15e8d5b59be91424a26a2715a6a667682191fa9ef7dca6a9e5fa02"
+    },
+    "components/three-column-pricing.html": {
+      "koreHash": "a98f596ab375bda5912f14db9c43ac0805c86be8da12a80c150e88f8803d1197",
+      "projHash": "a98f596ab375bda5912f14db9c43ac0805c86be8da12a80c150e88f8803d1197"
+    },
+    "components/toast-notification.html": {
+      "koreHash": "7b158b173c37d142b0f8bc1de534009f02ad3af493cd058063a5fc9d7d2ca015",
+      "projHash": "65a3b7b9e89bebc27a5697aa01f90e7897b9d5d34de98017f2d47c03b1df7624"
+    },
+    "components/toggle-pricing.html": {
+      "koreHash": "a1832eec6a1fb1c4ae968388c383e5be183fed24bd38d19079244b7a85b56483",
+      "projHash": "a1832eec6a1fb1c4ae968388c383e5be183fed24bd38d19079244b7a85b56483"
+    },
+    "components/toggle-switch.html": {
+      "koreHash": "e86a6074341f41bb43dcca866b85f08873eb2f57ced03979ab8d1b7f698787bd",
+      "projHash": "e86a6074341f41bb43dcca866b85f08873eb2f57ced03979ab8d1b7f698787bd"
+    },
+    "components/vertical-timeline-anime.html": {
+      "koreHash": "f72e362ce7c988a4721c299d1540b08bf64359cf88c10932f7efc568ec06c479",
+      "projHash": "f72e362ce7c988a4721c299d1540b08bf64359cf88c10932f7efc568ec06c479"
+    },
+    "components/vertical-timeline.html": {
+      "koreHash": "3a41f6f8225ef46d998dbe934e96ca39efa5682798514b8bed7c63b453839371",
+      "projHash": "3a41f6f8225ef46d998dbe934e96ca39efa5682798514b8bed7c63b453839371"
+    },
+    "components/video-player.html": {
+      "koreHash": "d052181295c0596688eba5b52c8eaa274aa46321b493ad74f22e69e48286d13b",
+      "projHash": "d052181295c0596688eba5b52c8eaa274aa46321b493ad74f22e69e48286d13b"
+    },
+    "components/warm-product-card.html": {
+      "koreHash": "71aa1f3d071e095b2204324af6073eeb5bef6a8d25700117250561e6dd329e94",
+      "projHash": "71aa1f3d071e095b2204324af6073eeb5bef6a8d25700117250561e6dd329e94"
+    },
+    "compositions/agency-landing.md": {
+      "koreHash": "2b379e54cc632c397ed99d25d9df8ad0a8fa550cf462e2ac3ed93e7debc5884c",
+      "projHash": "2b379e54cc632c397ed99d25d9df8ad0a8fa550cf462e2ac3ed93e7debc5884c"
+    },
+    "compositions/creative-portfolio.md": {
+      "koreHash": "112ae43dfb7ab6fbba4fe74dd0be2d9a2a137583231310a51ff0e15bef5455c5",
+      "projHash": "112ae43dfb7ab6fbba4fe74dd0be2d9a2a137583231310a51ff0e15bef5455c5"
+    },
+    "compositions/dark-app-landing.md": {
+      "koreHash": "dc597c1a448b2b4e1f8c17c6c2cb421c6aaabb0b2439d14c989b79402b672724",
+      "projHash": "dc597c1a448b2b4e1f8c17c6c2cb421c6aaabb0b2439d14c989b79402b672724"
+    },
+    "compositions/modern-marketing-landing.md": {
+      "koreHash": "a78702ac7aad490dee5fd7917716df9e2c79cfe4dd76c9fa25846570e6621ff1",
+      "projHash": "a78702ac7aad490dee5fd7917716df9e2c79cfe4dd76c9fa25846570e6621ff1"
+    },
+    "compositions/pinstack-landing.md": {
+      "koreHash": "5fee35ae3a8048285d5fed5bb5a508e23560eae51edae4185db1af3c044e8779",
+      "projHash": "5fee35ae3a8048285d5fed5bb5a508e23560eae51edae4185db1af3c044e8779"
+    },
+    "compositions/premium-dashboard.md": {
+      "koreHash": "eefbae8ff017f66e29536256dcec5bab9eaf872e728291d719c0d3d5cae5bb24",
+      "projHash": "eefbae8ff017f66e29536256dcec5bab9eaf872e728291d719c0d3d5cae5bb24"
+    },
+    "compositions/premium-glass-nav.md": {
+      "koreHash": "09c22f7bb5f02eb742fe6fc8d82ee82b6c6217434520934d95f6e8164b1e68ae",
+      "projHash": "09c22f7bb5f02eb742fe6fc8d82ee82b6c6217434520934d95f6e8164b1e68ae"
+    },
+    "compositions/professional-services.md": {
+      "koreHash": "539a4c153cb565f50af28b089160e9cd554dbb10a429a5f1a23896a057712140",
+      "projHash": "539a4c153cb565f50af28b089160e9cd554dbb10a429a5f1a23896a057712140"
+    },
+    "compositions/restaurant-landing.md": {
+      "koreHash": "90679e9e153f441d99de10a8bcf7941253ad5ebab0b8b5335e78608aa5667f17",
+      "projHash": "90679e9e153f441d99de10a8bcf7941253ad5ebab0b8b5335e78608aa5667f17"
+    },
+    "compositions/saas-landing-light.md": {
+      "koreHash": "e093cc599cab2895aa126f231d9fc5cbd2c7376c143c47921f2801eeea743e90",
+      "projHash": "e093cc599cab2895aa126f231d9fc5cbd2c7376c143c47921f2801eeea743e90"
+    },
+    "effects/animated-gradient-border.html": {
+      "koreHash": "58497ecb24b55a5a8bc3db3c1f48333e3b3ef07ef0aa84d9c61d427829121108",
+      "projHash": "58497ecb24b55a5a8bc3db3c1f48333e3b3ef07ef0aa84d9c61d427829121108"
+    },
+    "effects/blog-card-3d-tilt.html": {
+      "koreHash": "87ed8d5ffb98bdd983bd2e1e2158f7037edfe2fbd2e02731932a1d2f29747966",
+      "projHash": "87ed8d5ffb98bdd983bd2e1e2158f7037edfe2fbd2e02731932a1d2f29747966"
+    },
+    "effects/canvas-silly-string.html": {
+      "koreHash": "e6e1850f4ac838426a2bb5f920d415f24144a31697fd76d0ba546a5af184c1b7",
+      "projHash": "e6e1850f4ac838426a2bb5f920d415f24144a31697fd76d0ba546a5af184c1b7"
+    },
+    "effects/crt-scanline-overlay.html": {
+      "koreHash": "be7bed9e88d02c1e87c500a2562c3b23c4b8ca1ef8d83ec38d0bd55e7f791d32",
+      "projHash": "be7bed9e88d02c1e87c500a2562c3b23c4b8ca1ef8d83ec38d0bd55e7f791d32"
+    },
+    "effects/css-clip-shapes.html": {
+      "koreHash": "875aaeefcef135eab7577866eb2e525f37c6ef1f06a7763d2453413375746ac3",
+      "projHash": "875aaeefcef135eab7577866eb2e525f37c6ef1f06a7763d2453413375746ac3"
+    },
+    "effects/css-fireflies.html": {
+      "koreHash": "880e23cbf9ea8fd5654a93c5eeab4c9f8e287419ae69a403c029fac51a5de5c8",
+      "projHash": "880e23cbf9ea8fd5654a93c5eeab4c9f8e287419ae69a403c029fac51a5de5c8"
+    },
+    "effects/cursor-follow-blob.html": {
+      "koreHash": "64787134dde55d56e0e62f3f58738dbffa7b0c80739267864f0b94b65f50e3eb",
+      "projHash": "64787134dde55d56e0e62f3f58738dbffa7b0c80739267864f0b94b65f50e3eb"
+    },
+    "effects/custom-cursor.html": {
+      "koreHash": "fe2b76f95954a32c36f20d57b206afa57a0378a4af095bf2d325118dfda8fa19",
+      "projHash": "fe2b76f95954a32c36f20d57b206afa57a0378a4af095bf2d325118dfda8fa19"
+    },
+    "effects/film-grain-overlay.html": {
+      "koreHash": "27b00933a054fac1aba6a5e303afc68f8393054696e56fe1398463f911b5c3cb",
+      "projHash": "27b00933a054fac1aba6a5e303afc68f8393054696e56fe1398463f911b5c3cb"
+    },
+    "effects/floating-code-particles.html": {
+      "koreHash": "7610a7e38f11082344cfeb3606f1b12feaa2a9056266319fe42f8efed5026cb2",
+      "projHash": "7610a7e38f11082344cfeb3606f1b12feaa2a9056266319fe42f8efed5026cb2"
+    },
+    "effects/floating-icons.html": {
+      "koreHash": "66b3b8699d6736e2336baf0cfe552cc9a2b616a9da0a26e5b7c481955d54b99f",
+      "projHash": "66b3b8699d6736e2336baf0cfe552cc9a2b616a9da0a26e5b7c481955d54b99f"
+    },
+    "effects/gradient-text.html": {
+      "koreHash": "6ab8ff734bb03c039f01cc3988dc005430a3e4b6a3142a7af19e31f1e961eb9c",
+      "projHash": "6ab8ff734bb03c039f01cc3988dc005430a3e4b6a3142a7af19e31f1e961eb9c"
+    },
+    "effects/hover-2d-transitions.html": {
+      "koreHash": "4cf08d39eddcd80d0ee4b711a664b6c00b5960e93cccaf66785216c1755325ee",
+      "projHash": "4cf08d39eddcd80d0ee4b711a664b6c00b5960e93cccaf66785216c1755325ee"
+    },
+    "effects/hover-background-transitions.html": {
+      "koreHash": "4a1778b445cf4a291ad3a5d9a9b15503e7fd6c309f16347c41a4d561827b5d64",
+      "projHash": "4a1778b445cf4a291ad3a5d9a9b15503e7fd6c309f16347c41a4d561827b5d64"
+    },
+    "effects/hover-border-transitions.html": {
+      "koreHash": "b37945ceae2ae538f0f23eae2b46e35fa2cf046d64eefc32516e88aaa4ac726b",
+      "projHash": "b37945ceae2ae538f0f23eae2b46e35fa2cf046d64eefc32516e88aaa4ac726b"
+    },
+    "effects/hover-curls.html": {
+      "koreHash": "2de0e028983fa519df3d9250ed7afb6a9b70f7e484a1bd401ec158650aa42c23",
+      "projHash": "2de0e028983fa519df3d9250ed7afb6a9b70f7e484a1bd401ec158650aa42c23"
+    },
+    "effects/hover-icon-transitions.html": {
+      "koreHash": "769b6cbca4a4f013ca4b1e665edb5474cf03539159cb8b72f6aab9225643d2f3",
+      "projHash": "769b6cbca4a4f013ca4b1e665edb5474cf03539159cb8b72f6aab9225643d2f3"
+    },
+    "effects/hover-shadow-glow.html": {
+      "koreHash": "0fd9cb96fb20b92ca87cc87271aad3f352788ee27b379afe378f94aa8a5c0fe9",
+      "projHash": "0fd9cb96fb20b92ca87cc87271aad3f352788ee27b379afe378f94aa8a5c0fe9"
+    },
+    "effects/hover-speech-bubbles.html": {
+      "koreHash": "0e2ff8a299f20ff40dfe93d06f6adac0f80ea4dcd61e57e1305287db4c664737",
+      "projHash": "0e2ff8a299f20ff40dfe93d06f6adac0f80ea4dcd61e57e1305287db4c664737"
+    },
+    "effects/mouse-glare.html": {
+      "koreHash": "f984c9ec7ebb95c7b93bc83ad10da93f86706b88ba80964807532f095fdad49d",
+      "projHash": "f984c9ec7ebb95c7b93bc83ad10da93f86706b88ba80964807532f095fdad49d"
+    },
+    "effects/oklch-dynamic-theme.html": {
+      "koreHash": "afd4ea988e88eba386ac3cf364f14ac4e77df05296423f8787cf6f0c672ab71b",
+      "projHash": "afd4ea988e88eba386ac3cf364f14ac4e77df05296423f8787cf6f0c672ab71b"
+    },
+    "effects/parallax-hero-image.html": {
+      "koreHash": "b127b80a8824cfad02304f4775fcf976023bb8fba35692663b2aea18ffef7a6c",
+      "projHash": "b127b80a8824cfad02304f4775fcf976023bb8fba35692663b2aea18ffef7a6c"
+    },
+    "effects/parallax-section.html": {
+      "koreHash": "c9710d2d801b444982254b94b084390deeba91d92d59b1e9e980d306fecb900f",
+      "projHash": "c9710d2d801b444982254b94b084390deeba91d92d59b1e9e980d306fecb900f"
+    },
+    "effects/scroll-grid-reveal.html": {
+      "koreHash": "8d41708ea1ef2a02546c047bcd1652ef15bb72ab73e66c768128d4ac08e40347",
+      "projHash": "8d41708ea1ef2a02546c047bcd1652ef15bb72ab73e66c768128d4ac08e40347"
+    },
+    "effects/scroll-reveal.html": {
+      "koreHash": "ff7fa99d4e78e138d749fc86648246465b981fa5963f591522fa4ccf43ecd74e",
+      "projHash": "ff7fa99d4e78e138d749fc86648246465b981fa5963f591522fa4ccf43ecd74e"
+    },
+    "effects/scroll-scale.html": {
+      "koreHash": "2e092f206145be1e5a031762dce6180ef5489ada7477a45c2a72ced573e1757b",
+      "projHash": "2e092f206145be1e5a031762dce6180ef5489ada7477a45c2a72ced573e1757b"
+    },
+    "effects/svg-gooey-blob.html": {
+      "koreHash": "3ad89831ad41991c692d37de603feb13ab0b27842e9788b23991622fdade9541",
+      "projHash": "3ad89831ad41991c692d37de603feb13ab0b27842e9788b23991622fdade9541"
+    },
+    "effects/terminal-loader.html": {
+      "koreHash": "7369bf2a4fd7ea8e52e1667940dc21ff3f1478fc3d793491feeb69cc336b6cb5",
+      "projHash": "7369bf2a4fd7ea8e52e1667940dc21ff3f1478fc3d793491feeb69cc336b6cb5"
+    },
+    "effects/threejs-metaball-droplets.html": {
+      "koreHash": "948df0482f6fa92217291b11f394e580b0b7685db5157e83a9fb9dfa799bdae4",
+      "projHash": "948df0482f6fa92217291b11f394e580b0b7685db5157e83a9fb9dfa799bdae4"
+    },
+    "footers/contact-form-footer.html": {
+      "koreHash": "5ae9a1806cfc41c0c4fe0688285eef40b05c67cfe03ba67bc699a56c6bcf1c84",
+      "projHash": "5ae9a1806cfc41c0c4fe0688285eef40b05c67cfe03ba67bc699a56c6bcf1c84"
+    },
+    "footers/cta-footer.html": {
+      "koreHash": "97f1e34c0cfb00daf79ca6a8881927a9f8e10d13e25e2b2927e104df29457be9",
+      "projHash": "97f1e34c0cfb00daf79ca6a8881927a9f8e10d13e25e2b2927e104df29457be9"
+    },
+    "footers/four-column-footer.html": {
+      "koreHash": "ef1b8d0061e82e986bb671e9170f0611e0a22fc547f93f1812b58fb43ae15eb0",
+      "projHash": "ef1b8d0061e82e986bb671e9170f0611e0a22fc547f93f1812b58fb43ae15eb0"
+    },
+    "footers/map-footer.html": {
+      "koreHash": "975ad8e5520607d0ef671aaffb3d30ad25a55699e1cfca04d7e0112f38429229",
+      "projHash": "975ad8e5520607d0ef671aaffb3d30ad25a55699e1cfca04d7e0112f38429229"
+    },
+    "footers/mega-menu-footer.html": {
+      "koreHash": "9a189f0bc8e0014689c7d776bf0c77e71da6746723256c32208ca16d389984b3",
+      "projHash": "9a189f0bc8e0014689c7d776bf0c77e71da6746723256c32208ca16d389984b3"
+    },
+    "footers/minimal-footer.html": {
+      "koreHash": "a7fc716a1e37c926e8ea9d461963e10870fa601fcb70b75c581c12b8899aa051",
+      "projHash": "a7fc716a1e37c926e8ea9d461963e10870fa601fcb70b75c581c12b8899aa051"
+    },
+    "footers/saas-dark-footer.html": {
+      "koreHash": "3346094de4a2e13600b5317b6778d9ba915102de47c124a98db5ca6d41153beb",
+      "projHash": "3346094de4a2e13600b5317b6778d9ba915102de47c124a98db5ca6d41153beb"
+    },
+    "footers/simple-footer.html": {
+      "koreHash": "9de9a8b356242e7c7f17e10bda8a5afc2368db69251db3429c6ad65a6ac67299",
+      "projHash": "9de9a8b356242e7c7f17e10bda8a5afc2368db69251db3429c6ad65a6ac67299"
+    },
+    "headers/center-logo-header.html": {
+      "koreHash": "a2145cffb790ec45ba33f97eb852a8b9056db34d0647d76e3093bb5ac73b2e01",
+      "projHash": "a2145cffb790ec45ba33f97eb852a8b9056db34d0647d76e3093bb5ac73b2e01"
+    },
+    "headers/classic-page-header.html": {
+      "koreHash": "457c27366aac03a33f8334dcc13eb181f6d7fe56c8862adeca5c225a5053dc91",
+      "projHash": "457c27366aac03a33f8334dcc13eb181f6d7fe56c8862adeca5c225a5053dc91"
+    },
+    "headers/crisp-loading-header.html": {
+      "koreHash": "ffba146fd652b4db64077519f788f270fd8bc709ebf15d83d7c82ba8e4bcc9e1",
+      "projHash": "ffba146fd652b4db64077519f788f270fd8bc709ebf15d83d7c82ba8e4bcc9e1"
+    },
+    "headers/glass-nav.html": {
+      "koreHash": "b61bfc62a0f285b90405fb0591bda9e33e19ffbf57084fd4157237fba1ca8784",
+      "projHash": "b61bfc62a0f285b90405fb0591bda9e33e19ffbf57084fd4157237fba1ca8784"
+    },
+    "headers/mega-menu-header.html": {
+      "koreHash": "7f9ffc07bf61615b6131d04074acb4c74e5dcd1cadf41ce0d9b711f9afdb6ea3",
+      "projHash": "7f9ffc07bf61615b6131d04074acb4c74e5dcd1cadf41ce0d9b711f9afdb6ea3"
+    },
+    "headers/minimal-page-header.html": {
+      "koreHash": "5472cd80ef0a6a2fe3ffdbe8a239a503d31212332435c7368978fc7cb47f7072",
+      "projHash": "5472cd80ef0a6a2fe3ffdbe8a239a503d31212332435c7368978fc7cb47f7072"
+    },
+    "headers/parallax-page-header.html": {
+      "koreHash": "25cda72f7cb9c09c27c3566921c7038b34f54fcb7ace58b5732b0abad1e31c04",
+      "projHash": "25cda72f7cb9c09c27c3566921c7038b34f54fcb7ace58b5732b0abad1e31c04"
+    },
+    "headers/saas-light-nav.html": {
+      "koreHash": "60a215e2913cf1d88cf526e9a04601278357618b1c334f85543505a5ab7755fe",
+      "projHash": "60a215e2913cf1d88cf526e9a04601278357618b1c334f85543505a5ab7755fe"
+    },
+    "headers/scroll-progress-topbar.html": {
+      "koreHash": "7b3177b8dddf4c7f1ec0a68f526597d8404445d041144c7c24927b7a25e79808",
+      "projHash": "7b3177b8dddf4c7f1ec0a68f526597d8404445d041144c7c24927b7a25e79808"
+    },
+    "headers/side-header.html": {
+      "koreHash": "e89e65a21589a539b874aba92887cffab7854093dd044ba6cb3dde70ad674e8a",
+      "projHash": "e89e65a21589a539b874aba92887cffab7854093dd044ba6cb3dde70ad674e8a"
+    },
+    "headers/transparent-header.html": {
+      "koreHash": "53ff457995062eb5af54eaf6a7f0dbff768151e7301075397b4fc3ebf0c40882",
+      "projHash": "53ff457995062eb5af54eaf6a7f0dbff768151e7301075397b4fc3ebf0c40882"
+    },
+    "headers/video-page-header.html": {
+      "koreHash": "3daf74b20e5d4337473a70220a13ffa0988d44a86b29e2f8abe5fb9993d476c9",
+      "projHash": "3daf74b20e5d4337473a70220a13ffa0988d44a86b29e2f8abe5fb9993d476c9"
+    },
+    "heroes/particle-hero.html": {
+      "koreHash": "63852ab1108014e9bdcb741710f8491bf6c51be486931b9cdc18b90ea82fb75f",
+      "projHash": "63852ab1108014e9bdcb741710f8491bf6c51be486931b9cdc18b90ea82fb75f"
+    },
+    "heroes/saas-hero-social-proof.html": {
+      "koreHash": "c874614e8053f6a2040d369cd515904486ecba8578415a0a027760aee79c21a4",
+      "projHash": "c874614e8053f6a2040d369cd515904486ecba8578415a0a027760aee79c21a4"
+    },
+    "index.html": {
+      "koreHash": "fa87111cfc2a5a9c66ab05dcacb708246128644a3b732d43378137e83af9f397",
+      "projHash": "fa87111cfc2a5a9c66ab05dcacb708246128644a3b732d43378137e83af9f397"
+    },
+    "navigation/glass-breadcrumb.html": {
+      "koreHash": "5b2f18f85cbb57bcf9116bab28d05d4f8baf6b2e50b920a840cecf609681d75e",
+      "projHash": "5b2f18f85cbb57bcf9116bab28d05d4f8baf6b2e50b920a840cecf609681d75e"
+    },
+    "navigation/hidey-bar.html": {
+      "koreHash": "8cc2f633a78cfba17e0e4b47663615e6691ce60922978b378710a85e38760a1e",
+      "projHash": "8cc2f633a78cfba17e0e4b47663615e6691ce60922978b378710a85e38760a1e"
+    },
+    "navigation/scroll-position-indicator.html": {
+      "koreHash": "f908070f448d6983a05170c5ad8d27cf49b0e4852719242a0a7014a8b2caefda",
+      "projHash": "f908070f448d6983a05170c5ad8d27cf49b0e4852719242a0a7014a8b2caefda"
+    },
+    "navigation/sliding-tab-indicator.html": {
+      "koreHash": "46730740ea308d812f927016c956e70bca91605cfc599038f4ee53b6956d1958",
+      "projHash": "46730740ea308d812f927016c956e70bca91605cfc599038f4ee53b6956d1958"
+    },
+    "navigation/vertical-tabs.html": {
+      "koreHash": "9d63b83c62faae956b1495cf2505a683b98cefa07205ba6576ce1bf735fcc61b",
+      "projHash": "9d63b83c62faae956b1495cf2505a683b98cefa07205ba6576ce1bf735fcc61b"
+    },
+    "showcases/agency-landing.html": {
+      "koreHash": "677f0229f508d7b96a27ea6c1f89fbafcaae68513b03ac7fe55eb9c4db6822f5",
+      "projHash": "677f0229f508d7b96a27ea6c1f89fbafcaae68513b03ac7fe55eb9c4db6822f5"
+    },
+    "showcases/creative-portfolio.html": {
+      "koreHash": "844c94ca4aaf4e3bc49ba891d7aafa466d5bff107a35e19607eaa44e7c5a9c26",
+      "projHash": "844c94ca4aaf4e3bc49ba891d7aafa466d5bff107a35e19607eaa44e7c5a9c26"
+    },
+    "showcases/developer-portfolio.html": {
+      "koreHash": "ac391b38a082320618f0d5dcfaaad43534e468a9eaa48a338b562f3630a9fbfb",
+      "projHash": "ac391b38a082320618f0d5dcfaaad43534e468a9eaa48a338b562f3630a9fbfb"
+    },
+    "showcases/professional-services.html": {
+      "koreHash": "e2e839066cea26ff6719f8e62361f81dec3dcf538187a76fa24f7f8032e87710",
+      "projHash": "e2e839066cea26ff6719f8e62361f81dec3dcf538187a76fa24f7f8032e87710"
+    },
+    "showcases/restaurant-landing.html": {
+      "koreHash": "4f16ccb1abad21a6a04f68c57c0e31c3ff5edeb5a86d7b106b53dc19a9b53de7",
+      "projHash": "4f16ccb1abad21a6a04f68c57c0e31c3ff5edeb5a86d7b106b53dc19a9b53de7"
+    },
+    "showcases/saas-landing-light.html": {
+      "koreHash": "af88f450ff2716a0f53d37f839133bcd848dd4a02d25eec74fb4141480ed7a0e",
+      "projHash": "af88f450ff2716a0f53d37f839133bcd848dd4a02d25eec74fb4141480ed7a0e"
+    },
+    "showcases/threejs-liquid-glass.html": {
+      "koreHash": "5ac6e14e2d4d090fec95080b7e4b8de53631fb42ad3b8bca996aed4c16069495",
+      "projHash": "5ac6e14e2d4d090fec95080b7e4b8de53631fb42ad3b8bca996aed4c16069495"
+    },
+    "themes/_theme-template.html": {
+      "koreHash": "407af605121aec4c0caacecd21328e851fecbe42b32c89c98436ecd70276c5f6",
+      "projHash": "407af605121aec4c0caacecd21328e851fecbe42b32c89c98436ecd70276c5f6"
+    },
+    "themes/agency/_theme.css": {
+      "koreHash": "d8a26e3b721b17d2a0ef8b12807080d5f94a9d088faa96cae1c57c20aedde0ed",
+      "projHash": "d8a26e3b721b17d2a0ef8b12807080d5f94a9d088faa96cae1c57c20aedde0ed"
+    },
+    "themes/agency/_theme.md": {
+      "koreHash": "444bba15943306625820919714cd599510cb803efc55948a324b53427b2a969a",
+      "projHash": "444bba15943306625820919714cd599510cb803efc55948a324b53427b2a969a"
+    },
+    "themes/agency/about.html": {
+      "koreHash": "ed6fda0f0f585ca893667b25e97d2da56167629e95d175e77ff2b3c880a5d2ef",
+      "projHash": "ed6fda0f0f585ca893667b25e97d2da56167629e95d175e77ff2b3c880a5d2ef"
+    },
+    "themes/agency/contact.html": {
+      "koreHash": "49c8f0eea6dd133f1c763e962d47995ec91491203c6b3a2af96ba1e02af845b0",
+      "projHash": "49c8f0eea6dd133f1c763e962d47995ec91491203c6b3a2af96ba1e02af845b0"
+    },
+    "themes/agency/index.html": {
+      "koreHash": "a873e1bb9657d2f5555396375b72c45323e46e1ef63e640f84d0c26699338b1a",
+      "projHash": "a873e1bb9657d2f5555396375b72c45323e46e1ef63e640f84d0c26699338b1a"
+    },
+    "themes/agency/portfolio.html": {
+      "koreHash": "b403915b8183b79fb184d9c1a65b77cef19308a565aa3b51c6ee4841e2fcddc3",
+      "projHash": "b403915b8183b79fb184d9c1a65b77cef19308a565aa3b51c6ee4841e2fcddc3"
+    },
+    "themes/agency/services.html": {
+      "koreHash": "64b59d74fea00c2cb91489d79ad92423d9da1bca3fd15e88241ae2c19fb943a8",
+      "projHash": "64b59d74fea00c2cb91489d79ad92423d9da1bca3fd15e88241ae2c19fb943a8"
+    },
+    "themes/creative-portfolio/_theme.css": {
+      "koreHash": "138b2bdb7484c9a8bb0d4024e1a03c04cf20cc9b73503cd5351d4750144cb725",
+      "projHash": "138b2bdb7484c9a8bb0d4024e1a03c04cf20cc9b73503cd5351d4750144cb725"
+    },
+    "themes/creative-portfolio/_theme.md": {
+      "koreHash": "f84fd8fcff4d0acee4f21ede1a81b77272c85c986ff50e64f17e0854b26322b6",
+      "projHash": "f84fd8fcff4d0acee4f21ede1a81b77272c85c986ff50e64f17e0854b26322b6"
+    },
+    "themes/creative-portfolio/about.html": {
+      "koreHash": "3e38e5823efc7b6b0418e973638f306d22e5e6f66a9ba4826ff36bb1517d1f7d",
+      "projHash": "3e38e5823efc7b6b0418e973638f306d22e5e6f66a9ba4826ff36bb1517d1f7d"
+    },
+    "themes/creative-portfolio/contact.html": {
+      "koreHash": "3908a3dd59b6cbbda5615b9476bf252ca34248f86b886c50cd334e1b421f8a5d",
+      "projHash": "3908a3dd59b6cbbda5615b9476bf252ca34248f86b886c50cd334e1b421f8a5d"
+    },
+    "themes/creative-portfolio/index.html": {
+      "koreHash": "512a47de294c7babb19d9ac715a20b21e16303409fe78602a5cb1c09cfa804d7",
+      "projHash": "512a47de294c7babb19d9ac715a20b21e16303409fe78602a5cb1c09cfa804d7"
+    },
+    "themes/creative-portfolio/project.html": {
+      "koreHash": "24f487aa210cc23f8ebfbaafb168c8eea827bbfbe6579c292aecb06f1ae694f2",
+      "projHash": "24f487aa210cc23f8ebfbaafb168c8eea827bbfbe6579c292aecb06f1ae694f2"
+    },
+    "themes/professional-services/_theme.css": {
+      "koreHash": "998547a1b11a431369a2ebf5f2a3fd40bcdacaf1de0ed5f1f415c5c0795549f7",
+      "projHash": "998547a1b11a431369a2ebf5f2a3fd40bcdacaf1de0ed5f1f415c5c0795549f7"
+    },
+    "themes/professional-services/_theme.md": {
+      "koreHash": "c36b058fea8e083bf1c4e07e516aefcad84b206419f0b92673745832f2e85183",
+      "projHash": "c36b058fea8e083bf1c4e07e516aefcad84b206419f0b92673745832f2e85183"
+    },
+    "themes/professional-services/about.html": {
+      "koreHash": "0a74c544b3b66df5f7fb2af0ad9907741f8cfa106f2d9892798884e29dc258d1",
+      "projHash": "0a74c544b3b66df5f7fb2af0ad9907741f8cfa106f2d9892798884e29dc258d1"
+    },
+    "themes/professional-services/contact.html": {
+      "koreHash": "2512baa7e27568990d65aa775680f52f7990d16c29cc0418c20bec5625a97b50",
+      "projHash": "2512baa7e27568990d65aa775680f52f7990d16c29cc0418c20bec5625a97b50"
+    },
+    "themes/professional-services/faq.html": {
+      "koreHash": "b2149f77b1acdece0513cff6701a4fb2935afd735d4f3a6ad7e5f225681235bf",
+      "projHash": "b2149f77b1acdece0513cff6701a4fb2935afd735d4f3a6ad7e5f225681235bf"
+    },
+    "themes/professional-services/index.html": {
+      "koreHash": "8be0eb004378bc76c501b21da3d0f4debabf956dbfe1462810617a5c0eb5f8aa",
+      "projHash": "8be0eb004378bc76c501b21da3d0f4debabf956dbfe1462810617a5c0eb5f8aa"
+    },
+    "themes/professional-services/practice-areas.html": {
+      "koreHash": "f139fba3f247562b8ec21d1e16bfe8c574dbaac5713b77af86bd1c2e2dd7487a",
+      "projHash": "f139fba3f247562b8ec21d1e16bfe8c574dbaac5713b77af86bd1c2e2dd7487a"
+    },
+    "themes/restaurant/_theme.css": {
+      "koreHash": "a1b0796c2d5dc3b7c026b1d4a312c28469971afb3414655d58e10d6c2e8f9aae",
+      "projHash": "a1b0796c2d5dc3b7c026b1d4a312c28469971afb3414655d58e10d6c2e8f9aae"
+    },
+    "themes/restaurant/_theme.md": {
+      "koreHash": "9bcc907edc6e3033d184e97c4c49e1a80038035099cb0faa19958a2d2c9dd8e1",
+      "projHash": "9bcc907edc6e3033d184e97c4c49e1a80038035099cb0faa19958a2d2c9dd8e1"
+    },
+    "themes/restaurant/about.html": {
+      "koreHash": "a0348381adfe72d5caca8a2564d193e65709836042d19655cd3ff2a5d19cdd1b",
+      "projHash": "a0348381adfe72d5caca8a2564d193e65709836042d19655cd3ff2a5d19cdd1b"
+    },
+    "themes/restaurant/gallery.html": {
+      "koreHash": "398e28af6c14d6cbddb1949088081603ebca6e3b93df7b89d00d0c4fa0bb2e93",
+      "projHash": "398e28af6c14d6cbddb1949088081603ebca6e3b93df7b89d00d0c4fa0bb2e93"
+    },
+    "themes/restaurant/index.html": {
+      "koreHash": "8defd95f7354091f8d90567a793b51643c48d9710ec9d2be5118ce06850475e9",
+      "projHash": "8defd95f7354091f8d90567a793b51643c48d9710ec9d2be5118ce06850475e9"
+    },
+    "themes/restaurant/menu.html": {
+      "koreHash": "7a0a1110788c4aa3c3f5a1d102bcf710570ad9e846947496262a661a447d4156",
+      "projHash": "7a0a1110788c4aa3c3f5a1d102bcf710570ad9e846947496262a661a447d4156"
+    },
+    "themes/restaurant/reservations.html": {
+      "koreHash": "162f4a6b32ec04b6afbd03309324a26eab888354b2e37d66bc98a4879ad263e2",
+      "projHash": "162f4a6b32ec04b6afbd03309324a26eab888354b2e37d66bc98a4879ad263e2"
+    },
+    "themes/saas-platform/_theme.css": {
+      "koreHash": "5654174407bc83f92653feb3bebdf100a46c13102dec37ccdc275d3732016b2d",
+      "projHash": "5654174407bc83f92653feb3bebdf100a46c13102dec37ccdc275d3732016b2d"
+    },
+    "themes/saas-platform/_theme.md": {
+      "koreHash": "c37fc91f2432a9cd1dda4948c93dc18e4fa5a8e9095340b749c623794d111a88",
+      "projHash": "c37fc91f2432a9cd1dda4948c93dc18e4fa5a8e9095340b749c623794d111a88"
+    },
+    "themes/saas-platform/about.html": {
+      "koreHash": "be1f0aca303f06907d4aaf482de041001205bf24e3b48c31c448dc31e66accf6",
+      "projHash": "be1f0aca303f06907d4aaf482de041001205bf24e3b48c31c448dc31e66accf6"
+    },
+    "themes/saas-platform/contact.html": {
+      "koreHash": "fc04fa071ec649b16f0923a23085ca6627c1a4fb09a7e83d7495e2bccbd2c0ce",
+      "projHash": "fc04fa071ec649b16f0923a23085ca6627c1a4fb09a7e83d7495e2bccbd2c0ce"
+    },
+    "themes/saas-platform/features.html": {
+      "koreHash": "94806c4ba510873ffaf063364ff4e0157425e8580e8d7a5a523841b8b4750808",
+      "projHash": "94806c4ba510873ffaf063364ff4e0157425e8580e8d7a5a523841b8b4750808"
+    },
+    "themes/saas-platform/index.html": {
+      "koreHash": "c71e1064547e799f34b02f8998044d718ff9d53e3867f1968ac6db7434f46fa3",
+      "projHash": "c71e1064547e799f34b02f8998044d718ff9d53e3867f1968ac6db7434f46fa3"
+    },
+    "themes/saas-platform/pricing.html": {
+      "koreHash": "b3a85a66fcf56b5277efe65c2b734558c8853dc7748afa8d705c1f2dae8f98ea",
+      "projHash": "b3a85a66fcf56b5277efe65c2b734558c8853dc7748afa8d705c1f2dae8f98ea"
+    },
+    "typography/glitch-text.html": {
+      "koreHash": "e1d4eb7121a90514e75be49e28fa50f24c5ac55729cfd39fe28dcb22566bc461",
+      "projHash": "e1d4eb7121a90514e75be49e28fa50f24c5ac55729cfd39fe28dcb22566bc461"
+    },
+    "typography/morph-text-rotator.html": {
+      "koreHash": "bd300fa48c5884213a03155d7df616386d6b017f0b23dc3b29731e5e27e6c97a",
+      "projHash": "bd300fa48c5884213a03155d7df616386d6b017f0b23dc3b29731e5e27e6c97a"
+    },
+    "typography/tension-string-text.html": {
+      "koreHash": "ea7a1b1af31efbf1fd0f30e6c3e00574b19e17ae176b5013028376a2bba59c5c",
+      "projHash": "ea7a1b1af31efbf1fd0f30e6c3e00574b19e17ae176b5013028376a2bba59c5c"
+    },
+    "typography/typewriter-reveal.html": {
+      "koreHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46",
+      "projHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46"
+    }
+  },
+  "skip": [
+    "design-sources/**",
+    ".meta/**"
+  ]
+}
