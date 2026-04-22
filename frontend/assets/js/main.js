@@ -361,24 +361,6 @@ function initPersistentCTAs() {
   obs.observe(trigger);
 }
 
-// ── Scroll Progress Bar ──
-function initScrollProgress() {
-  const bar = document.getElementById("scroll-progress");
-  if (!bar) return;
-  let ticking = false;
-  window.addEventListener("scroll", () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      bar.style.width = pct + "%";
-      ticking = false;
-    });
-  }, { passive: true });
-}
-
 // ── Init ──
 if (yearEl) {
   yearEl.textContent = String(new Date().getFullYear());
@@ -388,7 +370,6 @@ initSplash();
 initHero(); // async — returns immediately, shader loads in background
 initHeroManualToggle();
 initPersistentCTAs();
-initScrollProgress();
 initInteractions();
 initServicesFire();
 initProcessSpace();

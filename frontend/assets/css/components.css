@@ -9163,16 +9163,23 @@ select.input:focus-visible {
 }
 
 /* ── Scroll Progress Bar ── */
+/* Site-wide top progress indicator. Self-mounted by scroll-progress.js. */
 .scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
   width: 0%;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  z-index: calc(var(--z-header) + 1);
-  transition: none;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-light),
+    var(--color-secondary)
+  );
+  box-shadow: 0 0 10px hsl(var(--hue-secondary) var(--sat-secondary) 50% / 0.55);
+  z-index: var(--z-overlay);
+  pointer-events: none;
   will-change: width;
+  transition: width 80ms linear;
 }
 
 /* ── Blog → Newsletter flow — tighten gap ── */
