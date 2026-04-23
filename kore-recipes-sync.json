@@ -1,7 +1,7 @@
 {
   "koreRepo": "/Users/amalikrigger/Developer/WebstormProjects/kore",
   "recipesRoot": "kore-recipes",
-  "lastSyncedAt": "2026-04-18T19:22:24Z",
+  "lastSyncedAt": "2026-04-23T00:56:34Z",
   "metadata": {
     "catalog.md": {
       "koreHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46"
@@ -13,7 +13,7 @@
       "koreHash": "60b5539da69c024e12fa5682986de736624b78b4b7452dbc08052f3826ed57a1"
     },
     "APPROVED_DEPS.md": {
-      "koreHash": "ba8275cf4f3727a9279d7a838ec24f5f21ce61cd74274eb677d14b8d8915e8d5"
+      "koreHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46"
     },
     "_tokens.css": {
       "koreHash": "7cced86227b47e72b609849ed237aaa948458566e03d1ad955470903e75f5e68"
@@ -196,8 +196,8 @@
       "projHash": "4cea1af0be25ba4e443ff219470d45d97a26fee8166fcc0c477e8f06fad43cc3"
     },
     "components/glass-data-table.html": {
-      "koreHash": "ad1259dce08cf52085853efe862d3d8b6eff11d34b69555ce52785eb7ca0e5ec",
-      "projHash": "ad1259dce08cf52085853efe862d3d8b6eff11d34b69555ce52785eb7ca0e5ec"
+      "koreHash": "e4d3d85df46fcb249d4d32608be4ca1bf3a02a7ba8c27712ad4de37a8737a022",
+      "projHash": "e4d3d85df46fcb249d4d32608be4ca1bf3a02a7ba8c27712ad4de37a8737a022"
     },
     "components/glass-dropdown.html": {
       "koreHash": "a4ba81b86196f909d1ed62e9f5ced5d72afb5b85ec436b2abe2c01040c377352",
@@ -404,8 +404,8 @@
       "projHash": "a98f596ab375bda5912f14db9c43ac0805c86be8da12a80c150e88f8803d1197"
     },
     "components/toast-notification.html": {
-      "koreHash": "7b158b173c37d142b0f8bc1de534009f02ad3af493cd058063a5fc9d7d2ca015",
-      "projHash": "65a3b7b9e89bebc27a5697aa01f90e7897b9d5d34de98017f2d47c03b1df7624"
+      "koreHash": "bdef81eeb1c803a8cf5237e3cc2bc4ccae15616bc1d1007709a653cf731fb222",
+      "projHash": "bdef81eeb1c803a8cf5237e3cc2bc4ccae15616bc1d1007709a653cf731fb222"
     },
     "components/toggle-pricing.html": {
       "koreHash": "a1832eec6a1fb1c4ae968388c383e5be183fed24bd38d19079244b7a85b56483",
@@ -882,6 +882,82 @@
     "typography/typewriter-reveal.html": {
       "koreHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46",
       "projHash": "db48571c23f9eb53fbcb4eb8b5e64fe536d85f5cc9e60720b86254a88c997d46"
+    },
+    "components/author-bio-rotating-border.html": {
+      "koreHash": "e0682be34ce610c0ae82ea323bacd9e172f11f7f990ca62fb1f594fd71ceb329",
+      "projHash": "e0682be34ce610c0ae82ea323bacd9e172f11f7f990ca62fb1f594fd71ceb329"
+    },
+    "components/blog-editor-quill.html": {
+      "koreHash": "0eb8009bc5193eb00ed0858ec031a05ed97316c7cf9af825b5fd311e1d8afd0e",
+      "projHash": "0eb8009bc5193eb00ed0858ec031a05ed97316c7cf9af825b5fd311e1d8afd0e"
+    },
+    "components/dashboard-pill-filters.html": {
+      "koreHash": "b0a67eb648637ceb5d56e64519470fd32ccb0fbbba9fbd562baf47dabfb4ebbf",
+      "projHash": "b0a67eb648637ceb5d56e64519470fd32ccb0fbbba9fbd562baf47dabfb4ebbf"
+    },
+    "components/dashboard-stat-card.html": {
+      "koreHash": "8d6ecd98e96c494c6bcf236dba1cc6055df18082477a8d6e6e6149d98dceaa13",
+      "projHash": "8d6ecd98e96c494c6bcf236dba1cc6055df18082477a8d6e6e6149d98dceaa13"
+    },
+    "components/media-grid-hover-actions.html": {
+      "koreHash": "4d0ff19a235ed022d1dee6ba60da177d6001867d9eba4455238c8268703ec027",
+      "projHash": "4d0ff19a235ed022d1dee6ba60da177d6001867d9eba4455238c8268703ec027"
+    },
+    "components/reading-progress-bar.html": {
+      "koreHash": "428575609e6811b2b59b22c4d2ac8454cb9d4a1f0900feb08ebc555553afcc75",
+      "projHash": "428575609e6811b2b59b22c4d2ac8454cb9d4a1f0900feb08ebc555553afcc75"
+    },
+    "components/tag-filter-bar.html": {
+      "koreHash": "e4e2b83659e4e7736defdd3fb70b9407ac1c31be0158129e120a2364733bfaa9",
+      "projHash": "e4e2b83659e4e7736defdd3fb70b9407ac1c31be0158129e120a2364733bfaa9"
+    },
+    "heroes/blog-hero-parallax-overlay.html": {
+      "koreHash": "f18380d0e932be808914b9fe8e8ef08616cbae2b8aab9db05e069506cf5cea8c",
+      "projHash": "f18380d0e932be808914b9fe8e8ef08616cbae2b8aab9db05e069506cf5cea8c"
+    },
+    "components/check-in-button-grid.html": {
+      "koreHash": "42294c613cd5c1ae018c5b27e36a67d48a7b6064c04656a0d1247a4750ae63c6",
+      "projHash": "42294c613cd5c1ae018c5b27e36a67d48a7b6064c04656a0d1247a4750ae63c6"
+    },
+    "components/editable-user-card.html": {
+      "koreHash": "509ec4d0a515707ba03c2c61050f920fa7898cab150c98ef2c2190fd9ef6892f",
+      "projHash": "509ec4d0a515707ba03c2c61050f920fa7898cab150c98ef2c2190fd9ef6892f"
+    },
+    "components/filter-chip-bar.html": {
+      "koreHash": "8a69a989d8347e615e0d9b2cf31ab1945fced87bb04bd155dc29e68c63155b95",
+      "projHash": "8a69a989d8347e615e0d9b2cf31ab1945fced87bb04bd155dc29e68c63155b95"
+    },
+    "animations/scroll-stagger.html": {
+      "koreHash": "d28e4d493aaec3dd5878399dcf05d58234308ccef3e30f85fd2b96aa1f814108",
+      "projHash": "d28e4d493aaec3dd5878399dcf05d58234308ccef3e30f85fd2b96aa1f814108"
+    },
+    "components/pulsing-glow-button.html": {
+      "koreHash": "068d551ca500902a655c1d6bd95b4d01b0d6abef2a5a190f03658141796a41f6",
+      "projHash": "068d551ca500902a655c1d6bd95b4d01b0d6abef2a5a190f03658141796a41f6"
+    },
+    "effects/diagonal-grid-overlay.html": {
+      "koreHash": "1d1f6c38fded36d9deb02498bdc181ddbd90cb60dac1315c05bf8685110a72dc",
+      "projHash": "1d1f6c38fded36d9deb02498bdc181ddbd90cb60dac1315c05bf8685110a72dc"
+    },
+    "components/auth-account-panel.html": {
+      "koreHash": "31249d5c2feffce2e0641722b3f161fad281d080437cbe73b82bab53b2060b0f",
+      "projHash": "31249d5c2feffce2e0641722b3f161fad281d080437cbe73b82bab53b2060b0f"
+    },
+    "components/auth-delete-account.html": {
+      "koreHash": "dd9444682f59cb95db2747540fe7caffad793612ed25bbebe56836d4e204079b",
+      "projHash": "dd9444682f59cb95db2747540fe7caffad793612ed25bbebe56836d4e204079b"
+    },
+    "components/auth-login-form.html": {
+      "koreHash": "59d6cc265537f8d575aeecded40ee6e3911836242bb1aee0359168ea17a3e5f5",
+      "projHash": "59d6cc265537f8d575aeecded40ee6e3911836242bb1aee0359168ea17a3e5f5"
+    },
+    "components/auth-route-guard.html": {
+      "koreHash": "20781fa18b8139138bc85defc9883c2fea12f12f70414284c0e50bb5e45fc3ef",
+      "projHash": "20781fa18b8139138bc85defc9883c2fea12f12f70414284c0e50bb5e45fc3ef"
+    },
+    "components/auth-signup-form.html": {
+      "koreHash": "de4bc26f9406a09bd55149016a0dc741584fdef2dbecb6f6d5e96ce1daeaa992",
+      "projHash": "de4bc26f9406a09bd55149016a0dc741584fdef2dbecb6f6d5e96ce1daeaa992"
     }
   },
   "skip": [
