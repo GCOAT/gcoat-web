@@ -242,6 +242,11 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Aldrich&family=Inter:wght@400;500;600;700&display=swap"
     />
+    <!-- JetBrains Mono — always loaded for stats, mono microcopy, technical labels -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
 
     <script src="assets/js/init.js"></script>
     <link rel="stylesheet" href="assets/css/base.css" />
@@ -371,13 +376,43 @@
             <span class="nav__toggle-bar"></span>
             <span class="nav__toggle-bar"></span>
           </button>
+          <div class="nav__rail" aria-hidden="false">
+          <div
+            class="nav__backdrop js-nav-backdrop"
+            aria-hidden="true"
+          ></div>
           <div class="nav__menu" id="nav-menu">
-            <a class="nav__link" href="#about">About</a>
-            <a class="nav__link" href="#services">Services</a>
-            <a class="nav__link" href="#portfolio">Portfolio</a>
-            <a class="nav__link" href="#process">Process</a>
-            <a class="nav__link" href="#testimonials">Testimonials</a>
-            <a class="nav__link" href="#contact">Contact</a>
+            <!-- Drawer header — wordmark + close button (mobile only) -->
+            <div class="nav__drawer-head" aria-hidden="true">
+              <span class="nav__drawer-brand">
+                <span class="nav__drawer-brand-mark">G</span>COAT
+              </span>
+              <button
+                class="nav__drawer-close js-nav-close"
+                type="button"
+                aria-label="Close menu"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <a class="nav__link" href="#about" data-nav-desc="Who we are">About</a>
+            <a class="nav__link" href="#services" data-nav-desc="What we build">Services</a>
+            <a class="nav__link" href="#portfolio" data-nav-desc="Selected work">Portfolio</a>
+            <a class="nav__link" href="#process" data-nav-desc="How it comes together">Process</a>
+            <a class="nav__link" href="#testimonials" data-nav-desc="Voices we've served">Testimonials</a>
+            <a class="nav__link" href="#contact" data-nav-desc="Get in touch">Contact</a>
             <div class="nav__dropdown">
               <button
                 class="nav__link nav__dropdown-toggle"
@@ -405,8 +440,45 @@
                 <a class="nav__dropdown-item" href="./blog.html">Blog</a>
               </div>
             </div>
-            <a class="nav__cta" href="./start.html">Start a Project</a>
+            <a class="nav__cta" href="./start.html" data-magnetic>Start a Project</a>
+            <!-- Drawer footer — social + meta (mobile only) -->
+            <div class="nav__drawer-foot" aria-hidden="true">
+              <div class="nav__drawer-socials" role="list">
+                <a
+                  class="nav__drawer-social"
+                  href="https://github.com/GCOAT-DEV"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.92.58.11.79-.25.79-.56v-1.95c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18.92-.26 1.9-.38 2.89-.39.98.01 1.97.13 2.89.39 2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.77.11 3.06.74.8 1.19 1.82 1.19 3.08 0 4.41-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.79.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.73 18.27.5 12 .5z"/></svg>
+                </a>
+                <a
+                  class="nav__drawer-social"
+                  href="https://www.linkedin.com/company/gcoat"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.05-1.86-3.05-1.86 0-2.14 1.45-2.14 2.95v5.67H9.33V9h3.41v1.56h.05c.48-.9 1.64-1.86 3.38-1.86 3.61 0 4.28 2.38 4.28 5.47v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.46c.98 0 1.77-.78 1.77-1.73V1.73C24 .77 23.21 0 22.22 0z"/></svg>
+                </a>
+                <a
+                  class="nav__drawer-social"
+                  href="https://www.instagram.com/gcoat.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.8.31-1.48.72-2.15 1.4-.68.67-1.09 1.35-1.4 2.15C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.8.72 1.48 1.4 2.15.67.68 1.35 1.09 2.15 1.4.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.8-.31 1.48-.72 2.15-1.4.68-.67 1.09-1.35 1.4-2.15.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.8-.72-1.48-1.4-2.15-.67-.68-1.35-1.09-2.15-1.4-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zm6.41-11.85a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
+                </a>
+              </div>
+              <span class="nav__drawer-meta">
+                <span class="nav__drawer-meta-dot" aria-hidden="true"></span>
+                St. Croix, USVI
+              </span>
+            </div>
           </div>
+          </div><!-- /.nav__rail -->
           <button
             class="theme-toggle js-theme-toggle"
             type="button"
@@ -522,6 +594,7 @@
           <span class="hero__firefly"></span>
           <span class="hero__firefly"></span>
         </div>
+        <div class="hero__cursor-trail" aria-hidden="true"></div>
         <div class="container hero__inner">
           <div class="hero__glass">
             <h1 class="hero__title">
@@ -551,7 +624,7 @@
               </div>
             </div>
             <div class="hero__actions">
-              <a class="btn btn--primary hero__cta" href="./start.html"
+              <a class="btn btn--primary hero__cta" href="./start.html" data-magnetic
                 >Bring It to Life<svg
                   class="btn__arrow"
                   width="16"
@@ -604,6 +677,10 @@
 
       <!-- ── About ── -->
       <section id="about" class="section">
+        <!-- Ambient electrical field — intermittent small sparks -->
+        <div class="about__sparks" aria-hidden="true"></div>
+        <!-- Ground impact burst (fires when bolt strikes) -->
+        <div class="about__bolt-impact" aria-hidden="true"></div>
         <!-- Lightning bolt SVG (one-shot after section animations finish) -->
         <svg
           class="about__bolt"
@@ -646,7 +723,19 @@
               <feGaussianBlur stdDeviation="12" />
             </filter>
           </defs>
-          <!-- Wide ambient glow (outermost) -->
+          <!-- Primary-hue outer halo (wider, coloured corona) -->
+          <path
+            class="about__bolt-ambient-primary"
+            d="M10 0 L55 95 L80 88 L45 195 L75 188 L30 310 L60 300 L15 420 L50 410 L5 540 L40 530 L-5 700"
+            stroke="hsl(var(--hue-primary) var(--sat-primary) 60%)"
+            stroke-width="44"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            filter="url(#bolt-blur-lg)"
+            opacity="0"
+          />
+          <!-- Wide ambient glow (secondary-hue, outermost white-hot) -->
           <path
             class="about__bolt-ambient"
             d="M10 0 L55 95 L80 88 L45 195 L75 188 L30 310 L60 300 L15 420 L50 410 L5 540 L40 530 L-5 700"
@@ -2134,48 +2223,40 @@
                 fill="hsl(260 60% 12% / 0.8)"
               />
               <circle cx="47.2" cy="26" r="1" fill="hsl(0 0% 100% / 0.9)" />
-              <!-- Tentacles — 8 curvy paths -->
-              <path
-                class="octo-tent octo-tent--1"
-                d="M22,42 Q14,55 10,68 Q8,76 12,82"
-              />
-              <path
-                class="octo-tent octo-tent--2"
-                d="M26,44 Q20,58 18,70 Q17,78 22,84"
-              />
-              <path
-                class="octo-tent octo-tent--3"
-                d="M31,46 Q28,60 26,72 Q25,80 30,86"
-              />
-              <path
-                class="octo-tent octo-tent--4"
-                d="M36,47 Q35,62 34,74 Q33,82 38,88"
-              />
-              <path
-                class="octo-tent octo-tent--5"
-                d="M44,47 Q45,62 46,74 Q47,82 42,88"
-              />
-              <path
-                class="octo-tent octo-tent--6"
-                d="M49,46 Q52,60 54,72 Q55,80 50,86"
-              />
-              <path
-                class="octo-tent octo-tent--7"
-                d="M54,44 Q60,58 62,70 Q63,78 58,84"
-              />
-              <path
-                class="octo-tent octo-tent--8"
-                d="M58,42 Q66,55 70,68 Q72,76 68,82"
-              />
-              <!-- Suckers — dots along inner tentacles -->
-              <circle class="octo-sucker" cx="24" cy="54" r="1" />
-              <circle class="octo-sucker" cx="22" cy="62" r="0.8" />
-              <circle class="octo-sucker" cx="33" cy="58" r="1" />
-              <circle class="octo-sucker" cx="32" cy="66" r="0.8" />
-              <circle class="octo-sucker" cx="47" cy="58" r="1" />
-              <circle class="octo-sucker" cx="48" cy="66" r="0.8" />
-              <circle class="octo-sucker" cx="56" cy="54" r="1" />
-              <circle class="octo-sucker" cx="58" cy="62" r="0.8" />
+              <!-- Tentacles — each group: one path + any suckers so the
+                   suckers rotate in sync with their tentacle. -->
+              <g class="octo-tent--1">
+                <path class="octo-tent" d="M22,42 Q14,55 10,68 Q8,76 12,82" />
+              </g>
+              <g class="octo-tent--2">
+                <path class="octo-tent" d="M26,44 Q20,58 18,70 Q17,78 22,84" />
+                <circle class="octo-sucker" cx="24" cy="54" r="1" />
+                <circle class="octo-sucker" cx="22" cy="62" r="0.8" />
+              </g>
+              <g class="octo-tent--3">
+                <path class="octo-tent" d="M31,46 Q28,60 26,72 Q25,80 30,86" />
+                <circle class="octo-sucker" cx="33" cy="58" r="1" />
+                <circle class="octo-sucker" cx="32" cy="66" r="0.8" />
+              </g>
+              <g class="octo-tent--4">
+                <path class="octo-tent" d="M36,47 Q35,62 34,74 Q33,82 38,88" />
+              </g>
+              <g class="octo-tent--5">
+                <path class="octo-tent" d="M44,47 Q45,62 46,74 Q47,82 42,88" />
+              </g>
+              <g class="octo-tent--6">
+                <path class="octo-tent" d="M49,46 Q52,60 54,72 Q55,80 50,86" />
+                <circle class="octo-sucker" cx="47" cy="58" r="1" />
+                <circle class="octo-sucker" cx="48" cy="66" r="0.8" />
+              </g>
+              <g class="octo-tent--7">
+                <path class="octo-tent" d="M54,44 Q60,58 62,70 Q63,78 58,84" />
+                <circle class="octo-sucker" cx="56" cy="54" r="1" />
+                <circle class="octo-sucker" cx="58" cy="62" r="0.8" />
+              </g>
+              <g class="octo-tent--8">
+                <path class="octo-tent" d="M58,42 Q66,55 70,68 Q72,76 68,82" />
+              </g>
               <defs>
                 <radialGradient id="octoHighlight" cx="0.4" cy="0.3">
                   <stop
@@ -2545,6 +2626,8 @@
 
       <!-- ── Testimonials ── -->
       <section id="testimonials" class="section">
+        <!-- Horizon glow line (sits behind cards, aligns with card baseline) -->
+        <div class="testimonials__horizon" aria-hidden="true"></div>
         <!-- Aurora background layer -->
         <div class="testimonials__aurora" aria-hidden="true">
           <div
@@ -2792,7 +2875,7 @@
             hours.
           </p>
           <div class="cta-band__actions reveal">
-            <a class="btn btn--primary btn--lg" href="./start.html"
+            <a class="btn btn--primary btn--lg" href="./start.html" data-magnetic
               >Start Your Project</a
             >
             <a class="btn btn--secondary" href="#contact">Hail Us Up</a>
@@ -2807,6 +2890,12 @@
           <div class="contact__aurora-band contact__aurora-band--1"></div>
           <div class="contact__aurora-band contact__aurora-band--2"></div>
         </div>
+        <!-- Animated node network backdrop (ported from think_in_bits) -->
+        <canvas
+          id="contact-network-canvas"
+          class="contact__network"
+          aria-hidden="true"
+        ></canvas>
 
         <div class="container contact__grid">
           <div class="contact__form-wrap reveal">
@@ -2823,7 +2912,7 @@
               <a href="./start.html">Fill out the project brief instead →</a>
             </p>
 
-            <form id="contact-form" class="form" novalidate>
+            <form id="contact-form" class="form form--floating" novalidate>
               <div class="hp" aria-hidden="true">
                 <label for="contact-website">Website</label>
                 <input
@@ -2848,6 +2937,9 @@
                   required
                   autocomplete="name"
                   maxlength="100"
+                  autocapitalize="words"
+                  enterkeyhint="next"
+                  placeholder=" "
                   aria-describedby="contact-name-error"
                 />
                 <span
@@ -2871,6 +2963,12 @@
                   required
                   autocomplete="email"
                   maxlength="254"
+                  inputmode="email"
+                  autocapitalize="off"
+                  autocorrect="off"
+                  spellcheck="false"
+                  enterkeyhint="next"
+                  placeholder=" "
                   aria-describedby="contact-email-error"
                 />
                 <span
@@ -2893,6 +2991,9 @@
                   rows="5"
                   required
                   maxlength="2000"
+                  autocapitalize="sentences"
+                  enterkeyhint="send"
+                  placeholder=" "
                   aria-describedby="contact-message-error"
                 ></textarea>
                 <span
@@ -3331,6 +3432,32 @@
           >Back to top ↑</a
         >
       </div>
+
+      <!-- Studio bottom bar — shared across every page's footer -->
+      <div class="site-topbar site-topbar--bottom" aria-label="Studio status and local time">
+        <span class="site-topbar__dot" aria-hidden="true"></span>
+        <svg
+          class="site-topbar__pin"
+          viewBox="0 0 24 24"
+          width="11"
+          height="11"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"
+          />
+        </svg>
+        <span class="site-topbar__label">St. Croix, USVI</span>
+        <span class="site-topbar__sep" aria-hidden="true">·</span>
+        <span
+          id="site-clock-time"
+          class="site-topbar__clock"
+          data-timezone="America/St_Thomas"
+        >--:-- AST</span>
+        <span class="site-topbar__sep site-topbar__sep--hide-sm" aria-hidden="true">·</span>
+        <span class="site-topbar__label site-topbar__label--hide-sm">Greatest Coders of All Time</span>
+      </div>
     </footer>
 
     <!-- Floating CTA (desktop) -->
@@ -3454,6 +3581,16 @@
           type="button"
         >
           Fonts
+        </button>
+        <button
+          class="design-panel__tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-polish"
+          id="tab-polish"
+          type="button"
+        >
+          Polish
         </button>
       </div>
 
@@ -3977,9 +4114,119 @@
           </p>
         </div>
       </div>
+
+      <!-- Polish Tab — A/B toggles for iterative polish pass -->
+      <div
+        class="design-panel__content"
+        id="panel-polish"
+        role="tabpanel"
+        aria-labelledby="tab-polish"
+        hidden
+      >
+        <fieldset
+          class="design-panel__polish-group"
+          role="radiogroup"
+          aria-label="Navbar compact height"
+          data-polish-setting="navbar-compact"
+        >
+          <legend class="design-panel__polish-label">Nav height (when scrolled)</legend>
+          <div class="design-panel__polish-options">
+            <button
+              class="design-panel__polish-option"
+              type="button"
+              role="radio"
+              aria-checked="false"
+              data-value="current"
+            >
+              <span class="design-panel__polish-swatch design-panel__polish-swatch--nav-current" aria-hidden="true"></span>
+              <span class="design-panel__polish-option-label">Current</span>
+              <span class="design-panel__polish-option-detail">48px inner</span>
+            </button>
+            <button
+              class="design-panel__polish-option is-active"
+              type="button"
+              role="radio"
+              aria-checked="true"
+              data-value="taller"
+            >
+              <span class="design-panel__polish-swatch design-panel__polish-swatch--nav-taller" aria-hidden="true"></span>
+              <span class="design-panel__polish-option-label">Taller</span>
+              <span class="design-panel__polish-option-detail">64px inner (new default)</span>
+            </button>
+            <button
+              class="design-panel__polish-option"
+              type="button"
+              role="radio"
+              aria-checked="false"
+              data-value="tallest"
+            >
+              <span class="design-panel__polish-swatch design-panel__polish-swatch--nav-tallest" aria-hidden="true"></span>
+              <span class="design-panel__polish-option-label">Tallest</span>
+              <span class="design-panel__polish-option-detail">80px inner</span>
+            </button>
+          </div>
+          <p class="design-panel__hint">
+            Scroll the page to see the nav transition into its compact state, then flip between options to compare.
+          </p>
+        </fieldset>
+
+        <fieldset
+          class="design-panel__polish-group"
+          role="radiogroup"
+          aria-label="Cursor trail intensity"
+          data-polish-setting="trail-intensity"
+        >
+          <legend class="design-panel__polish-label">Cursor trail intensity</legend>
+          <div class="design-panel__polish-options">
+            <button
+              class="design-panel__polish-option"
+              type="button"
+              role="radio"
+              aria-checked="false"
+              data-value="subtle"
+            >
+              <span class="design-panel__polish-swatch design-panel__polish-swatch--trail-subtle" aria-hidden="true"></span>
+              <span class="design-panel__polish-option-label">Subtle</span>
+              <span class="design-panel__polish-option-detail">Barely there</span>
+            </button>
+            <button
+              class="design-panel__polish-option"
+              type="button"
+              role="radio"
+              aria-checked="false"
+              data-value="normal"
+            >
+              <span class="design-panel__polish-swatch design-panel__polish-swatch--trail-normal" aria-hidden="true"></span>
+              <span class="design-panel__polish-option-label">Normal</span>
+              <span class="design-panel__polish-option-detail">Balanced</span>
+            </button>
+            <button
+              class="design-panel__polish-option is-active"
+              type="button"
+              role="radio"
+              aria-checked="true"
+              data-value="bold"
+            >
+              <span class="design-panel__polish-swatch design-panel__polish-swatch--trail-bold" aria-hidden="true"></span>
+              <span class="design-panel__polish-option-label">Bold</span>
+              <span class="design-panel__polish-option-detail">New default</span>
+            </button>
+          </div>
+          <p class="design-panel__hint">
+            Move your cursor through the hero, about, services, portfolio, and process sections to preview each trail.
+          </p>
+        </fieldset>
+      </div>
     </div>
     <div
       class="design-panel__backdrop js-design-panel-backdrop"
+      aria-hidden="true"
+    ></div>
+
+    <!-- ── Lightning Flash overlay (lights up the viewport on strike) ── -->
+    <div
+      class="lightning-flash"
+      id="lightning-flash"
       aria-hidden="true"
     ></div>
 
@@ -4044,6 +4291,7 @@
     <script type="module" src="assets/js/main.js"></script>
     <script type="module" src="assets/js/homepage-blog.js"></script>
     <script src="assets/js/scroll-progress.js"></script>
+    <script src="assets/js/site-clock.js"></script>
     <script src="assets/js/cookie-consent.js"></script>
   </body>
 </html>

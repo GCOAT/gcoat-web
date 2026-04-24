@@ -598,6 +598,32 @@
           >Back to top ↑</a
         >
       </div>
+
+      <!-- Studio bottom bar — shared across every page's footer -->
+      <div class="site-topbar site-topbar--bottom" aria-label="Studio status and local time">
+        <span class="site-topbar__dot" aria-hidden="true"></span>
+        <svg
+          class="site-topbar__pin"
+          viewBox="0 0 24 24"
+          width="11"
+          height="11"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"
+          />
+        </svg>
+        <span class="site-topbar__label">St. Croix, USVI</span>
+        <span class="site-topbar__sep" aria-hidden="true">·</span>
+        <span
+          id="site-clock-time"
+          class="site-topbar__clock"
+          data-timezone="America/St_Thomas"
+        >--:-- AST</span>
+        <span class="site-topbar__sep site-topbar__sep--hide-sm" aria-hidden="true">·</span>
+        <span class="site-topbar__label site-topbar__label--hide-sm">Greatest Coders of All Time</span>
+      </div>
     </footer>
 
     <!-- Cookie Consent Banner -->
@@ -647,6 +673,7 @@
     <script type="module" src="assets/js/blog-ambient.js"></script>
     <script type="module" src="assets/js/blog.js"></script>
     <script src="assets/js/scroll-progress.js"></script>
+    <script src="assets/js/site-clock.js"></script>
     <script src="assets/js/cookie-consent.js"></script>
   </body>
 </html>

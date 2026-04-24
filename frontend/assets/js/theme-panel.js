@@ -546,6 +546,58 @@ if (!localStorage.getItem("gcoat-panel-shown")) {
   }
 }
 
+// ── Polish Tab: A/B toggles ──
+// Each polish setting is a radiogroup under .design-panel__polish-group with
+// data-polish-setting="<name>". Options have data-value="<variant>". The chosen
+// variant is written as data-<setting>="<variant>" on <html> so CSS selectors
+// pick it up. Selections persist to localStorage under key "gcoat-polish-<name>".
+
+const POLISH_DEFAULTS = {
+  "navbar-compact": "taller",
+  "trail-intensity": "bold",
+};
+
+function applyPolishSetting(setting, value) {
+  const root = document.documentElement;
+  const attr = `data-${setting}`;
+  const defaultValue = POLISH_DEFAULTS[setting];
+
+  if (!value || value === defaultValue) {
+    // Default — remove attribute so :root without attr wins.
+    root.removeAttribute(attr);
+  } else {
+    root.setAttribute(attr, value);
+  }
+
+  // Update option active state
+  const group = panel?.querySelector(`[data-polish-setting="${setting}"]`);
+  group?.querySelectorAll(".design-panel__polish-option").forEach((opt) => {
+    const isActive = opt.dataset.value === value;
+    opt.classList.toggle("is-active", isActive);
+    opt.setAttribute("aria-checked", String(isActive));
+  });
+
+  localStorage.setItem(`gcoat-polish-${setting}`, value);
+  announce(`${setting.replace(/-/g, " ")} set to ${value}`);
+}
+
+panel?.querySelectorAll("[data-polish-setting]").forEach((group) => {
+  const setting = group.dataset.polishSetting;
+  group.querySelectorAll(".design-panel__polish-option").forEach((opt) => {
+    opt.addEventListener("click", () => {
+      applyPolishSetting(setting, opt.dataset.value);
+    });
+  });
+});
+
+// Restore saved polish settings on load
+Object.keys(POLISH_DEFAULTS).forEach((setting) => {
+  const saved = localStorage.getItem(`gcoat-polish-${setting}`);
+  if (saved) {
+    applyPolishSetting(setting, saved);
+  }
+});
+
 // ── Accessibility ──
 function announce(message) {
   if (announcer) announcer.textContent = message;

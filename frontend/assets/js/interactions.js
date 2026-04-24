@@ -9,6 +9,7 @@ export function initInteractions() {
   initMarquee();
   initTypewriterReveal();
   initCursorBlob();
+  initMagneticButtons();
 }
 
 // ── Smart Navigation ──
@@ -91,7 +92,7 @@ function initMouseGlare() {
   if (!cards.length) return;
 
   const isTouchPrimary = window.matchMedia("(pointer: coarse)").matches;
-  const MAX_TILT = 4; // degrees — subtle
+  const MAX_TILT = 6; // degrees — perceptible on casual hover without feeling gimmicky
 
   cards.forEach((card) => {
     let rafId = null;
@@ -249,4 +250,99 @@ function initCursorBlob() {
 
   blob.classList.add("cursor-blob--visible");
   requestAnimationFrame(loop);
+}
+
+// ── Magnetic Buttons ──
+// Targets explicit [data-magnetic] elements plus all primary buttons
+// (.btn--primary, .nav__cta) automatically. Translates toward the pointer
+// when it enters the attraction radius; springs back on leave.
+// Skip if a target opts out with [data-magnetic="off"].
+// Disabled on touch and under prefers-reduced-motion.
+function initMagneticButtons() {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) return;
+  if (window.matchMedia("(pointer: coarse)").matches) return;
+
+  const selector = [
+    "[data-magnetic]:not([data-magnetic='off'])",
+    ".btn--primary:not([data-magnetic='off'])",
+    ".nav__cta:not([data-magnetic='off'])",
+  ].join(", ");
+  const targets = document.querySelectorAll(selector);
+  if (!targets.length) return;
+
+  const RADIUS = 120;
+  const MAX_OFFSET = 10;
+  const LERP = 0.22;
+
+  const items = Array.from(targets).map((el) => ({
+    el, cx: 0, cy: 0, tx: 0, ty: 0, active: false,
+  }));
+  let pointerX = -9999;
+  let pointerY = -9999;
+  let raf = 0;
+  let lastUpdate = 0;
+
+  function step() {
+    let stillAnimating = false;
+    for (const item of items) {
+      if (item.active || Math.abs(item.cx - item.tx) > 0.08 || Math.abs(item.cy - item.ty) > 0.08) {
+        item.cx += (item.tx - item.cx) * LERP;
+        item.cy += (item.ty - item.cy) * LERP;
+        item.el.style.transform = `translate(${item.cx.toFixed(2)}px, ${item.cy.toFixed(2)}px)`;
+        stillAnimating = true;
+      } else if (!item.active && item.el.style.transform) {
+        item.el.style.transform = "";
+      }
+    }
+    raf = stillAnimating ? requestAnimationFrame(step) : 0;
+  }
+
+  function recompute() {
+    let anyActive = false;
+    for (const item of items) {
+      const rect = item.el.getBoundingClientRect();
+      // Skip off-screen elements
+      if (rect.bottom < -200 || rect.top > window.innerHeight + 200) {
+        item.tx = 0; item.ty = 0; item.active = false;
+        continue;
+      }
+      const mx = rect.left + rect.width / 2;
+      const my = rect.top + rect.height / 2;
+      const dx = pointerX - mx;
+      const dy = pointerY - my;
+      const dist = Math.hypot(dx, dy);
+      if (dist < RADIUS) {
+        const strength = 1 - dist / RADIUS;
+        item.tx = (dx / RADIUS) * MAX_OFFSET * strength * 2;
+        item.ty = (dy / RADIUS) * MAX_OFFSET * strength * 2;
+        item.active = true;
+        anyActive = true;
+      } else {
+        item.tx = 0; item.ty = 0; item.active = false;
+      }
+    }
+    if ((anyActive || raf) && !raf) raf = requestAnimationFrame(step);
+  }
+
+  function onPointerMove(e) {
+    pointerX = e.clientX;
+    pointerY = e.clientY;
+    const now = performance.now();
+    if (now - lastUpdate < 16) return;
+    lastUpdate = now;
+    recompute();
+  }
+
+  function onLeave() {
+    pointerX = -9999;
+    pointerY = -9999;
+    for (const item of items) { item.tx = 0; item.ty = 0; item.active = false; }
+    if (!raf) raf = requestAnimationFrame(step);
+  }
+
+  document.addEventListener("pointermove", onPointerMove, { passive: true });
+  document.addEventListener("pointerleave", onLeave);
+  window.addEventListener("blur", onLeave);
+  window.addEventListener("scroll", () => { if (pointerX >= 0) recompute(); }, { passive: true });
 }

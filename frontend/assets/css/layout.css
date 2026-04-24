@@ -17,68 +17,84 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  /* IMPORTANT: no background / backdrop-filter here. Both are delegated
+     to the ::before pseudo-element below so that the header element
+     itself does not create a new containing block for position: fixed
+     descendants (the mobile nav drawer depends on tracking the
+     viewport, not the header box). */
   border-bottom: 1px solid transparent;
-  transition: background 0.4s ease,
-              backdrop-filter 0.4s ease,
-              -webkit-backdrop-filter 0.4s ease,
-              border-color 0.3s ease,
+  transition: border-color 0.3s ease,
               box-shadow 0.3s ease,
               min-height 0.3s ease,
               padding 0.3s ease;
 }
 
-[data-mode="arcade"] .site-header {
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background 0.4s ease,
+              backdrop-filter 0.4s ease,
+              -webkit-backdrop-filter 0.4s ease;
 }
 
-.site-header.is-scrolled {
+.site-header.is-scrolled::before {
   background: rgba(11, 18, 32, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.site-header.is-scrolled {
   border-bottom-color: var(--color-border);
   box-shadow: var(--shadow-sm);
 }
 
-[data-mode="arcade"] .site-header.is-scrolled {
+[data-mode="arcade"] .site-header.is-scrolled::before {
   background: rgba(8, 8, 16, 0.85);
 }
 
-.site-header.is-compact {
+.site-header.is-compact::before {
   background: rgba(11, 18, 32, 0.92);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
-[data-mode="arcade"] .site-header.is-compact {
+[data-mode="arcade"] .site-header.is-compact::before {
   background: rgba(8, 8, 16, 0.92);
 }
 
 .site-header.is-compact .header__inner {
-  min-height: 48px;
-  padding-top: var(--spacing-xs);
-  padding-bottom: var(--spacing-xs);
+  min-height: var(--nav-compact-inner-min, 64px);
+  padding-top: var(--nav-compact-pad-y, var(--spacing-sm));
+  padding-bottom: var(--nav-compact-pad-y, var(--spacing-sm));
+  transition: min-height var(--dur-base, 320ms) var(--ease-enter, ease),
+              padding var(--dur-base, 320ms) var(--ease-enter, ease);
 }
 
 .site-header.is-compact .brand {
-  font-size: var(--font-size-base);
+  font-size: var(--nav-compact-brand-fs, var(--font-size-md));
 }
 
 .site-header.is-compact .brand__logo {
-  height: 32px;
-  width: 32px;
+  height: var(--nav-compact-logo, 40px);
+  width: var(--nav-compact-logo, 40px);
+  transition: height var(--dur-base, 320ms) var(--ease-enter, ease),
+              width var(--dur-base, 320ms) var(--ease-enter, ease);
 }
 
 .site-header.is-compact .brand__text {
-  font-size: var(--font-size-base, 1rem);
+  font-size: var(--nav-compact-brand-fs, var(--font-size-md));
 }
 
 .site-header.is-compact .nav__cta {
-  min-height: 28px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  min-height: var(--nav-compact-cta-min, 36px);
+  padding-top: var(--nav-compact-cta-pad-y, 8px);
+  padding-bottom: var(--nav-compact-cta-pad-y, 8px);
 }
 
 [data-theme="light"] .site-header.is-scrolled {
@@ -100,7 +116,12 @@
 /* ── Hero ── */
 .hero {
   position: relative;
+  /* Chain: old browsers fall back to 100vh (which iOS can inflate past
+     the visible viewport, eating content). Modern iOS uses svh (small
+     viewport = URL-bar-visible state → content never cut off), then
+     dvh for the most current engines (dynamic fill of visible area). */
   min-height: 100vh;
+  min-height: 100svh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
@@ -127,6 +148,20 @@
 /* ── Sections ── */
 .section {
   padding: var(--spacing-3xl) 0;
+  /* Clamp horizontal overflow at the section level — many sections have
+     decorative absolute children (bolts, fish, leaves, rays, etc.) that
+     extend slightly past the viewport edge. overflow-x: clip stops any
+     of them contributing to page-level horizontal scroll without
+     affecting vertical layout. */
+  overflow-x: clip;
+}
+
+/* Belt-and-suspenders #4 — clamp the main element so any horizontal
+   overflow from a non-.section descendant (cookie banner, fixed
+   overlays, etc.) can't bubble up to a page-level scroll either. */
+.site-main {
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 .section--alt {
@@ -307,6 +342,12 @@
   border-top: 1px solid var(--color-border);
 }
 
+/* When the studio bottom bar is present as the last footer child, drop
+   the footer's bottom padding so the bar sits flush with the page end. */
+.site-footer:has(.site-topbar--bottom) {
+  padding-bottom: 0;
+}
+
 .footer__grid {
   display: grid;
   gap: var(--spacing-2xl);
@@ -346,6 +387,7 @@
 @media (min-width: 768px) {
   .hero {
     min-height: 100vh;
+    min-height: 100svh;
     min-height: 100dvh;
   }
 

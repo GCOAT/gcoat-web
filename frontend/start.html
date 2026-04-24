@@ -346,6 +346,8 @@
                     required
                     autocomplete="name"
                     maxlength="100"
+                    autocapitalize="words"
+                    enterkeyhint="next"
                     aria-describedby="intake-name-error"
                   />
                   <span
@@ -368,6 +370,11 @@
                     required
                     autocomplete="email"
                     maxlength="254"
+                    inputmode="email"
+                    autocapitalize="off"
+                    autocorrect="off"
+                    spellcheck="false"
+                    enterkeyhint="next"
                     aria-describedby="intake-email-error"
                   />
                   <span
@@ -389,6 +396,8 @@
                     type="tel"
                     autocomplete="tel"
                     maxlength="20"
+                    inputmode="tel"
+                    enterkeyhint="next"
                   />
                 </div>
                 <div class="form-group">
@@ -401,6 +410,8 @@
                     name="companyName"
                     type="text"
                     maxlength="100"
+                    autocapitalize="words"
+                    enterkeyhint="next"
                   />
                 </div>
               </div>
@@ -577,6 +588,8 @@
                   rows="5"
                   required
                   maxlength="2000"
+                  autocapitalize="sentences"
+                  enterkeyhint="done"
                   aria-describedby="intake-message-error"
                 ></textarea>
                 <span
@@ -603,6 +616,11 @@
                       name="existingWebsite"
                       type="url"
                       maxlength="254"
+                      inputmode="url"
+                      autocapitalize="off"
+                      autocorrect="off"
+                      spellcheck="false"
+                      enterkeyhint="next"
                       placeholder="https://yoursite.com"
                     />
                   </div>
@@ -616,6 +634,11 @@
                       name="inspirationLinks"
                       type="text"
                       maxlength="500"
+                      inputmode="url"
+                      autocapitalize="off"
+                      autocorrect="off"
+                      spellcheck="false"
+                      enterkeyhint="next"
                       placeholder="e.g. https://stripe.com, https://linear.app"
                     />
                   </div>
@@ -908,6 +931,32 @@
           >Back to top ↑</a
         >
       </div>
+
+      <!-- Studio bottom bar — shared across every page's footer -->
+      <div class="site-topbar site-topbar--bottom" aria-label="Studio status and local time">
+        <span class="site-topbar__dot" aria-hidden="true"></span>
+        <svg
+          class="site-topbar__pin"
+          viewBox="0 0 24 24"
+          width="11"
+          height="11"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"
+          />
+        </svg>
+        <span class="site-topbar__label">St. Croix, USVI</span>
+        <span class="site-topbar__sep" aria-hidden="true">·</span>
+        <span
+          id="site-clock-time"
+          class="site-topbar__clock"
+          data-timezone="America/St_Thomas"
+        >--:-- AST</span>
+        <span class="site-topbar__sep site-topbar__sep--hide-sm" aria-hidden="true">·</span>
+        <span class="site-topbar__label site-topbar__label--hide-sm">Greatest Coders of All Time</span>
+      </div>
     </footer>
 
     <!-- Cookie Consent Banner -->
@@ -956,6 +1005,7 @@
     <script src="assets/js/config.js"></script>
     <script type="module" src="assets/js/main.js"></script>
     <script src="assets/js/scroll-progress.js"></script>
+    <script src="assets/js/site-clock.js"></script>
     <script src="assets/js/cookie-consent.js"></script>
   </body>
 </html>

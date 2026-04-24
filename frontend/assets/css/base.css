@@ -27,6 +27,13 @@
   --font-heading: "Aldrich", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  /* Forge mono — always JetBrains Mono (preloaded in <head>) for stats,
+     timestamps, technical microcopy, section kickers. */
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Letter-spacing tokens for tighter large headings (modern-premium feel) */
+  --tracking-tight: -0.01em;
+  --tracking-tighter: -0.02em;
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -67,12 +74,59 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Transitions */
+  /* Transitions (legacy, kept for backwards-compat) */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
   --transition-reveal: 600ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-stagger: 80ms;
+
+  /* Forge motion tokens — canonical named easings / durations / stagger.
+     Use these for new styles. Existing transitions keep working via the
+     legacy tokens above and migrate opportunistically. */
+  --ease-enter:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit:       cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-loop:       cubic-bezier(0.45, 0, 0.55, 1);
+
+  --dur-fast:        180ms;
+  --dur-base:        320ms;
+  --dur-expressive:  720ms;
+
+  --stagger:         70ms;
+
+  /* Forge form tokens — used by the .form--floating floating-label pattern.
+     The rest-y value centers the label inside a standard 44px input once
+     we account for form-group top padding. Mobile overrides live in the
+     @media block at the bottom of this file. */
+  --input-min-height:          44px;
+  --form-group-pad-top:        22px;  /* reserved space for floated label */
+  --form-label-rest-y:         36px;  /* vertical center of rest-state label */
+  --form-label-textarea-rest-y: calc(var(--form-group-pad-top) + var(--spacing-sm) + 10px);
+  --form-label-float-y:        2px;
+  --form-label-scale:          0.85;
+
+  /* Forge elevation tokens — semantic shadow scale layered on top of legacy
+     --shadow-sm/md/lg/xl. New components should use these. */
+  --shadow-flat:  0 0 0 1px hsl(0 0% 100% / 0.06);
+  --shadow-lift:  0 2px 4px hsl(0 0% 0% / 0.35),
+                  0 8px 16px hsl(0 0% 0% / 0.25),
+                  0 0 0 1px hsl(0 0% 100% / 0.08);
+  --shadow-pop:   0 4px 8px hsl(0 0% 0% / 0.4),
+                  0 20px 40px hsl(0 0% 0% / 0.3),
+                  0 0 0 1px hsl(0 0% 100% / 0.12),
+                  0 0 32px -8px hsl(var(--hue-secondary) var(--sat-secondary) var(--light-secondary) / 0.4);
+  --shadow-forge: 0 0 0 1px hsl(var(--hue-secondary) var(--sat-secondary) var(--light-secondary) / 0.6),
+                  0 0 24px -4px hsl(var(--hue-secondary) var(--sat-secondary) var(--light-secondary) / 0.65),
+                  0 0 60px -12px hsl(var(--hue-secondary) calc(var(--sat-secondary) - 10%) calc(var(--light-secondary) + 20%) / 0.5);
+
+  /* Navbar compact-state sizing (A/B-able via :root[data-navbar-compact]).
+     Default (no attribute) = "taller" recommended state. */
+  --nav-compact-inner-min: 64px;
+  --nav-compact-pad-y:     var(--spacing-sm);
+  --nav-compact-logo:      40px;
+  --nav-compact-cta-min:   36px;
+  --nav-compact-cta-pad-y: 8px;
+  --nav-compact-brand-fs:  var(--font-size-md);
 
   /* Z-index scale */
   --z-dropdown: 100;
@@ -85,6 +139,27 @@
   --width-content: 720px;
   --width-wide: 1080px;
   --width-max: 1280px;
+}
+
+/* ── Navbar compact-state A/B variants ──
+   Three options surfaced in the design panel so the user can flip between
+   current (pre-polish), taller (new default), tallest. */
+:root[data-navbar-compact="current"] {
+  --nav-compact-inner-min: 48px;
+  --nav-compact-pad-y:     var(--spacing-xs);
+  --nav-compact-logo:      32px;
+  --nav-compact-cta-min:   28px;
+  --nav-compact-cta-pad-y: 4px;
+  --nav-compact-brand-fs:  var(--font-size-base);
+}
+
+:root[data-navbar-compact="tallest"] {
+  --nav-compact-inner-min: 80px;
+  --nav-compact-pad-y:     var(--spacing-md);
+  --nav-compact-logo:      48px;
+  --nav-compact-cta-min:   44px;
+  --nav-compact-cta-pad-y: 10px;
+  --nav-compact-brand-fs:  var(--font-size-lg);
 }
 
 /* ── Dark Theme (default) ── */
@@ -319,6 +394,9 @@ html {
   font-size: 100%;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Replace iOS/Android gray tap overlay with our own :active feedback
+     (see "Mobile tap feedback" in components.css). */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -338,6 +416,26 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   line-height: var(--line-height-snug);
+}
+
+/* Tighten letter-spacing on large headings for a modern-premium feel.
+   Applies via font-size thresholds so small headings stay untouched. */
+h1, h2, .hero__title {
+  letter-spacing: var(--tracking-tighter);
+}
+
+h3, h4 {
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Mono utility — JetBrains Mono for numeric/technical microcopy. */
+.mono,
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
 }
 
 img,
@@ -442,6 +540,15 @@ code {
 .stagger > .reveal:nth-child(6) { transition-delay: calc(5 * var(--transition-stagger)); }
 
 /* ── Reduced Motion ── */
+/* Narrow viewports get tighter form spacing + smaller label. Because the
+   tokens live on :root, any .form--floating instance picks these up. */
+@media (max-width: 520px) {
+  :root {
+    --form-group-pad-top: 20px;
+    --form-label-rest-y: 34px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

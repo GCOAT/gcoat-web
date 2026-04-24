@@ -2,7 +2,7 @@
 
 const CONFIG = {
   maxStars: 160,
-  mobileMaxStars: 80,
+  mobileMaxStars: 60,
   mobileBreakpoint: 768,
   twinkleSpeedMin: 0.006,
   twinkleSpeedMax: 0.05,
@@ -20,8 +20,8 @@ const CONFIG = {
   quietMaxMs: 10000,
   burstMinMs: 600,
   burstMaxMs: 1800,
-  burstChance: 0.25,
-  burstMaxCount: 3,
+  burstChance: 0.35,
+  burstMaxCount: 4,
 };
 
 // Star color palette — subtle temperature variety
@@ -389,18 +389,23 @@ class ShootingStar {
 // ── Comet — rare, slow-moving, wide diffuse tail ──
 class Comet {
   constructor(canvasW, canvasH) {
-    // Enter from the left or right edge, mid-height
+    // Enter from the left or right edge, upper third of the sky.
     this.goingRight = Math.random() < 0.5;
-    this.x = this.goingRight ? -40 : canvasW + 40;
-    this.y = canvasH * (0.15 + Math.random() * 0.4);
-    this.vx = (this.goingRight ? 1 : -1) * (0.4 + Math.random() * 0.3);
-    this.vy = -0.08 + Math.random() * 0.16;
-    this.coreSize = 2.5 + Math.random() * 1.5;
-    this.tailLength = 120 + Math.random() * 80;
-    this.life = Math.round(canvasW / Math.abs(this.vx) * 1.3);
+    this.x = this.goingRight ? -60 : canvasW + 60;
+    this.y = canvasH * (0.12 + Math.random() * 0.35);
+    // Slower drift so the comet lingers long enough to admire.
+    this.vx = (this.goingRight ? 1 : -1) * (0.25 + Math.random() * 0.18);
+    this.vy = -0.05 + Math.random() * 0.1;
+    // Bigger core + longer tail for a more commanding presence.
+    this.coreSize = 4 + Math.random() * 2;
+    this.tailLength = 180 + Math.random() * 120;
+    this.life = Math.round(canvasW / Math.abs(this.vx) * 1.35);
     this.maxLife = this.life;
     this.trail = [];
-    this.maxTrail = 60;
+    this.maxTrail = 90;
+    // Sparkle particles emitted from the head
+    this.sparkles = [];
+    this.sparkleTimer = 0;
   }
 
   update() {
@@ -409,6 +414,33 @@ class Comet {
     this.x += this.vx;
     this.y += this.vy;
     this.life--;
+
+    // Emit a sparkle every few frames near the head — glints against the
+    // dust tail. Each sparkle has a short life and gentle drift.
+    this.sparkleTimer++;
+    if (this.sparkleTimer >= 4) {
+      this.sparkleTimer = 0;
+      this.sparkles.push({
+        x: this.x + (Math.random() - 0.5) * this.coreSize * 2,
+        y: this.y + (Math.random() - 0.5) * this.coreSize * 2,
+        vx: this.vx * -0.3 + (Math.random() - 0.5) * 0.4,
+        vy: this.vy * -0.3 + (Math.random() - 0.5) * 0.4,
+        life: 18 + Math.floor(Math.random() * 14),
+        maxLife: 0,
+        size: 0.5 + Math.random() * 0.9,
+      });
+      const last = this.sparkles[this.sparkles.length - 1];
+      last.maxLife = last.life;
+    }
+    this.sparkles = this.sparkles.filter((s) => {
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vx *= 0.97;
+      s.vy *= 0.97;
+      s.life--;
+      return s.life > 0;
+    });
+
     return this.life > 0;
   }
 
@@ -420,12 +452,13 @@ class Comet {
     else envelope = 1 - (progress - 0.8) / 0.2;
     envelope = Math.max(0, Math.min(1, envelope));
 
-    // Diffuse coma (wide glow around the head)
-    const comaR = this.coreSize * 12;
+    // Diffuse coma (wide glow around the head) — brighter and more
+    // saturated than before so the comet reads clearly against stars.
+    const comaR = this.coreSize * 14;
     const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, comaR);
-    grd.addColorStop(0, `rgba(180, 210, 255, ${envelope * 0.18})`);
-    grd.addColorStop(0.3, `rgba(150, 190, 240, ${envelope * 0.06})`);
-    grd.addColorStop(1, "rgba(150, 190, 240, 0)");
+    grd.addColorStop(0, `rgba(190, 220, 255, ${envelope * 0.28})`);
+    grd.addColorStop(0.25, `rgba(140, 190, 255, ${envelope * 0.12})`);
+    grd.addColorStop(1, "rgba(140, 190, 255, 0)");
     ctx.fillStyle = grd;
     ctx.beginPath();
     ctx.arc(this.x, this.y, comaR, 0, Math.PI * 2);
@@ -478,13 +511,155 @@ class Comet {
     ctx.fill();
 
     // Inner glow
-    const igrd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.coreSize * 4);
-    igrd.addColorStop(0, `rgba(200, 220, 255, ${envelope * 0.35})`);
-    igrd.addColorStop(1, "rgba(200, 220, 255, 0)");
+    const igrd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.coreSize * 5);
+    igrd.addColorStop(0, `rgba(220, 235, 255, ${envelope * 0.55})`);
+    igrd.addColorStop(1, "rgba(220, 235, 255, 0)");
     ctx.fillStyle = igrd;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.coreSize * 4, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.coreSize * 5, 0, Math.PI * 2);
     ctx.fill();
+
+    // Sparkle glints trailing the head — tiny bright points that fade.
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (const s of this.sparkles) {
+      const sa = (s.life / s.maxLife) * envelope * 0.9;
+      if (sa < 0.05) continue;
+      ctx.fillStyle = `rgba(255, 245, 220, ${sa})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+// ── Orion Constellation ──
+// Real star positions for the 7 major Orion stars, laid out as they
+// appear in the northern sky. Drawn in the upper-right of the canvas
+// as a recognizable signature behind the process content. Parallaxes
+// with the same depth as the background starfield.
+class Orion {
+  constructor(canvasW, canvasH) {
+    // Anchor from the right edge so the constellation always sits in
+    // the right margin — never competes with the journey cards on the
+    // left. Scale is capped so it doesn't get absurdly large on wide
+    // monitors but stays legible on narrow phones.
+    const scale = Math.min(canvasW * 0.4, canvasH * 0.42, 220);
+    const rightMargin = Math.max(24, canvasW * 0.04);
+    const anchorX = canvasW - scale - rightMargin;
+    const anchorY = canvasH * 0.14;
+
+    // Normalized positions (0–1) within the constellation's bounding box.
+    // Colors reflect rough stellar classifications (Betelgeuse red,
+    // Rigel/Bellatrix blue-white).
+    this.stars = [
+      { nx: 0.18, ny: 0.14, size: 2.6, rgb: [255, 170, 120] }, // Betelgeuse (red giant, top-left shoulder)
+      { nx: 0.72, ny: 0.22, size: 2.0, rgb: [200, 215, 255] }, // Bellatrix (top-right shoulder)
+      { nx: 0.42, ny: 0.48, size: 1.7, rgb: [210, 225, 255] }, // Mintaka (belt-left)
+      { nx: 0.50, ny: 0.52, size: 1.9, rgb: [210, 225, 255] }, // Alnilam (belt-center)
+      { nx: 0.58, ny: 0.56, size: 1.7, rgb: [210, 225, 255] }, // Alnitak (belt-right)
+      { nx: 0.22, ny: 0.90, size: 2.8, rgb: [200, 220, 255] }, // Rigel (blue giant, brightest — bottom-left)
+      { nx: 0.78, ny: 0.86, size: 2.0, rgb: [200, 215, 255] }, // Saiph (bottom-right)
+    ];
+
+    this.stars.forEach((s) => {
+      s.x = anchorX + s.nx * scale;
+      s.y = anchorY + s.ny * scale;
+      s.phase = Math.random() * Math.PI * 2;
+    });
+
+    // Index pairs that define the constellation's connection lines.
+    this.lines = [
+      [0, 1], // shoulders
+      [0, 2], // left shoulder → belt-left
+      [1, 4], // right shoulder → belt-right
+      [2, 3], [3, 4], // belt
+      [2, 5], // belt-left → Rigel
+      [4, 6], // belt-right → Saiph
+    ];
+
+    // Parallax depth (matches smaller background stars for visual unity)
+    this.depth = 0.35;
+    this.time = 0;
+  }
+
+  update() {
+    this.time += 0.018;
+  }
+
+  draw(ctx, parallaxX, parallaxY, globalAlpha) {
+    const px = parallaxX * this.depth;
+    const py = parallaxY * this.depth;
+    const a = globalAlpha * 0.85;
+
+    // Connection lines first (underneath stars) — slightly more present
+    // than the procedural constellation so Orion reads as a chart shape.
+    ctx.save();
+    ctx.strokeStyle = `rgba(180, 205, 245, ${a * 0.32})`;
+    ctx.lineWidth = 0.7;
+    ctx.setLineDash([3, 5]);
+    for (const [i, j] of this.lines) {
+      const s1 = this.stars[i];
+      const s2 = this.stars[j];
+      ctx.beginPath();
+      ctx.moveTo(s1.x + px, s1.y + py);
+      ctx.lineTo(s2.x + px, s2.y + py);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Stars — halo + tinted disk + hot white heart + diffraction spikes
+    // on the two brightest stars (Betelgeuse + Rigel) for extra polish.
+    const brightIdx = new Set([0, 5]); // Betelgeuse, Rigel
+    for (let i = 0; i < this.stars.length; i++) {
+      const s = this.stars[i];
+      const twinkle = 0.72 + 0.28 * Math.sin(this.time * 2.4 + s.phase);
+      const alpha = a * twinkle;
+      const [r, g, b] = s.rgb;
+      const cx = s.x + px;
+      const cy = s.y + py;
+
+      // Halo
+      const glowR = s.size * 5.5;
+      const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+      grd.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha * 0.6})`);
+      grd.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Diffraction cross on the two brightest stars
+      if (brightIdx.has(i)) {
+        const spikeLen = s.size * 4.5;
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.6})`;
+        ctx.lineWidth = 0.7;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(cx - spikeLen, cy);
+        ctx.lineTo(cx + spikeLen, cy);
+        ctx.moveTo(cx, cy - spikeLen);
+        ctx.lineTo(cx, cy + spikeLen);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Tinted disk
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(cx, cy, s.size, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Hot white heart (keeps the stars crisp, not blurry)
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+      ctx.beginPath();
+      ctx.arc(cx, cy, s.size * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 }
 
@@ -564,6 +739,7 @@ export function initProcessSpace() {
   let stars = [];
   let shootingStars = [];
   let comet = null;
+  let orion = null;
   let constellationLines = [];
   let animId = null;
   let isVisible = false;
@@ -607,6 +783,8 @@ export function initProcessSpace() {
     canvas.style.height = h + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     createStars();
+    // Rebuild Orion to match the new canvas dimensions.
+    orion = new Orion(w, h);
   }
 
   function scheduleNext() {
@@ -658,6 +836,13 @@ export function initProcessSpace() {
     for (const star of stars) {
       if (!reducedMotion) star.update();
       star.draw(ctx, reducedMotion ? 0 : offsetX, reducedMotion ? 0 : offsetY);
+    }
+
+    // Orion constellation — drawn above background stars so its own
+    // stars sit clearly, but below shooting stars and the comet.
+    if (orion) {
+      if (!reducedMotion) orion.update();
+      orion.draw(ctx, reducedMotion ? 0 : offsetX, reducedMotion ? 0 : offsetY, 1);
     }
 
     if (!reducedMotion) {
