@@ -1,158 +1,302 @@
-/**
- * Cookie Consent Banner
- *
- * - GA4 scripts are NOT in the HTML — they are injected here only after consent.
- * - Stores preference in localStorage: "accepted" | "declined".
- * - If no preference is stored, the banner is shown on first visit.
- * - "Manage Cookies" footer link re-opens the banner so users can change their mind.
- * - Respects Do Not Track: if enabled, GA4 is never loaded (treated as declined).
- * - On revocation (accepted → declined): disables GA4 property, clears GA cookies.
- */
+// cookie-consent.js — ES module
+//
+// Multi-category consent gate. Categories: "analytics", "marketing",
+// "functional". Functional is granted by default and cannot be revoked
+// (mirrors GDPR "strictly necessary" — no opt-out for cookies a site
+// genuinely needs to function). Analytics and marketing default to
+// FALSE — no data collection until the user explicitly accepts.
+//
+// Storage (localStorage[storageKey], default "kore-cookie-consent"):
+//   { version: 1, decisions: { analytics, marketing, functional }, decidedAt }
+// Missing key = no decision yet → banner shows on first init().
+//
+// Legacy migration: a raw value of "accepted" or "declined" (the
+// pre-multi-category schema gcoat shipped through 2026-04-25) is
+// upgraded in place to the multi-category shape, preserving the user's
+// analytics decision so returning visitors are not re-prompted.
+//
+// DNT honored: when navigator.doNotTrack === "1", hasConsent("analytics")
+// and hasConsent("marketing") return false regardless of the stored
+// decision. This gives analytics.js a single source-of-truth gate so
+// it doesn't need to re-check DNT itself.
+//
+// Listener API:
+//   on("granted" | "revoked", category, callback) → unsubscribe fn
+// "granted" callbacks fire immediately at registration if the category
+// is currently granted, so the order of on() vs init() doesn't matter
+// for callers. Both fire on transitions thereafter.
 
-var STORAGE_KEY = "gcoat-cookie-consent";
-var GA4_ID = "G-QX6KHWBC4N";
+export const CATEGORIES = Object.freeze(["analytics", "marketing", "functional"]);
+const STORAGE_KEY_DEFAULT = "kore-cookie-consent";
+const SCHEMA_VERSION = 1;
 
-/* ── Safe localStorage wrapper (Safari private mode throws) ── */
-function getConsent() {
-  try { return localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+let storageKey = STORAGE_KEY_DEFAULT;
+let decisions = { analytics: false, marketing: false, functional: true };
+let decidedAt = null;
+let initialized = false;
+const listeners = { granted: new Map(), revoked: new Map() };
+
+let banner = null;
+let bannerTrigger = null;
+
+function isDnt() {
+  if (typeof navigator === "undefined") return false;
+  return navigator.doNotTrack === "1" || window.doNotTrack === "1";
 }
-function setConsent(value) {
-  try { localStorage.setItem(STORAGE_KEY, value); } catch (e) { /* silent */ }
+
+function migrateLegacy(raw) {
+  // Pre-multi-category schema: a literal "accepted" or "declined" string.
+  // Upgrade to the multi-category shape, preserving the analytics decision
+  // so returning visitors keep their choice.
+  if (raw !== "accepted" && raw !== "declined") return null;
+  const analyticsGranted = raw === "accepted";
+  return {
+    version: SCHEMA_VERSION,
+    decisions: {
+      analytics: analyticsGranted,
+      marketing: false,
+      functional: true
+    },
+    decidedAt: new Date().toISOString()
+  };
 }
 
-/* ── GA4 loader ── */
-var ga4Loaded = false;
+function readStorage() {
+  let raw;
+  try {
+    raw = localStorage.getItem(storageKey);
+  } catch {
+    return null;
+  }
+  if (!raw) return null;
 
-function loadGA4() {
-  if (ga4Loaded) return;
-  ga4Loaded = true;
-
-  // Remove the disable flag if it was previously set
-  window["ga-disable-" + GA4_ID] = false;
-
-  var script = document.createElement("script");
-  script.async = true;
-  script.src = "https://www.googletagmanager.com/gtag/js?id=" + GA4_ID;
-  document.head.appendChild(script);
-
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { window.dataLayer.push(arguments); }
-  gtag("js", new Date());
-  gtag("config", GA4_ID);
-  window.gtag = gtag;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.version === SCHEMA_VERSION) return parsed;
+    return null;
+  } catch {
+    const upgraded = migrateLegacy(raw);
+    if (upgraded) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(upgraded));
+      } catch {
+        /* Safari private mode etc. — keep in-memory decisions */
+      }
+      return upgraded;
+    }
+    return null;
+  }
 }
 
-function disableGA4() {
-  // GA4's built-in kill switch — prevents further data collection this session
-  window["ga-disable-" + GA4_ID] = true;
+function writeStorage() {
+  try {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        version: SCHEMA_VERSION,
+        decisions: { ...decisions },
+        decidedAt
+      })
+    );
+  } catch {
+    /* Safari private mode etc. — stay in-memory; banner re-shows next visit */
+  }
+}
 
-  // Delete GA cookies so no identifiers persist
-  var cookies = document.cookie.split(";");
-  for (var i = 0; i < cookies.length; i++) {
-    var name = cookies[i].split("=")[0].trim();
-    if (name === "_ga" || name.indexOf("_ga_") === 0) {
-      document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + location.hostname;
-      document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+function ensureCategory(category) {
+  if (!CATEGORIES.includes(category)) {
+    throw new Error(`Unknown consent category: ${category}`);
+  }
+}
+
+function emit(event, category) {
+  const set = listeners[event].get(category);
+  if (!set) return;
+  for (const cb of set) {
+    try {
+      cb(category);
+    } catch (err) {
+      console.error("cookie-consent listener error", err);
     }
   }
 }
 
-/* ── Banner show / hide ── */
-var focusTrigger = null;
+export function hasDecided() {
+  return decidedAt !== null;
+}
 
-function showBanner(banner, trigger) {
-  focusTrigger = trigger || null;
-  requestAnimationFrame(function () {
+export function hasConsent(category) {
+  ensureCategory(category);
+  if ((category === "analytics" || category === "marketing") && isDnt()) {
+    return false;
+  }
+  return Boolean(decisions[category]);
+}
+
+export function getAll() {
+  return { ...decisions };
+}
+
+function markDecided() {
+  decidedAt = new Date().toISOString();
+  writeStorage();
+}
+
+function setCategory(category, value) {
+  ensureCategory(category);
+  if (category === "functional") return;
+  if (decisions[category] === value) return;
+  decisions[category] = value;
+  markDecided();
+  emit(value ? "granted" : "revoked", category);
+}
+
+export function grant(category) {
+  setCategory(category, true);
+}
+
+export function revoke(category) {
+  setCategory(category, false);
+}
+
+export function acceptAll() {
+  for (const c of CATEGORIES) {
+    if (c !== "functional") setCategory(c, true);
+  }
+  if (!hasDecided()) markDecided();
+}
+
+export function rejectAll() {
+  for (const c of CATEGORIES) {
+    if (c !== "functional") setCategory(c, false);
+  }
+  if (!hasDecided()) markDecided();
+}
+
+export function on(event, category, callback) {
+  if (event !== "granted" && event !== "revoked") {
+    throw new Error(`Unknown consent event: ${event}`);
+  }
+  ensureCategory(category);
+  const map = listeners[event];
+  if (!map.has(category)) map.set(category, new Set());
+  map.get(category).add(callback);
+
+  if (event === "granted" && hasConsent(category)) {
+    try {
+      callback(category);
+    } catch (err) {
+      console.error("cookie-consent listener error", err);
+    }
+  }
+
+  return () => map.get(category)?.delete(callback);
+}
+
+function showBanner(trigger) {
+  if (!banner) return;
+  bannerTrigger = trigger || null;
+  requestAnimationFrame(() => {
     banner.removeAttribute("hidden");
-    requestAnimationFrame(function () {
+    requestAnimationFrame(() => {
       banner.classList.add("is-visible");
-      // Move focus into the banner for accessibility
-      var firstBtn = banner.querySelector("button");
+      const firstBtn = banner.querySelector("button");
       if (firstBtn) firstBtn.focus();
     });
   });
 }
 
-function hideBanner(banner) {
+function hideBanner() {
+  if (!banner) return;
   banner.classList.remove("is-visible");
-  banner.addEventListener("transitionend", function () {
+  const restore = () => {
     banner.setAttribute("hidden", "");
-    // Return focus to the element that opened the banner
-    if (focusTrigger && typeof focusTrigger.focus === "function") {
-      focusTrigger.focus();
-      focusTrigger = null;
+    if (bannerTrigger && typeof bannerTrigger.focus === "function") {
+      bannerTrigger.focus();
+      bannerTrigger = null;
     }
-  }, { once: true });
-
-  // If reduced motion is on, transitionend won't fire reliably
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    banner.setAttribute("hidden", "");
-    if (focusTrigger && typeof focusTrigger.focus === "function") {
-      focusTrigger.focus();
-      focusTrigger = null;
-    }
+  };
+  const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    restore();
+  } else {
+    banner.addEventListener("transitionend", restore, { once: true });
   }
 }
 
-/* ── Init ── */
-function init() {
-  var consent = getConsent();
-  var dnt = navigator.doNotTrack === "1" || window.doNotTrack === "1";
-
-  // If previously accepted and DNT is not set, load GA4 immediately
-  if (consent === "accepted" && !dnt) {
-    loadGA4();
-  }
-
-  var banner = document.getElementById("cookie-banner");
+function wireBanner() {
+  banner = document.getElementById("cookie-banner");
   if (!banner) return;
 
-  // Always wire up Accept / Decline (needed for "Manage Cookies" re-open flow)
-  var acceptBtn = banner.querySelector(".js-cookie-accept");
-  var declineBtn = banner.querySelector(".js-cookie-decline");
+  const acceptBtn = banner.querySelector(".js-cookie-accept");
+  const declineBtn = banner.querySelector(".js-cookie-decline");
 
   if (acceptBtn) {
-    acceptBtn.addEventListener("click", function () {
-      setConsent("accepted");
-      hideBanner(banner);
-      if (!dnt) loadGA4();
+    acceptBtn.addEventListener("click", () => {
+      acceptAll();
+      hideBanner();
     });
   }
-
   if (declineBtn) {
-    declineBtn.addEventListener("click", function () {
-      setConsent("declined");
-      hideBanner(banner);
-      disableGA4();
+    declineBtn.addEventListener("click", () => {
+      rejectAll();
+      hideBanner();
     });
   }
 
-  // Escape key dismisses the banner (standard dialog UX)
-  document.addEventListener("keydown", function (e) {
+  document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !banner.hasAttribute("hidden")) {
-      hideBanner(banner);
+      hideBanner();
     }
   });
 
-  // Wire up all "Manage Cookies" footer links (re-opens banner)
-  var manageLinks = document.querySelectorAll(".js-cookie-manage");
-  for (var i = 0; i < manageLinks.length; i++) {
-    (function (link) {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        showBanner(banner, link);
-      });
-    })(manageLinks[i]);
+  const manageLinks = document.querySelectorAll(".js-cookie-manage");
+  manageLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      showBanner(link);
+    });
+  });
+}
+
+export function init(options = {}) {
+  if (initialized) return;
+  initialized = true;
+
+  if (options.storageKey) storageKey = options.storageKey;
+
+  const stored = readStorage();
+  if (stored && stored.decisions) {
+    for (const c of CATEGORIES) {
+      if (typeof stored.decisions[c] === "boolean") {
+        decisions[c] = stored.decisions[c];
+      }
+    }
+    decidedAt = stored.decidedAt || null;
   }
 
-  // First visit — no consent recorded, show banner automatically
-  if (!consent) {
-    showBanner(banner);
+  wireBanner();
+
+  if (banner && !hasDecided() && options.autoShow !== false) {
+    showBanner();
+  }
+
+  for (const c of CATEGORIES) {
+    if (decisions[c] && (c === "functional" || hasConsent(c))) {
+      emit("granted", c);
+    }
   }
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
+// Test-only hook: resets module state so each test starts clean.
+// Not part of the public API; do not call from production code.
+export function __resetForTest() {
+  storageKey = STORAGE_KEY_DEFAULT;
+  decisions = { analytics: false, marketing: false, functional: true };
+  decidedAt = null;
+  initialized = false;
+  listeners.granted.clear();
+  listeners.revoked.clear();
+  banner = null;
+  bannerTrigger = null;
 }
