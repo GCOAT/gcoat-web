@@ -12,7 +12,15 @@
     FEATURES: {
       CONTACT_FORM: true,
       BLOG: true,
-      MEDIA: true
+      MEDIA: true,
+      COOKIE_CONSENT: true,
+      ANALYTICS_GA4: true
+    },
+    GA4: {
+      // gcoat's production property. analytics.js reads this on consent grant.
+      // Override per environment in deploy.sh if a separate dev/staging
+      // property is ever introduced.
+      measurementId: "G-QX6KHWBC4N"
     }
   };
 })();

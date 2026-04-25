@@ -171,13 +171,29 @@ function loadModules(mock, options) {
       .replace(/^import\s+\{[^}]+\}\s+from\s+["'][^"']+["'];?\s*$/gm, "");
   }
 
+  // Build APP_CONFIG. Defaults match production gcoat config; options can
+  // override individual fields (or omit GA4/FEATURES.ANALYTICS_GA4 entirely
+  // to exercise the missing-id / feature-flag-off branches in analytics.js).
+  var appConfig;
+  if (options.appConfig === null) {
+    appConfig = null;
+  } else if (options.appConfig) {
+    appConfig = options.appConfig;
+  } else {
+    appConfig = {
+      FEATURES: { ANALYTICS_GA4: true },
+      GA4: { measurementId: "G-QX6KHWBC4N" }
+    };
+  }
+
   var sandbox = {
     document: mock.document,
     window: {
       dataLayer: [],
       matchMedia: function () { return { matches: false }; },
       doNotTrack: options.dnt ? "1" : undefined,
-      gtag: undefined
+      gtag: undefined,
+      APP_CONFIG: appConfig
     },
     navigator: { doNotTrack: options.dnt ? "1" : undefined },
     location: { hostname: "localhost" },
@@ -409,6 +425,60 @@ test("Storage key override: writes to gcoat-cookie-consent (not Kore default)", 
   mock.acceptBtn.dispatchEvent("click");
   assert(mock.storage["gcoat-cookie-consent"], "Should write to gcoat-cookie-consent");
   assert(!mock.storage["kore-cookie-consent"], "Should NOT write to kore-cookie-consent");
+});
+
+/* ── Tests for APP_CONFIG.GA4.measurementId (sync checkpoint item 2) ── */
+
+test("GA4 ID read from APP_CONFIG.GA4.measurementId (default config)", function () {
+  var mock = createMockDOM();
+  bootstrap(mock);
+  mock.acceptBtn.dispatchEvent("click");
+  assert(mock.headAppended.length > 0, "GA4 script should be injected");
+  var script = mock.headAppended[0];
+  assert(
+    script.src && script.src.indexOf("id=G-QX6KHWBC4N") !== -1,
+    "Script src should include the configured GA4 id (got: " + JSON.stringify(script.src) + ")"
+  );
+});
+
+test("GA4 ID custom override via APP_CONFIG", function () {
+  var mock = createMockDOM();
+  bootstrap(mock, {
+    appConfig: {
+      FEATURES: { ANALYTICS_GA4: true },
+      GA4: { measurementId: "G-TESTOVERRIDE" }
+    }
+  });
+  mock.acceptBtn.dispatchEvent("click");
+  assert(mock.headAppended.length > 0, "GA4 script should be injected");
+  var src = mock.headAppended[0].src;
+  assert(
+    src && src.indexOf("id=G-TESTOVERRIDE") !== -1,
+    "Script src should reflect the overridden measurementId (got: " + JSON.stringify(src) + ")"
+  );
+});
+
+test("GA4 missing measurementId: consent grants but no script injected", function () {
+  var mock = createMockDOM();
+  bootstrap(mock, {
+    appConfig: { FEATURES: { ANALYTICS_GA4: true } } // no GA4.measurementId
+  });
+  mock.acceptBtn.dispatchEvent("click");
+  var decision = readStored(mock);
+  assertEqual(decision.decisions.analytics, true, "Decision should record granted");
+  assertEqual(mock.headAppended.length, 0, "GA4 script must NOT be injected without an id");
+});
+
+test("FEATURES.ANALYTICS_GA4 = false: GA4 not loaded even if consent accepted", function () {
+  var mock = createMockDOM();
+  bootstrap(mock, {
+    appConfig: {
+      FEATURES: { ANALYTICS_GA4: false },
+      GA4: { measurementId: "G-QX6KHWBC4N" }
+    }
+  });
+  mock.acceptBtn.dispatchEvent("click");
+  assertEqual(mock.headAppended.length, 0, "GA4 must NOT load when feature flag is off");
 });
 
 /* ── Run all tests ── */
