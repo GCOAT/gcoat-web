@@ -18,6 +18,8 @@
   width: 48px;
   object-fit: cover;
   border-radius: 50%;
+  transition: height var(--dur-base, 320ms) var(--ease-enter, ease),
+              width var(--dur-base, 320ms) var(--ease-enter, ease);
 }
 
 .brand__text {
@@ -31,6 +33,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: font-size var(--dur-base, 320ms) var(--ease-enter, ease);
 }
 
 .brand:visited {
@@ -393,7 +396,9 @@
   transition:
     background 0.25s ease,
     box-shadow 0.25s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    min-height var(--dur-base, 320ms) var(--ease-enter, ease),
+    padding var(--dur-base, 320ms) var(--ease-enter, ease);
 }
 
 /* Shimmer sweep — draws eye on load, then periodic nudge */
@@ -999,12 +1004,18 @@
 }
 
 /* On desktop, the rail collapses out of the layout tree so .nav__menu
-   continues to behave as a direct flex child of .nav. */
+   continues to behave as a direct flex child of .nav. The drawer-only
+   chrome (mobile wordmark + close, social row + meta) is hidden so it
+   doesn't leak into the inline desktop nav row. */
 @media (min-width: 768px) {
   .nav__rail {
     display: contents;
   }
   .nav__backdrop {
+    display: none;
+  }
+  .nav__drawer-head,
+  .nav__drawer-foot {
     display: none;
   }
 }

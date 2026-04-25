@@ -548,7 +548,7 @@ class Orion {
     const scale = Math.min(canvasW * 0.4, canvasH * 0.42, 220);
     const rightMargin = Math.max(24, canvasW * 0.04);
     const anchorX = canvasW - scale - rightMargin;
-    const anchorY = canvasH * 0.14;
+    const anchorY = canvasH * 0.28;
 
     // Normalized positions (0–1) within the constellation's bounding box.
     // Colors reflect rough stellar classifications (Betelgeuse red,

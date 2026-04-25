@@ -1323,14 +1323,17 @@ function initAboutVisual() {
         }
 
         function scheduleSpark() {
-          const delay = 1200 + Math.random() * 4200; // 1.2–5.4s
+          const delay = 500 + Math.random() * 2200; // 0.5–2.7s
           sparksTimer = setTimeout(() => {
             spawnSpark();
-            // Burst cluster — 30% chance of a chain follow-up
-            if (Math.random() < 0.3) {
-              setTimeout(spawnSpark, 70 + Math.random() * 140);
-              if (Math.random() < 0.45) {
-                setTimeout(spawnSpark, 180 + Math.random() * 220);
+            // Burst cluster — 55% chance of a chain follow-up
+            if (Math.random() < 0.55) {
+              setTimeout(spawnSpark, 60 + Math.random() * 140);
+              if (Math.random() < 0.6) {
+                setTimeout(spawnSpark, 160 + Math.random() * 220);
+                if (Math.random() < 0.35) {
+                  setTimeout(spawnSpark, 300 + Math.random() * 260);
+                }
               }
             }
             scheduleSpark();
